@@ -1,16 +1,21 @@
-import { Search, Bell, Settings, Moon, Sun } from "lucide-react";
+import { Bell, Search, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { RoleSwitcher } from "./RoleSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect } from "react";
 
 export function TopHeader() {
+  const { t } = useLanguage();
   const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -48,26 +53,28 @@ export function TopHeader() {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-6 h-full flex items-center justify-between">
-        {/* Search Section */}
-        <div className="flex items-center gap-4 flex-1 max-w-xl">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-full items-center justify-between px-6">
+        {/* Left side */}
+        <div className="flex items-center gap-4">
+          <SidebarTrigger className="-ml-2" />
+          
+          {/* Search */}
+          <div className="relative hidden md:block">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              type="text"
-              placeholder="Fan, vazifa, o'qituvchi bo'yicha qidiring..."
+              placeholder="Fan, vazifa, o'qituvchi bo'yicha qidirish..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background/80 border-border focus:border-primary transition-colors"
+              className="w-80 pl-10"
             />
           </div>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-4">
+        {/* Right side */}
+        <div className="flex items-center gap-3">
           {/* Current Time & Date */}
-          <div className="hidden md:flex flex-col items-end text-sm">
+          <div className="hidden lg:flex flex-col items-end text-sm mr-4">
             <div className="font-mono text-primary font-semibold">
               {getCurrentTime()}
             </div>
@@ -76,15 +83,15 @@ export function TopHeader() {
             </div>
           </div>
 
+          <RoleSwitcher />
+          <LanguageSwitcher />
+          
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
+                <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-destructive">
                   3
                 </Badge>
               </Button>
@@ -123,11 +130,6 @@ export function TopHeader() {
           {/* Theme Toggle */}
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
-
-          {/* Settings */}
-          <Button variant="ghost" size="icon">
-            <Settings className="h-5 w-5" />
           </Button>
         </div>
       </div>
