@@ -14,6 +14,32 @@ import Homework from "./pages/Homework";
 import Grades from "./pages/Grades";
 import NotFound from "./pages/NotFound";
 
+// Admin pages
+import RegionsPage from "./pages/admin/RegionsPage";
+import CitiesPage from "./pages/admin/CitiesPage";
+import SchoolsPage from "./pages/admin/SchoolsPage";
+import SubjectsPage from "./pages/admin/SubjectsPage";
+import UsersPage from "./pages/admin/UsersPage";
+import DirectorsPage from "./pages/admin/DirectorsPage";
+
+// Director pages
+import DirectorClassesPage from "./pages/director/ClassesPage";
+import DirectorTeachersPage from "./pages/director/TeachersPage";
+import DirectorTimetablesPage from "./pages/director/TimetablesPage";
+import DirectorGradeRequestsPage from "./pages/director/GradeRequestsPage";
+import DirectorStatisticsPage from "./pages/director/StatisticsPage";
+
+// Teacher pages
+import TeacherHomeworksPage from "./pages/teacher/HomeworksPage";
+import TeacherGradesPage from "./pages/teacher/GradesPage";
+import TeacherAttendancePage from "./pages/teacher/AttendancePage";
+
+// Student pages
+import StudentGradesPage from "./pages/student/GradesPage";
+
+// Parent pages
+import ParentChildrenPage from "./pages/parent/ChildrenPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,6 +58,33 @@ const App = () => (
                 <Route path="/schedule" element={<Schedule />} />
                 <Route path="/homework" element={<Homework />} />
                 <Route path="/grades" element={<Grades />} />
+                
+                {/* Admin routes */}
+                <Route path="/admin/regions" element={<RegionsPage />} />
+                <Route path="/admin/cities" element={<CitiesPage />} />
+                <Route path="/admin/schools" element={<SchoolsPage />} />
+                <Route path="/admin/subjects" element={<SubjectsPage />} />
+                <Route path="/admin/users" element={<UsersPage />} />
+                <Route path="/admin/directors" element={<DirectorsPage />} />
+                
+                {/* Director routes */}
+                <Route path="/director/classes" element={<DirectorClassesPage />} />
+                <Route path="/director/teachers" element={<DirectorTeachersPage />} />
+                <Route path="/director/timetables" element={<DirectorTimetablesPage />} />
+                <Route path="/director/grade-requests" element={<DirectorGradeRequestsPage />} />
+                <Route path="/director/statistics" element={<DirectorStatisticsPage />} />
+                
+                {/* Teacher routes */}
+                <Route path="/teacher/homeworks" element={<TeacherHomeworksPage />} />
+                <Route path="/teacher/grades" element={<TeacherGradesPage />} />
+                <Route path="/teacher/attendance" element={<TeacherAttendancePage />} />
+                
+                {/* Student routes */}
+                <Route path="/student/grades" element={<StudentGradesPage />} />
+                
+                {/* Parent routes */}
+                <Route path="/parent/children" element={<ParentChildrenPage />} />
+                
                 {/* Role-specific routes - TODO: Create these pages */}
                 <Route path="/students" element={<NotFound />} />
                 <Route path="/teachers" element={<NotFound />} />
