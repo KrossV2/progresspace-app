@@ -63,7 +63,7 @@ const demoUsers: Record<UserRole, User> = {
 };
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(demoUsers.student);
+  const [user, setUser] = useState<User | null>(demoUsers.admin);
 
   const switchRole = (role: UserRole) => {
     setUser(demoUsers[role]);

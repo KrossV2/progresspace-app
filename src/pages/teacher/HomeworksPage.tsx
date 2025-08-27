@@ -146,3 +146,5 @@ const HomeworksPage = () => {
     </div>
   );
 };
+
+export default HomeworksPage;
