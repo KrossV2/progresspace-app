@@ -14,7 +14,9 @@ import {
   Settings,
   Megaphone,
   ClipboardCheck,
-  Baby
+  Baby,
+  MapPin,
+  Building
 } from "lucide-react";
 import { useUser, UserRole } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -40,37 +42,41 @@ const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
 
   const roleSpecificItems = {
     student: [
-      { title: t('nav.subjects'), url: "/subjects", icon: BookOpen, group: "academic" },
-      { title: t('nav.schedule'), url: "/schedule", icon: Calendar, group: "academic" },
-      { title: t('nav.homework'), url: "/homework", icon: FileText, group: "academic" },
-      { title: t('nav.grades'), url: "/grades", icon: GraduationCap, group: "academic" },
+      { title: t('nav.attendance'), url: "/student/attendance", icon: ClipboardCheck, group: "academic" },
+      { title: t('nav.grades'), url: "/student/grades", icon: GraduationCap, group: "academic" },
+      { title: t('nav.homeworks'), url: "/student/homeworks", icon: FileText, group: "academic" },
+      { title: t('nav.timetables'), url: "/student/timetables", icon: Calendar, group: "academic" },
+      { title: t('nav.behaviors'), url: "/student/behaviors", icon: BarChart3, group: "academic" },
+      { title: t('nav.notifications'), url: "/student/notifications", icon: Megaphone, group: "academic" },
     ],
     teacher: [
-      { title: t('nav.subjects'), url: "/subjects", icon: BookOpen, group: "academic" },
-      { title: t('nav.schedule'), url: "/schedule", icon: Calendar, group: "academic" },
-      { title: t('nav.students'), url: "/students", icon: Users, group: "management" },
-      { title: t('nav.grades'), url: "/grades", icon: GraduationCap, group: "academic" },
-      { title: t('nav.attendance'), url: "/attendance", icon: ClipboardCheck, group: "management" },
+      { title: t('nav.homeworks'), url: "/teacher/homeworks", icon: FileText, group: "academic" },
+      { title: t('nav.grades'), url: "/teacher/grades", icon: GraduationCap, group: "academic" },
+      { title: t('nav.attendance'), url: "/teacher/attendance", icon: ClipboardCheck, group: "management" },
+      { title: t('nav.students'), url: "/teacher/students", icon: Users, group: "management" },
+      { title: t('nav.parents'), url: "/teacher/parents", icon: Baby, group: "management" },
     ],
     parent: [
-      { title: t('nav.children'), url: "/children", icon: Baby, group: "academic" },
-      { title: t('nav.schedule'), url: "/schedule", icon: Calendar, group: "academic" },
-      { title: t('nav.grades'), url: "/grades", icon: GraduationCap, group: "academic" },
-      { title: t('nav.homework'), url: "/homework", icon: FileText, group: "academic" },
+      { title: t('nav.children'), url: "/parent/children", icon: Baby, group: "academic" },
+      { title: t('nav.attendance'), url: "/parent/attendance", icon: ClipboardCheck, group: "academic" },
+      { title: t('nav.behaviors'), url: "/parent/behaviors", icon: BarChart3, group: "academic" },
+      { title: t('nav.grades'), url: "/parent/grades", icon: GraduationCap, group: "academic" },
+      { title: t('nav.timetables'), url: "/parent/timetables", icon: Calendar, group: "academic" },
     ],
     admin: [
-      { title: t('nav.students'), url: "/students", icon: Users, group: "management" },
-      { title: t('nav.teachers'), url: "/teachers", icon: UserCheck, group: "management" },
-      { title: t('nav.classes'), url: "/classes", icon: School, group: "management" },
-      { title: t('nav.reports'), url: "/reports", icon: BarChart3, group: "management" },
-      { title: t('nav.settings'), url: "/settings", icon: Settings, group: "management" },
+      { title: t('nav.regions'), url: "/admin/regions", icon: MapPin, group: "management" },
+      { title: t('nav.cities'), url: "/admin/cities", icon: Building, group: "management" },
+      { title: t('nav.schools'), url: "/admin/schools", icon: School, group: "management" },
+      { title: t('nav.subjects'), url: "/admin/subjects", icon: BookOpen, group: "management" },
+      { title: t('nav.users'), url: "/admin/users", icon: Users, group: "management" },
+      { title: t('nav.directors'), url: "/admin/directors", icon: UserCheck, group: "management" },
     ],
     director: [
-      { title: t('nav.reports'), url: "/reports", icon: BarChart3, group: "management" },
-      { title: t('nav.teachers'), url: "/teachers", icon: UserCheck, group: "management" },
-      { title: t('nav.students'), url: "/students", icon: Users, group: "management" },
-      { title: t('nav.announcements'), url: "/announcements", icon: Megaphone, group: "management" },
-      { title: t('nav.settings'), url: "/settings", icon: Settings, group: "management" },
+      { title: t('nav.classes'), url: "/director/classes", icon: School, group: "management" },
+      { title: t('nav.teachers'), url: "/director/teachers", icon: UserCheck, group: "management" },
+      { title: t('nav.timetables'), url: "/director/timetables", icon: Calendar, group: "management" },
+      { title: t('nav.grade_requests'), url: "/director/grade-requests", icon: FileText, group: "management" },
+      { title: t('nav.statistics'), url: "/director/statistics", icon: BarChart3, group: "management" },
     ],
   };
 

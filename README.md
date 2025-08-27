@@ -1,73 +1,192 @@
-# Welcome to your Lovable project
+# EduUz - Milliy Darajadagi Maktab Boshqaruv Tizimi
 
-## Project info
+O'zbekiston bo'ylab maktablarni boshqarish uchun mo'ljallangan keng qamrovli ta'lim boshqaruv tizimi.
 
-**URL**: https://lovable.dev/projects/8df0f526-ef38-4328-976e-f4e8b0550730
+## Loyiha Tavsifi
 
-## How can I edit this code?
+Bu loyiha Kundalik.com dan kengroq versiya bo'lib, butun O'zbekiston bo'yicha maktablarni boshqarish uchun yaratilgan. Tizimda faqat ro'yxatdan o'tkazilgan foydalanuvchilar tizimga kira oladi.
 
-There are several ways of editing your application.
+### Asosiy Xususiyatlar
 
-**Use Lovable**
+- **Role-based Access Control**: Admin → Direktor → O'qituvchi → O'quvchi/Ota-ona tartibida foydalanuvchilar yaratiladi
+- **Keng qamrovli boshqaruv**: Viloyat, shahar, maktab darajasida boshqaruv
+- **Real-time ma'lumotlar**: Baholar, davomatiyatlik, dars jadvali
+- **Statistik tahlil**: Har darajada batafsil statistika
+- **Responsive design**: Barcha qurilmalarda mukammal ishlaydi
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8df0f526-ef38-4328-976e-f4e8b0550730) and start prompting.
+## Foydalanuvchi Rollari
 
-Changes made via Lovable will be committed automatically to this repo.
+### 1. Admin
+- Viloyat va shaharlarni boshqaradi
+- Maktablar yaratadi va direktorlarni tayinlaydi
+- Barcha tizim ma'lumotlariga kirish huquqi
+- Fanlar ro'yxatini boshqaradi
 
-**Use your preferred IDE**
+### 2. Direktor
+- O'z maktabini boshqaradi
+- Sinflar va o'qituvchilarni yaratadi
+- Dars jadvalini tuzadi
+- Baho o'zgartirish so'rovlarini ko'rib chiqadi
+- Maktab statistikasini kuzatadi
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 3. O'qituvchi
+- Baholar qo'yadi va o'zgartiradi
+- Davomatni belgilaydi
+- Uy vazifalarini beradi
+- Sinf rahbarligi vazifalarini bajaradi (agar tayinlangan bo'lsa)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 4. O'quvchi
+- O'z baholarini ko'radi
+- Davomatini kuzatadi
+- Uy vazifalarini topshiradi
+- Dars jadvalini ko'radi
 
-Follow these steps:
+### 5. Ota-ona
+- Farzandning baholarini ko'radi
+- Davomatini kuzatadi
+- Sababnoma yuboradi
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Texnik Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend
+- **React 18** - Asosiy framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **React Router** - Navigation
+- **TanStack Query** - Server state management
+- **Tailwind CSS** - Styling
+- **Shadcn/ui** - UI komponetlar
+- **Lucide React** - Ikonlar
+- **Recharts** - Grafik va diagrammalar
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Backend
+- **.NET 8** - Backend framework
+- **Entity Framework Core** - ORM
+- **MediatR** - CQRS pattern
+- **SQL Server** - Database
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## O'rnatish va Ishga Tushirish
+
+### Talablar
+- Node.js 18+
+- npm yoki yarn yoki bun
+
+### Frontend o'rnatish
+```bash
+# Repositoriyani klonlash
+git clone <repository-url>
+cd eduuz-frontend
+
+# Dependencies o'rnatish
+npm install
+
+# Development server ishga tushirish
 npm run dev
+
+# Production build
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+### Muhim konfiguratsiya
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Backend deploy qilingandan keyin, quyidagi o'zgarishlarni amalga oshiring:
 
-**Use GitHub Codespaces**
+1. **API URL-ni o'zgartirish**: Barcha sahifalarda quyidagi qatorni toping va o'zgartiring:
+```javascript
+const API_BASE_URL = "http://localhost:5000"; // Production URL bilan almashtiring
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. **Mock data-ni o'chirish**: Har bir sahifada mock data mavjud, ularni actual API calls bilan almashtiring.
 
-## What technologies are used for this project?
+## Loyiha Strukturasi
 
-This project is built with:
+```
+src/
+├── components/           # Qayta ishlatiluvchi komponentlar
+│   ├── ui/              # Shadcn UI komponentlar
+│   ├── layout/          # Layout komponentlari
+│   └── dashboard/       # Dashboard komponentlari
+├── contexts/            # React Context providers
+├── hooks/               # Custom React hooks
+├── lib/                 # Utility functions
+├── pages/               # Sahifa komponentlari
+│   ├── admin/          # Admin sahifalari
+│   ├── director/       # Direktor sahifalari
+│   ├── teacher/        # O'qituvchi sahifalari
+│   ├── student/        # O'quvchi sahifalari
+│   └── parent/         # Ota-ona sahifalari
+└── App.tsx             # Asosiy App komponenti
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## API Integration
 
-## How can I deploy this project?
+Barcha API endpoint-lar `API_ENDPOINTS.md` faylida batafsil tavsiflangan. Asosiy xususiyatlar:
 
-Simply open [Lovable](https://lovable.dev/projects/8df0f526-ef38-4328-976e-f4e8b0550730) and click on Share -> Publish.
+- **RESTful API**: Barcha CRUD operatsiyalar uchun
+- **Role-based endpoints**: Har bir rol uchun alohida endpoint-lar
+- **Error handling**: Barcha API call-larda error handling mavjud
+- **Loading states**: Har bir sahifada loading indikatori
 
-## Can I connect a custom domain to my Lovable project?
+## Xususiyatlar
 
-Yes, you can!
+### ✅ Amalga oshirilgan
+- [x] Role-based navigation
+- [x] Admin panel (Viloyatlar, Shaharlar, Maktablar, Fanlar, Foydalanuvchilar)
+- [x] Direktor paneli (Sinflar, O'qituvchilar, Dars jadvali, Statistika)
+- [x] O'qituvchi paneli (Uy vazifalari, Baholar, Davomatiyatlik)
+- [x] O'quvchi paneli (Baholar ko'rish)
+- [x] Ota-ona paneli (Farzand ma'lumotlari)
+- [x] Responsive design
+- [x] API integration layihasi
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### 🔄 Ishlanmoqda
+- [ ] Authentication tizimi
+- [ ] File upload functionality
+- [ ] Push notification-lar
+- [ ] Ko'p tilli interfeys
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### 📋 Rejalashtirilgan
+- [ ] Mobile app (React Native)
+- [ ] Offline functionality
+- [ ] Advanced reporting
+- [ ] Integration with external systems
+
+## Deployment
+
+### Production uchun tayyorlash
+
+1. **Environment variables**:
+```bash
+# .env.production
+VITE_API_BASE_URL=https://your-backend-api.com
+VITE_APP_NAME=EduUz
+```
+
+2. **Build qilish**:
+```bash
+npm run build
+```
+
+3. **Static hosting**: `dist` papkasini istalgan static hosting xizmatiga deploy qiling.
+
+## Contributing
+
+1. Fork qiling
+2. Feature branch yarating (`git checkout -b feature/AmazingFeature`)
+3. Commit qiling (`git commit -m 'Add some AmazingFeature'`)
+4. Push qiling (`git push origin feature/AmazingFeature`)
+5. Pull Request oching
+
+## Litsenziya
+
+Bu loyiha MIT litsenziyasi ostida tarqatiladi.
+
+## Aloqa
+
+Savollar yoki takliflar uchun aloqa:
+- Email: [your-email@example.com]
+- Telegram: [@your-username]
+
+---
+
+**Eslatma**: Bu loyiha hali development bosqichida. Production muhitda ishlatishdan oldin barcha xavfsizlik choralarini ko'ring va to'liq testing o'tkazing.
