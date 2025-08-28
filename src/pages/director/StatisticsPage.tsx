@@ -28,6 +28,7 @@ import {
   Line
 } from "recharts";
 import { useToast } from "@/hooks/use-toast";
+import { API_BASE_URL } from "@/config/api";
 
 interface ClassStatistics {
   id: number;
@@ -74,7 +75,7 @@ const StatisticsPage = () => {
   const { toast } = useToast();
 
   // TODO: Replace with actual API URL
-  const API_BASE_URL = "http://localhost:5000"; // Change this to your backend URL
+  // API_BASE_URL import qilingan: urlni almashtirish uchun `src/config/api.ts` faylini oching
 
   useEffect(() => {
     fetchStatistics();
