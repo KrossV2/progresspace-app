@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trash2, Edit, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_BASE_URL } from "@/config/api";
 
 interface City {
   id: number;
@@ -39,7 +40,7 @@ const SchoolsPage = () => {
   const { toast } = useToast();
 
   // TODO: Replace with actual API URL
-  const API_BASE_URL = "http://localhost:5000"; // Change this to your backend URL
+  // API_BASE_URL import qilingan: urlni almashtirish uchun `src/config/api.ts` faylini oching
 
   useEffect(() => {
     fetchData();

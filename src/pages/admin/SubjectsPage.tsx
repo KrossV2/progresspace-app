@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Trash2, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_BASE_URL } from "@/config/api";
 
 interface Subject {
   id: number;
@@ -26,8 +27,7 @@ const SubjectsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  // TODO: Replace with actual API URL
-  const API_BASE_URL = "http://localhost:5000"; // Change this to your backend URL
+  // API_BASE_URL import qilingan: urlni almashtirish uchun `src/config/api.ts` faylini oching
 
   useEffect(() => {
     fetchSubjects();
