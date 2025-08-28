@@ -33,9 +33,16 @@ import DirectorStatisticsPage from "./pages/director/StatisticsPage";
 import TeacherHomeworksPage from "./pages/teacher/HomeworksPage";
 import TeacherGradesPage from "./pages/teacher/GradesPage";
 import TeacherAttendancePage from "./pages/teacher/AttendancePage";
+import TeacherStudentsPage from "./pages/teacher/StudentsPage";
+import TeacherParentsPage from "./pages/teacher/ParentsPage";
 
 // Student pages
 import StudentGradesPage from "./pages/student/GradesPage";
+import StudentAttendancePage from "./pages/student/AttendancePage";
+import StudentHomeworksPage from "./pages/student/HomeworksPage";
+import StudentTimetablesPage from "./pages/student/TimetablesPage";
+import StudentBehaviorsPage from "./pages/student/BehaviorsPage";
+import StudentNotificationsPage from "./pages/student/NotificationsPage";
 
 // Parent pages
 import ParentChildrenPage from "./pages/parent/ChildrenPage";
@@ -78,9 +85,16 @@ const App = () => (
                 <Route path="/teacher/homeworks" element={<TeacherHomeworksPage />} />
                 <Route path="/teacher/grades" element={<TeacherGradesPage />} />
                 <Route path="/teacher/attendance" element={<TeacherAttendancePage />} />
+                <Route path="/teacher/students" element={<TeacherStudentsPage />} />
+                <Route path="/teacher/parents" element={<TeacherParentsPage />} />
                 
                 {/* Student routes */}
                 <Route path="/student/grades" element={<StudentGradesPage />} />
+                <Route path="/student/attendance" element={<StudentAttendancePage />} />
+                <Route path="/student/homeworks" element={<StudentHomeworksPage />} />
+                <Route path="/student/timetables" element={<StudentTimetablesPage />} />
+                <Route path="/student/behaviors" element={<StudentBehaviorsPage />} />
+                <Route path="/student/notifications" element={<StudentNotificationsPage />} />
                 
                 {/* Parent routes */}
                 <Route path="/parent/children" element={<ParentChildrenPage />} />
