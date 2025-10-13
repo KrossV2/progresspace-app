@@ -1,389 +1,8 @@
-/* Администраторский деловой стиль */
-/* Основные переменные для тем */
-:root {
-  /* Светлая тема */
-  --admin-light-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  --admin-light-surface: #ffffff;
-  --admin-light-surface-secondary: #f8fafc;
-  --admin-light-border: #e2e8f0;
-  --admin-light-text: #1e293b;
-  --admin-light-text-secondary: #64748b;
-  --admin-light-accent: #3b82f6;
-  
-  /* Темная тема */
-  --admin-dark-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --admin-dark-surface: #1e293b;
-  --admin-dark-surface-secondary: #334155;
-  --admin-dark-border: #374151;
-  --admin-dark-text: #f8fafc;
-  --admin-dark-text-secondary: #94a3b8;
-  --admin-dark-accent: #60a5fa;
-}
-
-/* Общие стили для обеих тем */
 .cities-page {
   padding: 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: all 0.3s ease;
-}
-
-/* Светлая тема */
-.cities-page.theme-light {
-  background: var(--admin-light-bg);
-  color: var(--admin-light-text);
-}
-
-.cities-page.theme-light .cities-header {
-  background: var(--admin-light-surface);
-  border: 1px solid var(--admin-light-border);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.cities-page.theme-light .cities-title {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.cities-page.theme-light .cities-subtitle {
-  color: var(--admin-light-text-secondary);
-}
-
-/* Темная тема */
-.cities-page.theme-dark {
-  background: var(--admin-dark-bg);
-  color: var(--admin-dark-text);
-}
-
-.cities-page.theme-dark .cities-header {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border: 1px solid var(--admin-dark-border);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.cities-page.theme-dark .cities-title {
-  background: linear-gradient(135deg, #60a5fa 0%, #c4b5fd 50%, #f472b6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.cities-page.theme-dark .cities-subtitle {
-  color: var(--admin-dark-text-secondary);
-}
-
-/* Общие стили заголовка */
-.cities-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  border-radius: 16px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.cities-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-}
-
-.cities-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0;
-}
-
-.cities-subtitle {
-  margin: 0.5rem 0 0 0;
-  font-size: 1.1rem;
-  font-weight: 400;
-}
-
-/* Кнопка переключения темы */
-.theme-toggle-btn {
-  border-radius: 10px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.cities-page.theme-light .theme-toggle-btn {
-  background: var(--admin-light-surface);
-  border: 2px solid var(--admin-light-border);
-  color: var(--admin-light-text);
-}
-
-.cities-page.theme-dark .theme-toggle-btn {
-  background: var(--admin-dark-surface);
-  border: 2px solid var(--admin-dark-border);
-  color: var(--admin-dark-text);
-}
-
-.theme-toggle-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Карточки статистики - светлая тема */
-.cities-page.theme-light .stat-card {
-  background: var(--admin-light-surface);
-  border: 1px solid var(--admin-light-border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.cities-page.theme-light .stat-card-title {
-  color: var(--admin-light-text-secondary);
-}
-
-.cities-page.theme-light .stat-card-value {
-  color: var(--admin-light-text);
-}
-
-.cities-page.theme-light .stat-card-description {
-  color: var(--admin-light-text-secondary);
-}
-
-/* Карточки статистики - темная тема */
-.cities-page.theme-dark .stat-card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border: 1px solid var(--admin-dark-border);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.cities-page.theme-dark .stat-card-title {
-  color: #94a3b8;
-}
-
-.cities-page.theme-dark .stat-card-value {
-  color: #f8fafc;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.cities-page.theme-dark .stat-card-description {
-  color: #94a3b8;
-}
-
-/* Общие стили для карточек статистики */
-.stat-card {
-  border-radius: 16px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-}
-
-.stat-card:hover {
-  transform: translateY(-8px);
-}
-
-.cities-page.theme-light .stat-card:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.cities-page.theme-dark .stat-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: #4b5563;
-}
-
-.stat-card-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 1rem;
-}
-
-.stat-card-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.stat-card-icon {
-  height: 1.25rem;
-  width: 1.25rem;
-}
-
-.cities-page.theme-light .stat-card-icon {
-  color: #475569;
-}
-
-.cities-page.theme-dark .stat-card-icon {
-  color: #60a5fa;
-}
-
-.stat-card-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0;
-  line-height: 1;
-}
-
-.stat-value-regions {
-  color: #60a5fa;
-}
-
-.stat-value-average {
-  color: #c4b5fd;
-}
-
-.stat-value-max {
-  color: #f472b6;
-}
-
-.stat-card-description {
-  font-size: 0.875rem;
-  margin: 0.75rem 0 0 0;
-  font-weight: 500;
-}
-
-/* Аналогично добавьте стили для остальных компонентов (таблицы, диалоги и т.д.) */
-/* Для экономии времени покажу принцип - все компоненты должны иметь версии для light и dark тем */
-
-/* Таблица - светлая тема */
-.cities-page.theme-light .cities-table-card {
-  background: var(--admin-light-surface);
-  border: 1px solid var(--admin-light-border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.cities-page.theme-light .table-header {
-  background: linear-gradient(135deg, #475569 0%, #334155 100%);
-}
-
-.cities-page.theme-light .table-body {
-  background: transparent;
-}
-
-.cities-page.theme-light .table-row {
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.cities-page.theme-light .table-cell {
-  color: #475569;
-}
-
-/* Таблица - темная тема */
-.cities-page.theme-dark .cities-table-card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border: 1px solid #374151;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.cities-page.theme-dark .table-header {
-  background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
-}
-
-.cities-page.theme-dark .table-body {
-  background: transparent;
-}
-
-.cities-page.theme-dark .table-row {
-  border-bottom: 1px solid #4b5563;
-}
-
-.cities-page.theme-dark .table-cell {
-  color: #e5e7eb;
-}
-
-/* Диалоги - светлая тема */
-.cities-page.theme-light .city-dialog {
-  background: var(--admin-light-surface);
-  border: 1px solid var(--admin-light-border);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  color: var(--admin-light-text);
-}
-
-.cities-page.theme-light .form-input {
-  background: #ffffff;
-  border: 2px solid #e2e8f0;
-  color: #1e293b;
-}
-
-.cities-page.theme-light .form-input:focus {
-  border-color: #3b82f6;
-  background: #f8fafc;
-}
-
-/* Диалоги - темная тема */
-.cities-page.theme-dark .city-dialog {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border: 1px solid #4b5563;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-  color: #f8fafc;
-}
-
-.cities-page.theme-dark .form-input {
-  background: #1f2937;
-  border: 2px solid #4b5563;
-  color: #f8fafc;
-}
-
-.cities-page.theme-dark .form-input:focus {
-  border-color: #3b82f6;
-  background: #374151;
-}
-
-/* Остальные стили (loading, regions card, actions и т.д.) должны быть аналогично адаптированы */
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .cities-page {
-    padding: 1rem;
-  }
-  
-  .cities-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: flex-start;
-    padding: 1.5rem;
-  }
-  
-  .cities-title {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .cities-page {
-    padding: 0.5rem;
-  }
-  
-  .cities-header {
-    padding: 1rem;
-  }
-  
-  .cities-title {
-    font-size: 1.75rem;
-  }
-}
-.cities-page {
-  padding: 2rem;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #f8fafc;
 }
 
 .cities-header {
@@ -391,53 +10,36 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 2rem;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: white;
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid #374151;
-  position: relative;
-  overflow: hidden;
-}
-
-.cities-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
 }
 
 .cities-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #f8fafc;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #475569;
   margin: 0;
-  background: linear-gradient(135deg, #60a5fa 0%, #c4b5fd 50%, #f472b6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .cities-subtitle {
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0.5rem 0 0 0;
   font-size: 1.1rem;
   font-weight: 400;
 }
 
-/* Loading styles */
 .cities-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 400px;
   text-align: center;
-  background: #1e293b;
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .loading-spinner {
@@ -445,7 +47,7 @@
   border-radius: 50%;
   height: 3rem;
   width: 3rem;
-  border: 3px solid #334155;
+  border: 3px solid #f1f5f9;
   border-top: 3px solid #3b82f6;
   margin: 0 auto 1.5rem auto;
 }
@@ -455,7 +57,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Statistics cards */
 .cities-stats {
   display: grid;
   gap: 1.5rem;
@@ -464,11 +65,11 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
-  border: 1px solid #374151;
+  border: 1px solid #e2e8f0;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -485,9 +86,8 @@
 }
 
 .stat-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: #4b5563;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .stat-card-header {
@@ -501,7 +101,7 @@
 .stat-card-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -510,45 +110,43 @@
 .stat-card-icon {
   height: 1.25rem;
   width: 1.25rem;
-  color: #60a5fa;
+  color: #94a3b8;
 }
 
 .stat-card-value {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: #475569;
   margin: 0;
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .stat-value-regions {
-  color: #60a5fa;
+  color: #3b82f6;
 }
 
 .stat-value-average {
-  color: #c4b5fd;
+  color: #059669;
 }
 
 .stat-value-max {
-  color: #f472b6;
+  color: #dc2626;
 }
 
 .stat-card-description {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0.75rem 0 0 0;
   font-weight: 500;
 }
 
-/* Regions card */
 .regions-card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  border: 1px solid #374151;
-  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
   overflow: hidden;
+  margin-bottom: 2rem;
 }
 
 .regions-content {
@@ -557,8 +155,8 @@
 
 .regions-grid {
   display: grid;
-  gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
 .region-item {
@@ -566,15 +164,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f7fafc;
   border-radius: 12px;
-  border: 1px solid #4b5563;
+  border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
 }
 
 .region-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #60a5fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .region-info {
@@ -586,45 +184,44 @@
 .region-icon {
   height: 1.25rem;
   width: 1.25rem;
-  color: #60a5fa;
+  color: #3b82f6;
 }
 
 .region-name {
   font-weight: 600;
-  color: #f8fafc;
+  color: #475569;
 }
 
 .region-count {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: white;
-  border: none;
-  font-weight: 600;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
 }
 
-/* Main table card */
 .cities-table-card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  border: 1px solid #374151;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
   overflow: hidden;
 }
 
 .table-card-header {
   padding: 2rem 2rem 1rem 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid #4b5563;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .table-card-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: #475569;
   margin: 0;
 }
 
 .table-card-description {
-  color: #94a3b8;
+  color: #64748b;
   margin: 0.5rem 0 0 0;
   font-weight: 500;
 }
@@ -633,62 +230,63 @@
   padding: 0;
 }
 
-/* Table styles */
+/* Переопределяем стили таблицы */
 .cities-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table-header {
-  background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+.cities-table thead {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
 }
 
-.table-header-row {
-  border-bottom: none;
+.cities-table thead tr {
+  background: transparent !important;
+  border-bottom: 2px solid #e2e8f0 !important;
 }
 
-.table-header-cell {
-  padding: 1.25rem 1.5rem;
-  text-align: left;
-  font-weight: 600;
-  color: #f8fafc;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: none;
-  border-bottom: 1px solid #6b7280;
+.cities-table thead th {
+  background: transparent !important;
+  color: #475569 !important;
+  padding: 1.25rem 1.5rem !important;
+  text-align: left !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border: none !important;
 }
 
-.table-header-cell:last-child {
-  text-align: right;
+.cities-table thead th:last-child {
+  text-align: right !important;
 }
 
-.table-body {
-  background: transparent;
+.cities-table tbody {
+  background-color: white !important;
 }
 
-.table-row {
-  border-bottom: 1px solid #4b5563;
-  transition: all 0.2s ease;
+.cities-table tbody tr {
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: all 0.2s ease !important;
 }
 
-.table-row:hover {
-  background: rgba(255, 255, 255, 0.05);
+.cities-table tbody tr:hover {
+  background-color: #f8fafc !important;
+  transform: scale(1.002) !important;
 }
 
-.table-cell {
-  padding: 1.25rem 1.5rem;
-  color: #e5e7eb;
-  vertical-align: middle;
-  font-weight: 500;
-  border: none;
+.cities-table tbody td {
+  padding: 1.25rem 1.5rem !important;
+  color: #475569 !important;
+  vertical-align: middle !important;
+  font-weight: 500 !important;
+  border: none !important;
 }
 
-.table-cell:last-child {
-  text-align: right;
+.cities-table tbody td:last-child {
+  text-align: right !important;
 }
 
-/* City info styles */
 .city-info {
   display: flex;
   align-items: center;
@@ -698,39 +296,38 @@
 .city-icon {
   height: 1.25rem;
   width: 1.25rem;
-  color: #60a5fa;
+  color: #3b82f6;
 }
 
 .city-name {
   font-weight: 600;
-  color: #f8fafc;
+  color: #475569;
 }
 
-/* Badge styles */
+/* Переопределяем стили Badge */
 .region-badge {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  border: none;
-  font-weight: 600;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+  color: #065f46 !important;
+  border: none !important;
+  font-weight: 600 !important;
 }
 
 .status-badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 12px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 .status-active {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+  color: #065f46 !important;
 }
 
-/* Action buttons */
 .actions-container {
   display: flex;
   justify-content: flex-end;
@@ -738,41 +335,41 @@
 }
 
 .action-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  border: 1px solid #4b5563;
-  background: #374151;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #d1d5db;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: white !important;
+  padding: 0.5rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 .action-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
 .action-button-sm {
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2.5rem !important;
+  width: 2.5rem !important;
 }
 
 .action-edit:hover {
-  background: #f59e0b;
-  border-color: #f59e0b;
-  color: white;
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
 }
 
 .action-delete:hover {
-  background: #dc2626;
-  border-color: #dc2626;
-  color: white;
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: white !important;
 }
 
 .action-icon {
@@ -780,36 +377,34 @@
   width: 1.125rem;
 }
 
-/* Dialog styles */
 .city-dialog {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border-radius: 20px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-  border: 1px solid #4b5563;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90vw;
-  max-width: 450px;
-  max-height: 85vh;
-  padding: 2rem;
-  animation: contentShow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: #f8fafc;
+  background: white !important;
+  border-radius: 20px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #e2e8f0 !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90vw !important;
+  max-width: 450px !important;
+  max-height: 85vh !important;
+  padding: 2rem !important;
+  animation: contentShow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .dialog-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f8fafc;
-  margin: 0;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  margin: 0 !important;
 }
 
 .dialog-description {
-  color: #94a3b8;
-  margin: 0.75rem 0 0 0;
-  font-size: 1rem;
-  line-height: 1.5;
+  color: #64748b !important;
+  margin: 0.75rem 0 0 0 !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
 }
 
 .dialog-form {
@@ -828,31 +423,26 @@
 .form-label {
   text-align: right;
   font-weight: 600;
-  color: #e5e7eb;
+  color: #475569;
   font-size: 0.95rem;
 }
 
 .form-input {
   width: 100%;
   border-radius: 12px;
-  border: 2px solid #4b5563;
-  background: #1f2937;
+  border: 2px solid #e2e8f0;
+  background-color: white;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   transition: all 0.2s ease;
   font-weight: 500;
-  color: #f8fafc;
 }
 
 .form-input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #374151;
-}
-
-.form-input::placeholder {
-  color: #6b7280;
+  background-color: #f8fafc;
 }
 
 .form-select {
@@ -865,22 +455,21 @@
   margin-top: 2rem;
 }
 
-/* Button styles */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  border: none;
-  padding: 0.875rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  gap: 0.75rem;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  border: none !important;
+  padding: 0.875rem 2rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  gap: 0.75rem !important;
+  text-decoration: none !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .btn::before {
@@ -899,33 +488,33 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4) !important;
 }
 
 .btn-outline {
-  background: transparent;
-  color: #d1d5db;
-  border: 2px solid #4b5563;
-  font-weight: 600;
+  background: white !important;
+  color: #475569 !important;
+  border: 2px solid #e2e8f0 !important;
+  font-weight: 600 !important;
 }
 
 .btn-outline:hover {
-  background: #374151;
-  border-color: #3b82f6;
-  color: #3b82f6;
-  transform: translateY(-1px);
+  background: #f8fafc !important;
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+  transform: translateY(-1px) !important;
 }
 
 .btn-sm {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 0.875rem !important;
 }
 
 .btn-icon {
@@ -933,35 +522,33 @@
   width: 1.125rem;
 }
 
-/* Select styles */
 .select-trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   border-radius: 12px;
-  border: 2px solid #4b5563;
-  background: #1f2937;
+  border: 2px solid #e2e8f0;
+  background-color: white;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: border-color 0.15s ease;
-  color: #f8fafc;
 }
 
 .select-trigger:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #374151;
+  background-color: #f8fafc;
 }
 
 .select-content {
-  background: #1f2937;
+  background: white;
   border-radius: 12px;
-  border: 2px solid #4b5563;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   z-index: 50;
 }
@@ -972,7 +559,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #e5e7eb;
+  color: #475569;
 }
 
 .select-item:hover {
@@ -1016,7 +603,7 @@
   }
   
   .cities-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
   
   .cities-stats {
@@ -1037,14 +624,14 @@
     text-align: left;
   }
   
-  .table-header-cell {
-    padding: 1rem;
-    font-size: 0.75rem;
+  .cities-table thead th {
+    padding: 1rem !important;
+    font-size: 0.75rem !important;
   }
   
-  .table-cell {
-    padding: 1rem;
-    font-size: 0.875rem;
+  .cities-table tbody td {
+    padding: 1rem !important;
+    font-size: 0.875rem !important;
   }
   
   .actions-container {
@@ -1053,9 +640,9 @@
   }
   
   .city-dialog {
-    width: 95vw;
-    margin: 1rem;
-    padding: 1.5rem;
+    width: 95vw !important;
+    margin: 1rem !important;
+    padding: 1.5rem !important;
   }
 }
 
@@ -1069,33 +656,32 @@
   }
   
   .cities-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
   
   .stat-card-value {
-    font-size: 2rem;
+    font-size: 1.875rem;
   }
   
   .city-dialog {
-    padding: 1rem;
+    padding: 1rem !important;
   }
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
-  border-radius: 4px;
+  background: #f1f5f9;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: #94a3b8;
 }

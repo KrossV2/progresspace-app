@@ -46,6 +46,10 @@ import StudentNotificationsPage from "./pages/student/NotificationsPage";
 
 // Parent pages
 import ParentChildrenPage from "./pages/parent/ChildrenPage";
+import ParentAttendance from "./pages/parent/AttendanceParent"
+import BehaviorPage from "./pages/parent/BehaviorPage";
+import GradesPage from "./pages/parent/GradesPage";
+import ParentTimetable from "./pages/parent/ParentTimetable"
 
 const queryClient = new QueryClient();
 
@@ -97,7 +101,12 @@ const App = () => (
                 <Route path="/student/notifications" element={<StudentNotificationsPage />} />
                 
                 {/* Parent routes */}
-                <Route path="/parent/children" element={<ParentChildrenPage />} />
+                <Route path="/parent/children" element={<ParentChildrenPage />}/>
+                <Route path="/parent/attendance" element={<ParentAttendance />}/>
+                <Route path="/parent/behaviors" element={<BehaviorPage />}/>
+                <Route path='/parent/grades' element={<GradesPage/>}/>
+                <Route path='/parent/timetables' element={<ParentTimetable/>}/>
+                
                 
                 {/* Role-specific routes - TODO: Create these pages */}
                 <Route path="/students" element={<NotFound />} />
