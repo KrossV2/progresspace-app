@@ -348,8 +348,6 @@ const CitiesPage = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Regions Distribution */}
       <Card className="regions-card">
         <CardHeader className="table-card-header">
           <CardTitle className="table-card-title">Viloyatlar Bo'yicha Taqsimot</CardTitle>

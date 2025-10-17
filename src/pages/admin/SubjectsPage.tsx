@@ -6,9 +6,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, BookOpen, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/config/api";
+import "@/styles/admin/SubjectPage.css";
 
 interface Subject {
   id: number;
@@ -27,8 +28,6 @@ const SubjectsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  // API_BASE_URL import qilingan: urlni almashtirish uchun `src/config/api.ts` faylini oching
-
   useEffect(() => {
     fetchSubjects();
   }, []);
@@ -36,12 +35,7 @@ const SubjectsPage = () => {
   const fetchSubjects = async () => {
     try {
       setLoading(true);
-      // TODO: Implement actual API call
-      // const response = await fetch(`${API_BASE_URL}/api/admin/subjects`);
-      // const data = await response.json();
-      // setSubjects(data);
-      
-      // Mock data for now
+      // Mock data
       setSubjects([
         { id: 1, name: "Matematika", description: "Algebra, geometriya va analiz" },
         { id: 2, name: "Ona tili", description: "O'zbek tili va adabiyoti" },
@@ -69,11 +63,6 @@ const SubjectsPage = () => {
     if (!confirm("Haqiqatan ham bu fanni o'chirmoqchimisiz?")) return;
 
     try {
-      // TODO: Implement actual API call
-      // await fetch(`${API_BASE_URL}/api/admin/subjects/${id}`, {
-      //   method: 'DELETE',
-      // });
-      
       setSubjects(subjects.filter(subject => subject.id !== id));
       toast({
         title: "Muvaffaqiyat",
@@ -100,16 +89,6 @@ const SubjectsPage = () => {
 
     try {
       if (editingSubject) {
-        // TODO: Implement actual API call for update
-        // await fetch(`${API_BASE_URL}/api/admin/subjects/${editingSubject.id}`, {
-        //   method: 'PUT',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({
-        //     name: formData.name,
-        //     description: formData.description
-        //   }),
-        // });
-        
         setSubjects(subjects.map(subject => 
           subject.id === editingSubject.id 
             ? { 
@@ -124,17 +103,6 @@ const SubjectsPage = () => {
           description: "Fan muvaffaqiyatli yangilandi",
         });
       } else {
-        // TODO: Implement actual API call for create
-        // const response = await fetch(`${API_BASE_URL}/api/admin/subjects`, {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({
-        //     name: formData.name,
-        //     description: formData.description
-        //   }),
-        // });
-        // const newSubject = await response.json();
-        
         const newSubject = { 
           id: Date.now(), 
           name: formData.name,
@@ -180,64 +148,69 @@ const SubjectsPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="subjects-loading">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Yuklanmoqda...</p>
+          <div className="loading-spinner"></div>
+          <p>Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="subjects-page">
+      <div className="subjects-header">
         <div>
-          <h1 className="text-3xl font-bold">Fanlar</h1>
-          <p className="text-muted-foreground">Barcha o'quv fanlarini boshqaring</p>
+          <h1 className="subjects-title">Fanlar Boshqaruvi</h1>
+          <p className="subjects-subtitle">Barcha o'quv fanlarini boshqaring va tahrirlang</p>
         </div>
+        
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>Yangi fan qo'shish</Button>
+            <Button onClick={openCreateDialog} className="btn btn-primary">
+              <Plus className="btn-icon" />
+              Yangi fan
+            </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="subject-dialog">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="dialog-title">
                 {editingSubject ? "Fanni tahrirlash" : "Yangi fan qo'shish"}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="dialog-description">
                 Fan ma'lumotlarini kiriting va saqlang.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Nomi
+            <div className="dialog-form">
+              <div className="form-row">
+                <Label htmlFor="name" className="form-label">
+                  Nomi *
                 </Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="col-span-3"
+                  className="form-input"
                   placeholder="Fan nomini kiriting"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
+              
+              <div className="form-row">
+                <Label htmlFor="description" className="form-label">
                   Tavsif
                 </Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="col-span-3"
+                  className="form-textarea"
                   placeholder="Fan tavsifini kiriting (ixtiyoriy)"
                   rows={3}
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button onClick={handleSaveSubject}>
+            <DialogFooter className="dialog-footer">
+              <Button onClick={handleSaveSubject} className="btn btn-primary">
                 {editingSubject ? "Yangilash" : "Qo'shish"}
               </Button>
             </DialogFooter>
@@ -245,44 +218,57 @@ const SubjectsPage = () => {
         </Dialog>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Fanlar ro'yxati</CardTitle>
-          <CardDescription>
+      <Card className="subjects-table-card">
+        <CardHeader className="table-card-header">
+          <CardTitle className="table-card-title">Fanlar Ro'yxati</CardTitle>
+          <CardDescription className="table-card-description">
             Jami {subjects.length} ta fan mavjud
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Fan nomi</TableHead>
-                <TableHead>Tavsif</TableHead>
-                <TableHead className="text-right">Amallar</TableHead>
+        <CardContent className="table-card-content">
+          <Table className="subjects-table">
+            <TableHeader className="table-header">
+              <TableRow className="table-header-row">
+                <TableHead className="table-header-cell">#</TableHead>
+                <TableHead className="table-header-cell">Fan</TableHead>
+                <TableHead className="table-header-cell">Tavsif</TableHead>
+                <TableHead className="table-header-cell text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="table-body">
               {subjects.map((subject, index) => (
-                <TableRow key={subject.id}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell className="font-medium">{subject.name}</TableCell>
-                  <TableCell>{subject.description || "-"}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                <TableRow key={subject.id} className="table-row">
+                  <TableCell className="table-cell font-medium">{index + 1}</TableCell>
+                  <TableCell className="table-cell">
+                    <div className="subject-info">
+                      <BookOpen className="subject-icon" />
+                      <div>
+                        <span className="subject-name">{subject.name}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="table-cell">
+                    <div className="subject-description">
+                      {subject.description || "-"}
+                    </div>
+                  </TableCell>
+                  <TableCell className="table-cell text-right">
+                    <div className="actions-container">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditDialog(subject)}
+                        className="action-button action-button-sm action-edit"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="action-icon" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteSubject(subject.id)}
+                        className="action-button action-button-sm action-delete"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="action-icon" />
                       </Button>
                     </div>
                   </TableCell>
