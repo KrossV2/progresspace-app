@@ -184,8 +184,8 @@ Bu loyiha MIT litsenziyasi ostida tarqatiladi.
 ## Aloqa
 
 Savollar yoki takliflar uchun aloqa:
-- Email: [your-email@example.com]
-- Telegram: [@your-username]
+- Email: [nasriddinovadildora45@gmail.com]
+- Telegram: [@ubaydullox2105]
 
 ---
 
