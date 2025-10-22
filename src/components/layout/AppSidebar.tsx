@@ -1,17 +1,15 @@
-import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { 
   User, 
   BookOpen, 
   Calendar, 
   FileText, 
-  GraduationCap, 
+  GraduationCap,
   ChevronLeft,
   School,
   Users,
   UserCheck,
   BarChart3,
-  Settings,
   Megaphone,
   ClipboardCheck,
   Baby,
@@ -21,18 +19,10 @@ import {
 import { useUser, UserRole } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter
-} from "@/components/ui/sidebar";
+interface AppSidebarProps {
+  collapsed?: boolean;
+  onToggle?: () => void;
+}
 
 // Role-based navigation items
 const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
@@ -83,11 +73,6 @@ const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
   return [...commonItems, ...roleSpecificItems[role]];
 };
 
-interface AppSidebarProps {
-  collapsed?: boolean;
-  onToggle?: () => void;
-}
-
 export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -107,21 +92,17 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
   }, {} as Record<string, typeof sidebarItems>);
 
   return (
-    <Sidebar 
-      className={`
-        ${collapsed ? "w-16" : "w-72"} 
-        transition-all duration-300 ease-in-out
-        bg-gradient-card border-r border-border
-        flex flex-col h-screen
-      `}
-      collapsible="icon"
-    >
+    <div className={`
+      fixed left-0 top-0 z-30 h-screen bg-gradient-card border-r border-border
+      transition-all duration-300 flex flex-col
+      ${collapsed ? "w-16" : "w-72"}
+    `}>
       {/* Sidebar Header */}
-      <SidebarHeader className="p-6 border-b border-border">
-        <div className="flex items-center justify-between">
+      <div className={`border-b border-border ${collapsed ? "p-3" : "p-6"}`}>
+        <div className={`flex items-center ${collapsed ? "justify-center" : "justify-between"}`}>
           <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground">
-              <School className="h-6 w-6" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground">
+              <School className="h-5 w-5" />
             </div>
             {!collapsed && (
               <div className="flex flex-col">
@@ -130,61 +111,61 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
               </div>
             )}
           </div>
-          {onToggle && (
+          {onToggle && !collapsed && (
             <button
               onClick={onToggle}
               className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
             >
-              <ChevronLeft className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+              <ChevronLeft className="h-4 w-4" />
             </button>
           )}
         </div>
-      </SidebarHeader>
+      </div>
 
       {/* Sidebar Content */}
-      <SidebarContent className="flex-1 px-4 py-6">
-        {Object.entries(groupedItems).map(([groupName, items]) => (
-          <SidebarGroup key={groupName} className="mb-6">
-            <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-              {groupName === 'main' ? t('menu.main') : 
-               groupName === 'management' ? t('menu.management') : 
-               groupName === 'academic' ? t('menu.academic') : groupName}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
+      <div className="flex-1 overflow-y-auto">
+        <div className={collapsed ? "p-2" : "p-4"}>
+          {Object.entries(groupedItems).map(([groupName, items]) => (
+            <div key={groupName} className="mb-4">
+              {!collapsed && (
+                <div className="text-sm font-medium text-muted-foreground mb-2 px-2">
+                  {groupName === 'main' ? t('menu.main') : 
+                   groupName === 'management' ? t('menu.management') : 
+                   groupName === 'academic' ? t('menu.academic') : groupName}
+                </div>
+              )}
+              <div className="space-y-1">
                 {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to={item.url}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group
-                          ${isActive 
-                            ? "bg-primary text-primary-foreground shadow-md" 
-                            : "hover:bg-secondary hover:shadow-sm"
-                          }
-                          ${collapsed ? "justify-center" : ""}
-                          `
-                        }
-                      >
-                        <item.icon className={`h-5 w-5 ${collapsed ? "" : "group-hover:scale-110 transition-transform"}`} />
-                        {!collapsed && (
-                          <span className="font-medium truncate">{item.title}</span>
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <NavLink
+                    key={item.title}
+                    to={item.url}
+                    className={({ isActive: active }) =>
+                      `flex items-center rounded-xl transition-all duration-200
+                      ${active 
+                        ? "bg-primary text-primary-foreground shadow-md" 
+                        : "hover:bg-secondary hover:shadow-sm"
+                      }
+                      ${collapsed ? "justify-center p-2" : "gap-3 px-3 py-2"}`
+                    }
+                  >
+                    <item.icon className={`${collapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                    {!collapsed && (
+                      <span className="font-medium truncate text-sm">{item.title}</span>
+                    )}
+                  </NavLink>
                 ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Sidebar Footer */}
-      <SidebarFooter className="p-4 border-t border-border">
-        <div className={`flex items-center gap-3 p-3 rounded-xl bg-muted ${collapsed ? "justify-center" : ""}`}>
-          <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
+      <div className={`border-t border-border ${collapsed ? "p-2" : "p-4"}`}>
+        <div className={`flex items-center rounded-xl bg-muted ${collapsed ? "justify-center p-2" : "gap-3 p-3"}`}>
+          <div className={`rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-semibold ${
+            collapsed ? "h-8 w-8 text-xs" : "h-8 w-8 text-sm"
+          }`}>
             {user.firstName[0]}{user.lastName[0]}
           </div>
           {!collapsed && (
@@ -200,7 +181,7 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
             </div>
           )}
         </div>
-      </SidebarFooter>
-    </Sidebar>
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,213 @@
+/* AppSidebar.css */
+.app-sidebar-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.app-sidebar-header[data-collapsed] {
+  padding: 1rem;
+}
+
+.app-sidebar-header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-sidebar-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-sidebar-header-text[data-collapsed] {
+  display: none;
+}
+
+.app-sidebar-logo {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: linear-gradient(to bottom right, var(--primary), var(--primary-dark));
+  color: var(--primary-foreground);
+}
+
+.app-sidebar-logo-icon {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+.app-sidebar-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+  background: linear-gradient(to right, var(--primary), var(--primary-foreground));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-sidebar-subtitle {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.app-sidebar-content {
+  flex: 1;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.app-sidebar-content[data-collapsed] {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.app-sidebar-group {
+  margin-bottom: 1.5rem;
+}
+
+.app-sidebar-group-label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+.app-sidebar-group-label[data-collapsed] {
+  display: none;
+}
+
+.app-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-sidebar-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  padding: 0.75rem;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-sidebar-menu-button[data-collapsed] {
+  justify-content: center;
+}
+
+.app-sidebar-menu-button:hover {
+  background-color: var(--secondary);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.app-sidebar-menu-button-active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.app-sidebar-menu-button-inactive {
+  background-color: transparent;
+  color: inherit;
+}
+
+.app-sidebar-icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.app-sidebar-menu-button:hover .app-sidebar-icon {
+  transform: scale(1.1);
+}
+
+.app-sidebar-menu-text {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-sidebar-menu-text[data-collapsed] {
+  display: none;
+}
+
+.app-sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem;
+}
+
+.app-sidebar-footer[data-collapsed] {
+  padding: 0.75rem;
+}
+
+.app-sidebar-footer-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: var(--muted);
+  padding: 0.75rem;
+}
+
+.app-sidebar-footer-content[data-collapsed] {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.app-sidebar-avatar {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom right, var(--primary), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.app-sidebar-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-sidebar-user-info[data-collapsed] {
+  display: none;
+}
+
+.app-sidebar-user-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-sidebar-user-role {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

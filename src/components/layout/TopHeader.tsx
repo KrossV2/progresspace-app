@@ -1,8 +1,7 @@
-import { Bell, Search, Moon, Sun } from "lucide-react";
+import { Bell, Search, Moon, Sun, MessageCircle, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -12,12 +11,18 @@ import {
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 import { useState, useEffect } from "react";
 
-export function TopHeader() {
+interface TopHeaderProps {
+  onToggleSidebar?: () => void;
+}
+
+export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
   const { t } = useLanguage();
-  const [isDark, setIsDark] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const { isChatOpen, setIsChatOpen, unreadCount } = useChat();
 
   // Theme toggle functionality
   useEffect(() => {
@@ -25,7 +30,7 @@ export function TopHeader() {
     setIsDark(isDarkMode);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (): void => {
     const newTheme = !isDark;
     setIsDark(newTheme);
     if (newTheme) {
@@ -35,7 +40,7 @@ export function TopHeader() {
     }
   };
 
-  const getCurrentTime = () => {
+  const getCurrentTime = (): string => {
     return new Date().toLocaleTimeString('uz-UZ', { 
       hour: '2-digit', 
       minute: '2-digit',
@@ -43,7 +48,7 @@ export function TopHeader() {
     });
   };
 
-  const getCurrentDate = () => {
+  const getCurrentDate = (): string => {
     return new Date().toLocaleDateString('uz-UZ', { 
       weekday: 'long',
       year: 'numeric', 
@@ -52,12 +57,24 @@ export function TopHeader() {
     });
   };
 
+  const toggleChat = (): void => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-full items-center justify-between px-6">
+      <div className="flex h-full items-center justify-between px-6 w-full">
         {/* Left side */}
         <div className="flex items-center gap-4">
-          <SidebarTrigger className="-ml-2" />
+          {/* Sidebar Trigger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-md"
+            onClick={onToggleSidebar}
+          >
+            <PanelLeft className="h-5 w-5" />
+          </Button>
           
           {/* Search */}
           <div className="relative hidden md:block">
@@ -65,7 +82,7 @@ export function TopHeader() {
             <Input
               placeholder="Fan, vazifa, o'qituvchi bo'yicha qidirish..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               className="w-80 pl-10"
             />
           </div>
@@ -86,12 +103,28 @@ export function TopHeader() {
           <RoleSwitcher />
           <LanguageSwitcher />
           
+          {/* Chat Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleChat}
+            className="relative h-9 w-9"
+            title="Yordam markazi"
+          >
+            <MessageCircle className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500 border-2 border-background flex items-center justify-center">
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
+          
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative h-9 w-9">
                 <Bell className="h-5 w-5" />
-                <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-destructive">
+                <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-destructive border-2 border-background flex items-center justify-center">
                   3
                 </Badge>
               </Button>
@@ -128,7 +161,7 @@ export function TopHeader() {
           </DropdownMenu>
 
           {/* Theme Toggle */}
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </div>
