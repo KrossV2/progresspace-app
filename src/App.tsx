@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { ChatProvider } from "@/contexts/ChatContext"; // Импортируем ChatProvider
+import { ChatProvider } from "@/contexts/ChatContext";
 import ChatWidget from "@/components/ChatWidget";
 import Dashboard from "./pages/teacher/Dashboard";
 import Profile from "./pages/Profile";
@@ -24,7 +24,6 @@ import SubjectsPage from "./pages/admin/SubjectsPage";
 import UsersPage from "./pages/admin/UsersPage";
 import DirectorsPage from "./pages/admin/DirectorsPage";
 
-
 // Director pages
 import DirectorClassesPage from "./pages/director/ClassesPage";
 import DirectorTeachersPage from "./pages/director/TeachersPage";
@@ -38,6 +37,7 @@ import TeacherGradesPage from "./pages/teacher/GradesPage";
 import TeacherAttendancePage from "./pages/teacher/AttendancePage";
 import TeacherStudentsPage from "./pages/teacher/StudentsPage";
 import TeacherParentsPage from "./pages/teacher/ParentsPage";
+import FilesPage from "./pages/teacher/FilesPage"; // Исправленный импорт
 
 // Student pages
 import StudentGradesPage from "./pages/student/GradesPage";
@@ -49,10 +49,10 @@ import StudentNotificationsPage from "./pages/student/NotificationsPage";
 
 // Parent pages
 import ParentChildrenPage from "./pages/parent/ChildrenPage";
-import ParentAttendance from "./pages/parent/AttendanceParent"
+import ParentAttendance from "./pages/parent/AttendanceParent";
 import BehaviorPage from "./pages/parent/BehaviorPage";
 import GradesPage from "./pages/parent/GradesPage";
-import ParentTimetable from "./pages/parent/ParentTimetable"
+import ParentTimetable from "./pages/parent/ParentTimetable";
 import AdminChatPanel from "./pages/admin/AdminChatPanel";
 
 const queryClient = new QueryClient();
@@ -66,11 +66,10 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ChatProvider>
-              {/* ChatWidget должен быть ВНЕ AppLayout для порталов */}
               <ChatWidget />
               <AppLayout>
                 <Routes>
-                  {/* ... все ваши роуты ... */}
+                  {/* Основные маршруты */}
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/subjects" element={<Subjects />} />
@@ -85,6 +84,7 @@ const App = () => (
                   <Route path="/admin/subjects" element={<SubjectsPage />} />
                   <Route path="/admin/users" element={<UsersPage />} />
                   <Route path="/admin/directors" element={<DirectorsPage />} />
+                  <Route path="/admin/chat" element={<AdminChatPanel />} />
                   
                   {/* Director routes */}
                   <Route path="/director/classes" element={<DirectorClassesPage />} />
@@ -99,7 +99,7 @@ const App = () => (
                   <Route path="/teacher/attendance" element={<TeacherAttendancePage />} />
                   <Route path="/teacher/students" element={<TeacherStudentsPage />} />
                   <Route path="/teacher/parents" element={<TeacherParentsPage />} />
-                  <Route path="/admin/chat" element={<AdminChatPanel />} />
+                  <Route path="/teacher/files" element={<FilesPage />} /> {/* Исправленный маршрут */}
                   
                   {/* Student routes */}
                   <Route path="/student/grades" element={<StudentGradesPage />} />
@@ -110,14 +110,13 @@ const App = () => (
                   <Route path="/student/notifications" element={<StudentNotificationsPage />} />
                   
                   {/* Parent routes */}
-                  <Route path="/parent/children" element={<ParentChildrenPage />}/>
-                  <Route path="/parent/attendance" element={<ParentAttendance />}/>
-                  <Route path="/parent/behaviors" element={<BehaviorPage />}/>
-                  <Route path='/parent/grades' element={<GradesPage/>}/>
-                  <Route path='/parent/timetables' element={<ParentTimetable/>}/>
+                  <Route path="/parent/children" element={<ParentChildrenPage />} />
+                  <Route path="/parent/attendance" element={<ParentAttendance />} />
+                  <Route path="/parent/behaviors" element={<BehaviorPage />} />
+                  <Route path="/parent/grades" element={<GradesPage />} />
+                  <Route path="/parent/timetables" element={<ParentTimetable />} />
                   
-
-                  {/* Role-specific routes */}
+                  {/* Заглушки для остальных маршрутов */}
                   <Route path="/students" element={<NotFound />} />
                   <Route path="/teachers" element={<NotFound />} />
                   <Route path="/classes" element={<NotFound />} />

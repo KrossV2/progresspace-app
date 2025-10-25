@@ -14,7 +14,8 @@ import {
   ClipboardCheck,
   Baby,
   MapPin,
-  Building
+  Building,
+  FolderOpen // Добавили иконку для файлов
 } from "lucide-react";
 import { useUser, UserRole } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -45,6 +46,7 @@ const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
       { title: t('nav.attendance'), url: "/teacher/attendance", icon: ClipboardCheck, group: "management" },
       { title: t('nav.students'), url: "/teacher/students", icon: Users, group: "management" },
       { title: t('nav.parents'), url: "/teacher/parents", icon: Baby, group: "management" },
+      { title: t('nav.files'), url: "/teacher/files", icon: FolderOpen, group: "resources" }, // ДОБАВИЛИ ЭТУ СТРОКУ
     ],
     parent: [
       { title: t('nav.children'), url: "/parent/children", icon: Baby, group: "academic" },
@@ -131,7 +133,8 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
                 <div className="text-sm font-medium text-muted-foreground mb-2 px-2">
                   {groupName === 'main' ? t('menu.main') : 
                    groupName === 'management' ? t('menu.management') : 
-                   groupName === 'academic' ? t('menu.academic') : groupName}
+                   groupName === 'academic' ? t('menu.academic') : 
+                   groupName === 'resources' ? t('menu.resources') : groupName} {/* ДОБАВИЛИ РЕСУРСЫ */}
                 </div>
               )}
               <div className="space-y-1">
