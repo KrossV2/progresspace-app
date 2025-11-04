@@ -91,71 +91,79 @@ const StudentTimetablesPage = () => {
 
   const todayLessons = getTodayLessons();
 
+  const handlePreviousWeek = () => {
+    setCurrentWeek(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeek(prev => prev + 1);
+  };
+
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 transition-colors duration-300 p-4 md:p-8">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="text-center space-y-4 mb-8">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
           Dars Jadvali
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Haftalik darslar jadvali va ma'lumotlari
         </p>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-blue-200 dark:border-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <BookOpen className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Jami Darslar</p>
-                <p className="text-2xl font-bold text-blue-600">{getTotalLessons()}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Jami Darslar</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{getTotalLessons()}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-green-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-green-200 dark:border-green-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-100 rounded-full">
-                <Users className="h-6 w-6 text-green-600" />
+              <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                <Users className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Fanlar Soni</p>
-                <p className="text-2xl font-bold text-green-600">{getUniqueSubjects()}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Fanlar Soni</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{getUniqueSubjects()}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-orange-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-orange-200 dark:border-orange-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-orange-100 rounded-full">
-                <Clock className="h-6 w-6 text-orange-600" />
+              <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-full">
+                <Clock className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Bugungi Darslar</p>
-                <p className="text-2xl font-bold text-orange-600">{todayLessons.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Bugungi Darslar</p>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{todayLessons.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-purple-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-purple-200 dark:border-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-100 rounded-full">
-                <Calendar className="h-6 w-6 text-purple-600" />
+              <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
+                <Calendar className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Ish Kunlari</p>
-                <p className="text-2xl font-bold text-purple-600">{days.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Ish Kunlari</p>
+                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{days.length}</p>
               </div>
             </div>
           </CardContent>
@@ -164,31 +172,34 @@ const StudentTimetablesPage = () => {
 
       {/* Today's Lessons */}
       {todayLessons.length > 0 && (
-        <Card className="bg-white/80 backdrop-blur-sm border-green-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-green-200 dark:border-green-700 shadow-lg mb-8">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-green-700">
+            <CardTitle className="flex items-center space-x-3 text-green-700 dark:text-green-400">
               <Clock className="h-5 w-5" />
-              <span>Bugungi Darslar</span>
+              <span className="text-xl">Bugungi Darslar</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
               Bugun bo'ladigan barcha darslar ro'yxati
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {todayLessons.map((lesson) => (
-                <Card key={lesson.id} className="border-l-4 border-l-green-500 hover:shadow-md transition-shadow">
+                <Card 
+                  key={lesson.id} 
+                  className="border-l-4 border-l-green-500 dark:border-l-green-400 hover:shadow-md transition-all duration-300 hover:scale-105 bg-white dark:bg-gray-700"
+                >
                   <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${lesson.color}`}></div>
-                        <span className="font-semibold text-gray-900">{lesson.subjectName}</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{lesson.subjectName}</span>
                       </div>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs bg-gray-100 dark:bg-gray-600">
                         {getTypeText(lesson.type)}
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                       <div className="flex items-center space-x-2">
                         <Users className="h-3 w-3" />
                         <span>{lesson.teacherName}</span>
@@ -211,24 +222,38 @@ const StudentTimetablesPage = () => {
       )}
 
       {/* Week Navigation */}
-      <Card className="bg-white/80 backdrop-blur-sm border-gray-200">
+      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 mb-6">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handlePreviousWeek}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              >
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Oldingi
               </Button>
               <div className="text-center">
-                <div className="font-semibold text-gray-900">Hafta {currentWeek + 1}</div>
-                <div className="text-sm text-gray-500">10-Yanvar, 2024</div>
+                <div className="font-semibold text-gray-900 dark:text-gray-100">Hafta {currentWeek + 1}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">10-Yanvar, 2024</div>
               </div>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleNextWeek}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              >
                 Keyingi
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="rounded-lg border-gray-300 dark:border-gray-600"
+            >
               <Download className="h-4 w-4 mr-2" />
               Yuklab olish
             </Button>
@@ -237,13 +262,17 @@ const StudentTimetablesPage = () => {
       </Card>
 
       {/* Days Navigation */}
-      <div className="flex overflow-x-auto pb-2 gap-2">
+      <div className="flex overflow-x-auto pb-4 gap-2 mb-6">
         {days.map((day) => (
           <Button
             key={day}
             variant={selectedDay === day ? "default" : "outline"}
             onClick={() => setSelectedDay(day)}
-            className="flex-1 min-w-[120px]"
+            className={`flex-1 min-w-[120px] rounded-xl transition-all duration-300 ${
+              selectedDay === day 
+                ? "bg-blue-500 hover:bg-blue-600 text-white" 
+                : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+            }`}
           >
             {day}
           </Button>
@@ -251,37 +280,37 @@ const StudentTimetablesPage = () => {
       </div>
 
       {/* Lessons Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
         {getDayLessons(selectedDay).map((lesson) => (
           <Card 
             key={lesson.id} 
-            className="bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="bg-white/90 dark:bg-gray-700/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start mb-2">
-                <CardTitle className="text-lg flex items-center space-x-2">
+                <CardTitle className="text-lg flex items-center space-x-2 text-gray-800 dark:text-gray-100">
                   <div className={`w-3 h-3 rounded-full ${lesson.color}`}></div>
                   <span>{lesson.subjectName}</span>
                 </CardTitle>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs bg-gray-100 dark:bg-gray-600">
                   {getTypeIcon(lesson.type)}
                 </Badge>
               </div>
-              <CardDescription className="flex items-center space-x-2">
+              <CardDescription className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                 <Clock className="h-4 w-4" />
                 <span>{lesson.time}</span>
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                 <Users className="h-4 w-4" />
                 <span>{lesson.teacherName}</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                 <MapPin className="h-4 w-4" />
                 <span>{lesson.room}</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                 <BookOpen className="h-4 w-4" />
                 <span>{getTypeText(lesson.type)}</span>
               </div>
@@ -292,13 +321,13 @@ const StudentTimetablesPage = () => {
 
       {/* Empty State */}
       {getDayLessons(selectedDay).length === 0 && (
-        <Card className="bg-white/80 backdrop-blur-sm border-gray-200 text-center">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-center">
           <CardContent className="p-12">
-            <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
+            <Calendar className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
               {selectedDay} kuni darslar yo'q
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Bu kun dam olish kuni yoki darslar rejalashtirilmagan
             </p>
           </CardContent>
@@ -306,20 +335,20 @@ const StudentTimetablesPage = () => {
       )}
 
       {/* Legend */}
-      <Card className="bg-white/80 backdrop-blur-sm border-gray-200">
-        <CardContent className="p-4">
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span>Ma'ruza - Nazariy dars</span>
+      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <span className="text-gray-700 dark:text-gray-300">Ma'ruza - Nazariy dars</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>Amaliyot - Mashg'ulot darsi</span>
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+              <span className="text-gray-700 dark:text-gray-300">Amaliyot - Mashg'ulot darsi</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-              <span>Laboratoriya - Tajriba darsi</span>
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-purple-500 rounded-full flex-shrink-0"></div>
+              <span className="text-gray-700 dark:text-gray-300">Laboratoriya - Tajriba darsi</span>
             </div>
           </div>
         </CardContent>

@@ -159,6 +159,7 @@ export function QuickCards() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          
           <div className="space-y-2">
             {quickData.reminders.map((reminder, index) => (
               <div key={index} className="p-2 rounded-lg bg-secondary/50 border border-border">

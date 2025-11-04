@@ -7,10 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Plus, School, MapPin, Users, Phone, Mail } from "lucide-react";
+import { Trash2, Edit, Plus, School, MapPin, Users, Phone, Mail, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
-import "@/styles/admin/SchoolsPage.css";
 
 interface Region {
   id: number;
@@ -312,12 +310,18 @@ const SchoolsPage = () => {
     return stats;
   };
 
+  const getStatusBadgeClass = (status: string) => {
+    return status === 'active' 
+      ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-none' 
+      : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-none';
+  };
+
   if (loading) {
     return (
-      <div className="schools-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Ma'lumotlar yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
@@ -328,200 +332,229 @@ const SchoolsPage = () => {
   const inactiveSchools = schools.filter(s => s.status === 'inactive').length;
 
   return (
-    <div className="schools-page">
-      <div className="schools-header">
-        <div>
-          <h1 className="schools-title">Maktablar Boshqaruvi</h1>
-          <p className="schools-subtitle">Barcha maktablarni boshqaring va monitoring qiling</p>
-        </div>
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="btn btn-primary">
-              <Plus className="btn-icon" />
-              Yangi maktab
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="school-dialog">
-            <DialogHeader>
-              <DialogTitle className="dialog-title">
-                {editingSchool ? "Maktabni tahrirlash" : "Yangi maktab qo'shish"}
-              </DialogTitle>
-              <DialogDescription className="dialog-description">
-                Maktab ma'lumotlarini kiriting va saqlang.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="name" className="form-label">
-                  Maktab nomi *
-                </Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="form-input"
-                  placeholder="Maktab nomini kiriting"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="address" className="form-label">
-                  Manzil *
-                </Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  className="form-input"
-                  placeholder="Maktab manzilini kiriting"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="region" className="form-label">
-                  Viloyat *
-                </Label>
-                <Select value={formData.regionId} onValueChange={handleRegionChange}>
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Viloyatni tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {regions.map((region) => (
-                      <SelectItem key={region.id} value={region.id.toString()}>
-                        {region.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="city" className="form-label">
-                  Shahar *
-                </Label>
-                <Select 
-                  value={formData.cityId} 
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, cityId: value }))}
-                  disabled={!formData.regionId}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder={formData.regionId ? "Shaharni tanlang" : "Avval viloyatni tanlang"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredCities.map((city) => (
-                      <SelectItem key={city.id} value={city.id.toString()}>
-                        {city.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="director" className="form-label">
-                  Direktor
-                </Label>
-                <Input
-                  id="director"
-                  value={formData.director}
-                  onChange={(e) => setFormData(prev => ({ ...prev, director: e.target.value }))}
-                  className="form-input"
-                  placeholder="Direktor F.I.SH"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="phone" className="form-label">
-                  Telefon
-                </Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="form-input"
-                  placeholder="+998901234567"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="email" className="form-label">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="form-input"
-                  placeholder="maktab@edu.uz"
-                />
-              </div>
-            </div>
-            <DialogFooter className="dialog-footer">
-              <Button onClick={handleSaveSchool} className="btn btn-primary">
-                {editingSchool ? "Yangilash" : "Qo'shish"}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Maktablar Boshqaruvi
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Barcha maktablarni boshqaring va monitoring qiling
+            </p>
+          </div>
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Yangi maktab
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {editingSchool ? "Maktabni tahrirlash" : "Yangi maktab qo'shish"}
+                </DialogTitle>
+                <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
+                  Maktab ma'lumotlarini kiriting va saqlang.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 my-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Maktab nomi *
+                  </Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Maktab nomini kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Manzil *
+                  </Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Maktab manzilini kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="region" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Viloyat *
+                  </Label>
+                  <Select value={formData.regionId} onValueChange={handleRegionChange}>
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder="Viloyatni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {regions.map((region) => (
+                        <SelectItem key={region.id} value={region.id.toString()}>
+                          {region.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="city" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Shahar *
+                  </Label>
+                  <Select 
+                    value={formData.cityId} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, cityId: value }))}
+                    disabled={!formData.regionId}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder={formData.regionId ? "Shaharni tanlang" : "Avval viloyatni tanlang"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filteredCities.map((city) => (
+                        <SelectItem key={city.id} value={city.id.toString()}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="director" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Direktor
+                  </Label>
+                  <Input
+                    id="director"
+                    value={formData.director}
+                    onChange={(e) => setFormData(prev => ({ ...prev, director: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Direktor F.I.SH"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Telefon
+                  </Label>
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="+998901234567"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="maktab@edu.uz"
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  onClick={handleSaveSchool}
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+                >
+                  {editingSchool ? "Yangilash" : "Qo'shish"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="schools-stats">
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Jami Maktablar</CardTitle>
-            <School className="stat-card-icon" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami Maktablar
+            </CardTitle>
+            <School className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">{schools.length}</div>
-            <p className="stat-card-description">
+            <div className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              {schools.length}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Barcha ro'yxatga olingan maktablar
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Faol Maktablar</CardTitle>
-            <Users className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Faol Maktablar
+            </CardTitle>
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-active">
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
               {activeSchools}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Faol ishlayotgan maktablar
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Nofaol Maktablar</CardTitle>
-            <School className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Nofaol Maktablar
+            </CardTitle>
+            <Building className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-inactive">
+            <div className="text-3xl md:text-4xl font-bold text-red-600 dark:text-red-400">
               {inactiveSchools}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Faoliyati to'xtatilgan
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Viloyatlar</CardTitle>
-            <MapPin className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Viloyatlar
+            </CardTitle>
+            <MapPin className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-regions">
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
               {new Set(schools.map(s => s.regionId)).size}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Maktablar joylashgan viloyatlar
             </p>
           </CardContent>
@@ -529,22 +562,27 @@ const SchoolsPage = () => {
       </div>
 
       {/* Regions Distribution */}
-      <Card className="regions-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Viloyatlar Bo'yicha Taqsimot</CardTitle>
-          <CardDescription className="table-card-description">
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Viloyatlar Bo'yicha Taqsimot
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
             Har bir viloyatdagi maktablar soni
           </CardDescription>
         </CardHeader>
-        <CardContent className="regions-content">
-          <div className="regions-grid">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Object.entries(regionStats).map(([region, count]) => (
-              <div key={region} className="region-item">
-                <div className="region-info">
-                  <MapPin className="region-icon" />
-                  <span className="region-name">{region}</span>
+              <div 
+                key={region} 
+                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+              >
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-blue-500" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-200">{region}</span>
                 </div>
-                <Badge className="region-count">
+                <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-none font-semibold px-3 py-1 rounded-lg">
                   {count} ta maktab
                 </Badge>
               </div>
@@ -553,96 +591,102 @@ const SchoolsPage = () => {
         </CardContent>
       </Card>
 
-      <Card className="schools-table-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Maktablar Ro'yxati</CardTitle>
-          <CardDescription className="table-card-description">
+      {/* Schools Table */}
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Maktablar Ro'yxati
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
             Jami {schools.length} ta maktab mavjud
           </CardDescription>
         </CardHeader>
-        <CardContent className="table-card-content">
-          <Table className="schools-table">
-            <TableHeader className="table-header">
-              <TableRow className="table-header-row">
-                <TableHead className="table-header-cell">#</TableHead>
-                <TableHead className="table-header-cell">Maktab Nomi</TableHead>
-                <TableHead className="table-header-cell">Manzil</TableHead>
-                <TableHead className="table-header-cell">Viloyat/Shahar</TableHead>
-                <TableHead className="table-header-cell">Direktor</TableHead>
-                <TableHead className="table-header-cell">Aloqa</TableHead>
-                <TableHead className="table-header-cell">Holat</TableHead>
-                <TableHead className="table-header-cell text-right">Amallar</TableHead>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+              <TableRow className="border-b border-gray-200 dark:border-gray-600">
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">#</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Maktab Nomi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Manzil</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Viloyat/Shahar</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Direktor</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Aloqa</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Holat</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="table-body">
+            <TableBody>
               {schools.map((school, index) => (
-                <TableRow key={school.id} className="table-row">
-                  <TableCell className="table-cell font-medium">{index + 1}</TableCell>
-                  <TableCell className="table-cell">
-                    <div className="school-info">
-                      <School className="school-icon" />
+                <TableRow 
+                  key={school.id} 
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <TableCell className="py-4 font-medium text-gray-700 dark:text-gray-300">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-3">
+                      <School className="h-5 w-5 text-blue-500" />
                       <div>
-                        <span className="school-name">{school.name}</span>
-                        <div className="school-contacts">
-                          {school.email && (
-                            <div className="contact-item">
-                              <Mail className="contact-icon" />
-                              <span>{school.email}</span>
-                            </div>
-                          )}
-                        </div>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200 block">{school.name}</span>
+                        {school.email && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <Mail className="h-3 w-3 text-gray-400" />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{school.email}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="address-info">
-                      <MapPin className="address-icon" />
-                      <span>{school.address}</span>
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-400" />
+                      <span className="text-gray-600 dark:text-gray-400">{school.address}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="location-info">
-                      <Badge className="region-badge">
+                  <TableCell className="py-4">
+                    <div className="flex flex-col gap-1">
+                      <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-none font-semibold px-2 py-1 rounded-lg text-xs">
                         {school.regionName}
                       </Badge>
-                      <Badge variant="outline" className="city-badge">
+                      <Badge variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold px-2 py-1 rounded-lg text-xs">
                         {school.cityName}
                       </Badge>
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <span className="director-name">{school.director}</span>
+                  <TableCell className="py-4">
+                    <span className="text-gray-600 dark:text-gray-400">{school.director}</span>
                   </TableCell>
-                  <TableCell className="table-cell">
+                  <TableCell className="py-4">
                     {school.phone && (
-                      <div className="phone-info">
-                        <Phone className="phone-icon" />
-                        <span>{school.phone}</span>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        <span className="text-gray-600 dark:text-gray-400">{school.phone}</span>
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <Badge className={`status-badge status-${school.status}`}>
+                  <TableCell className="py-4">
+                    <Badge className={`font-semibold px-3 py-1 rounded-full ${getStatusBadgeClass(school.status)}`}>
                       {school.status === 'active' ? 'Faol' : 'Nofaol'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="table-cell text-right">
-                    <div className="actions-container">
+                  <TableCell className="py-4 text-right">
+                    <div className="flex justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditDialog(school)}
-                        className="action-button action-button-sm action-edit"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Edit className="action-icon" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteSchool(school.id)}
-                        className="action-button action-button-sm action-delete"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Trash2 className="action-icon" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>

@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, UserPlus, School, Calendar, Edit, Trash2, Phone, Mail, MapPin, BookOpen, Award } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import "@/styles/parent/ChildrenPage.css";
 
 interface Child {
   id: number;
@@ -266,84 +265,107 @@ const MyChildrenPage = () => {
 
   if (loading) {
     return (
-      <div className="children-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Ma'lumotlar yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="children-page">
-      <div className="children-header">
-        <div>
-          <h1 className="children-title">Mening Farzandlarim</h1>
-          <p className="children-subtitle">
-            Barcha farzandlaringizning ma'lumotlari va natijalari
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Mening Farzandlarim
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Barcha farzandlaringizning ma'lumotlari va natijalari
+            </p>
+          </div>
+          
+          <Button 
+            onClick={openCreateDialog}
+            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <UserPlus className="h-5 w-5 mr-2" />
+            Farzand qo'shish
+          </Button>
         </div>
-        
-        <Button onClick={openCreateDialog} className="add-btn">
-          <UserPlus className="btn-icon" />
-          Farzand qo'shish
-        </Button>
       </div>
 
       {/* Children Grid */}
-      <div className="children-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
         {children.map((child) => (
-          <Card key={child.id} className="child-card">
-            <CardHeader className="child-card-header">
-              <div className="child-info">
-                <Avatar className="child-avatar">
-                  <AvatarImage src={child.avatar} />
-                  <AvatarFallback>{getInitials(child.name)}</AvatarFallback>
-                </Avatar>
-                <div className="child-details">
-                  <CardTitle className="child-name">{child.name}</CardTitle>
-                  <CardDescription className="child-grade">
-                    {child.grade} • {calculateAge(child.birthDate)} yosh
-                  </CardDescription>
+          <Card 
+            key={child.id} 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+          >
+            <CardHeader className="p-6 pb-4">
+              <div className="flex justify-between items-start">
+                <div className="flex items-start gap-4 flex-1">
+                  <Avatar className="w-14 h-14 border-3 border-gray-200 dark:border-gray-600">
+                    <AvatarImage src={child.avatar} />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                      {getInitials(child.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100 truncate">
+                      {child.name}
+                    </CardTitle>
+                    <CardDescription className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                      {child.grade} • {calculateAge(child.birthDate)} yosh
+                    </CardDescription>
+                  </div>
                 </div>
-              </div>
-              <div className="child-actions">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => openEditDialog(child)}
-                  className="action-btn edit-btn"
-                >
-                  <Edit className="action-icon" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDeleteChild(child.id)}
-                  className="action-btn delete-btn"
-                >
-                  <Trash2 className="action-icon" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openEditDialog(child)}
+                    className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeleteChild(child.id)}
+                    className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             
-            <CardContent className="child-card-content">
+            <CardContent className="p-6 pt-0 space-y-6">
               {/* School Info */}
-              <div className="info-section">
-                <div className="info-item">
-                  <School className="info-icon" />
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <School className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="info-label">Maktab</div>
-                    <div className="info-value">{child.school}</div>
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                      Maktab
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {child.school}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="info-item">
-                  <Calendar className="info-icon" />
+                <div className="flex items-start gap-3">
+                  <Calendar className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="info-label">Tug'ilgan sana</div>
-                    <div className="info-value">
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                      Tug'ilgan sana
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {new Date(child.birthDate).toLocaleDateString('uz-UZ')}
                     </div>
                   </div>
@@ -351,71 +373,93 @@ const MyChildrenPage = () => {
               </div>
 
               {/* Contact Info */}
-              <div className="info-section">
-                <div className="info-item">
-                  <Phone className="info-icon" />
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Phone className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="info-label">Telefon</div>
-                    <div className="info-value">{child.contact.phone}</div>
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                      Telefon
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {child.contact.phone}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="info-item">
-                  <Mail className="info-icon" />
+                <div className="flex items-start gap-3">
+                  <Mail className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="info-label">Email</div>
-                    <div className="info-value">{child.contact.email}</div>
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                      Email
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {child.contact.email}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="info-item">
-                  <MapPin className="info-icon" />
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="info-label">Manzil</div>
-                    <div className="info-value">{child.contact.address}</div>
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                      Manzil
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {child.contact.address}
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Performance Stats */}
-              <div className="performance-section">
-                <h4 className="performance-title">Natijalar</h4>
-                <div className="performance-stats">
-                  <div className="performance-item">
-                    <div className="performance-value">
-                      <span className={getGradeColor(child.performance.averageGrade)}>
-                        {child.performance.averageGrade}
-                      </span>
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-3">
+                  Natijalar
+                </h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className={`text-2xl font-bold ${getGradeColor(child.performance.averageGrade)} mb-1`}>
+                      {child.performance.averageGrade}
                     </div>
-                    <div className="performance-label">O'rtacha baho</div>
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                      O'rtacha baho
+                    </div>
                   </div>
                   
-                  <div className="performance-item">
-                    <div className="performance-value">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                       {child.performance.attendance}%
                     </div>
-                    <div className="performance-label">Davomat</div>
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                      Davomat
+                    </div>
                   </div>
                   
-                  <div className="performance-item">
-                    <div className="performance-value">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                       {child.performance.behaviorPoints}
                     </div>
-                    <div className="performance-label">Xulq-atvor</div>
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                      Xulq-atvor
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Subjects */}
               {child.subjects.length > 0 && (
-                <div className="subjects-section">
-                  <h4 className="subjects-title">
-                    <BookOpen className="subjects-icon" />
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+                  <h4 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-3">
+                    <BookOpen className="h-4 w-4" />
                     Fanlar
                   </h4>
-                  <div className="subjects-list">
+                  <div className="flex flex-wrap gap-2">
                     {child.subjects.map((subject, index) => (
-                      <Badge key={index} variant="secondary" className="subject-badge">
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700 font-medium px-3 py-1 rounded-lg"
+                      >
                         {subject}
                       </Badge>
                     ))}
@@ -429,44 +473,48 @@ const MyChildrenPage = () => {
 
       {/* Add/Edit Child Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="children-dialog">
+        <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="dialog-title">
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {editingChild ? "Farzandni tahrirlash" : "Yangi farzand qo'shish"}
             </DialogTitle>
-            <DialogDescription className="dialog-description">
+            <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
               Farzandning ma'lumotlarini kiriting va saqlang.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="dialog-form">
-            <div className="form-row">
-              <Label htmlFor="name" className="form-label">
+          <div className="space-y-6 my-6">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Ism Familiya *
               </Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="Farzandning ismi va familiyasi"
               />
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="grade" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="grade" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Sinf *
               </Label>
               <Select 
                 value={formData.grade} 
                 onValueChange={(value) => setFormData({ ...formData, grade: value })}
               >
-                <SelectTrigger className="form-select">
+                <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800">
                   <SelectValue placeholder="Sinfni tanlang" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-lg">
                   {grades.map((grade) => (
-                    <SelectItem key={grade} value={grade}>
+                    <SelectItem 
+                      key={grade} 
+                      value={grade}
+                      className="text-gray-900 dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    >
                       {grade}
                     </SelectItem>
                   ))}
@@ -474,21 +522,21 @@ const MyChildrenPage = () => {
               </Select>
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="school" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="school" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Maktab *
               </Label>
               <Input
                 id="school"
                 value={formData.school}
                 onChange={(e) => setFormData({ ...formData, school: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="Maktab nomi"
               />
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="birthDate" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="birthDate" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Tug'ilgan sana *
               </Label>
               <Input
@@ -496,25 +544,25 @@ const MyChildrenPage = () => {
                 type="date"
                 value={formData.birthDate}
                 onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
               />
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="phone" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Telefon
               </Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="+99890 123 45 67"
               />
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="email" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Email
               </Label>
               <Input
@@ -522,36 +570,36 @@ const MyChildrenPage = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="farzand@email.uz"
               />
             </div>
             
-            <div className="form-row">
-              <Label htmlFor="address" className="form-label">
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Manzil
               </Label>
               <Input
                 id="address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="form-input"
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="Yashash manzili"
               />
             </div>
           </div>
           
-          <DialogFooter className="dialog-footer">
+          <DialogFooter className="flex gap-3">
             <Button 
               onClick={() => setIsDialogOpen(false)} 
               variant="outline"
-              className="btn btn-secondary"
+              className="flex-1 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-semibold"
             >
               Bekor qilish
             </Button>
             <Button 
               onClick={handleSaveChild} 
-              className="btn btn-primary"
+              className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
             >
               {editingChild ? "Yangilash" : "Qo'shish"}
             </Button>
@@ -560,12 +608,19 @@ const MyChildrenPage = () => {
       </Dialog>
 
       {children.length === 0 && !loading && (
-        <div className="empty-state">
-          <Users className="empty-icon" />
-          <h3>Farzandlar mavjud emas</h3>
-          <p>Biror farzand qo'shing va ularning maktab hayotini kuzatishingiz mumkin</p>
-          <Button onClick={openCreateDialog} className="add-btn">
-            <UserPlus className="btn-icon" />
+        <div className="text-center py-16 px-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <Users className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4 opacity-50" />
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Farzandlar mavjud emas
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            Biror farzand qo'shing va ularning maktab hayotini kuzatishingiz mumkin
+          </p>
+          <Button 
+            onClick={openCreateDialog}
+            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <UserPlus className="h-5 w-5 mr-2" />
             Birinchi farzandni qo'shish
           </Button>
         </div>

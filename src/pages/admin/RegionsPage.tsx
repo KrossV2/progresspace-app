@@ -5,41 +5,36 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Plus, BookOpen, Users, Clock, Target } from "lucide-react";
+import { Trash2, Edit, Plus, MapPin, Users, Building, Target, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
-import "@/styles/admin/RegionsPage.css";
 
-interface Subject {
+interface Region {
   id: number;
   name: string;
-  description: string;
-  hoursPerWeek: number;
-  category: 'science' | 'humanities' | 'languages' | 'arts' | 'sports';
+  code: string;
+  population: number;
+  area: number;
+  districtsCount: number;
   status: 'active' | 'inactive';
+  description: string;
 }
 
-const SubjectsPage = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+const RegionsPage = () => {
+  const [regions, setRegions] = useState<Region[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
+  const [editingRegion, setEditingRegion] = useState<Region | null>(null);
   const [formData, setFormData] = useState({
     name: "",
+    code: "",
+    population: "",
+    area: "",
+    districtsCount: "",
     description: "",
-    hoursPerWeek: "",
-    category: "",
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
-
-  const categories = [
-    { value: 'science', label: 'Tabiiy fanlar', color: 'blue' },
-    { value: 'humanities', label: 'Ijtimoiy fanlar', color: 'green' },
-    { value: 'languages', label: 'Tillar', color: 'purple' },
-    { value: 'arts', label: 'San\'at', color: 'orange' },
-    { value: 'sports', label: 'Sport', color: 'red' },
-  ];
 
   useEffect(() => {
     fetchData();
@@ -49,58 +44,70 @@ const SubjectsPage = () => {
     try {
       setLoading(true);
       
-      const subjectsData: Subject[] = [
+      const regionsData: Region[] = [
         {
           id: 1,
-          name: "Matematika",
-          description: "Raqamlar va hisoblash fanı",
-          hoursPerWeek: 5,
-          category: 'science',
-          status: 'active'
+          name: "Toshkent shahri",
+          code: "TSH",
+          population: 2571881,
+          area: 334,
+          districtsCount: 11,
+          status: 'active',
+          description: "Poytaxt va yirik metropolitan hudud"
         },
         {
           id: 2,
-          name: "Ona tili",
-          description: "O'zbek tili grammatikasi va adabiyoti",
-          hoursPerWeek: 4,
-          category: 'languages',
-          status: 'active'
+          name: "Toshkent viloyati",
+          code: "TOS",
+          population: 2945800,
+          area: 15300,
+          districtsCount: 15,
+          status: 'active',
+          description: "Sanoat va qishloq xo'jaligi hududi"
         },
         {
           id: 3,
-          name: "Ingliz tili",
-          description: "Chet tili o'qitish",
-          hoursPerWeek: 3,
-          category: 'languages',
-          status: 'active'
+          name: "Samarqand viloyati",
+          code: "SAM",
+          population: 2325400,
+          area: 16400,
+          districtsCount: 14,
+          status: 'active',
+          description: "Tarixiy va madaniy markaz"
         },
         {
           id: 4,
-          name: "Fizika",
-          description: "Tabiat qonuniyatlari fanı",
-          hoursPerWeek: 2,
-          category: 'science',
-          status: 'active'
+          name: "Buxoro viloyati",
+          code: "BUX",
+          population: 1893500,
+          area: 39400,
+          districtsCount: 11,
+          status: 'active',
+          description: "Qadimiy madaniyat va me'morchilik yodgorliklari"
         },
         {
           id: 5,
-          name: "Tarix",
-          description: "O'tmish davrlari va voqealar",
-          hoursPerWeek: 2,
-          category: 'humanities',
-          status: 'active'
+          name: "Xorazm viloyati",
+          code: "XOR",
+          population: 1833800,
+          area: 6300,
+          districtsCount: 10,
+          status: 'active',
+          description: "Amudaryo bo'yidagi qadimiy viloyat"
         },
         {
           id: 6,
-          name: "Jismoniy tarbiya",
-          description: "Sport mashg'ulotlari",
-          hoursPerWeek: 2,
-          category: 'sports',
-          status: 'active'
+          name: "Qashqadaryo viloyati",
+          code: "QAS",
+          population: 3293600,
+          area: 28400,
+          districtsCount: 13,
+          status: 'inactive',
+          description: "Tabiiy resurslarga boy hudud"
         },
       ];
 
-      setSubjects(subjectsData);
+      setRegions(regionsData);
     } catch (error) {
       toast({
         title: "Xatolik",
@@ -112,26 +119,26 @@ const SubjectsPage = () => {
     }
   };
 
-  const handleDeleteSubject = async (id: number) => {
-    if (!confirm("Haqiqatan ham bu fanni o'chirmoqchimisiz?")) return;
+  const handleDeleteRegion = async (id: number) => {
+    if (!confirm("Haqiqatan ham bu viloyatni o'chirmoqchimisiz?")) return;
 
     try {
-      setSubjects(subjects.filter(subject => subject.id !== id));
+      setRegions(regions.filter(region => region.id !== id));
       toast({
         title: "Muvaffaqiyat",
-        description: "Fan muvaffaqiyatli o'chirildi",
+        description: "Viloyat muvaffaqiyatli o'chirildi",
       });
     } catch (error) {
       toast({
         title: "Xatolik",
-        description: "Fanni o'chirishda xatolik yuz berdi",
+        description: "Viloyatni o'chirishda xatolik yuz berdi",
         variant: "destructive",
       });
     }
   };
 
-  const handleSaveSubject = async () => {
-    if (!formData.name.trim() || !formData.description.trim() || !formData.hoursPerWeek || !formData.category) {
+  const handleSaveRegion = async () => {
+    if (!formData.name.trim() || !formData.code.trim() || !formData.population || !formData.area || !formData.districtsCount) {
       toast({
         title: "Xatolik",
         description: "Iltimos, barcha majburiy maydonlarni to'ldiring",
@@ -141,355 +148,473 @@ const SubjectsPage = () => {
     }
 
     try {
-      if (editingSubject) {
-        setSubjects(subjects.map(subject => 
-          subject.id === editingSubject.id 
+      if (editingRegion) {
+        setRegions(regions.map(region => 
+          region.id === editingRegion.id 
             ? { 
-                ...subject, 
+                ...region, 
                 name: formData.name,
-                description: formData.description,
-                hoursPerWeek: parseInt(formData.hoursPerWeek),
-                category: formData.category as Subject['category']
+                code: formData.code,
+                population: parseInt(formData.population),
+                area: parseInt(formData.area),
+                districtsCount: parseInt(formData.districtsCount),
+                description: formData.description
               }
-            : subject
+            : region
         ));
         toast({
           title: "Muvaffaqiyat",
-          description: "Fan muvaffaqiyatli yangilandi",
+          description: "Viloyat muvaffaqiyatli yangilandi",
         });
       } else {
-        const newSubject: Subject = { 
+        const newRegion: Region = { 
           id: Date.now(), 
           name: formData.name,
+          code: formData.code,
+          population: parseInt(formData.population),
+          area: parseInt(formData.area),
+          districtsCount: parseInt(formData.districtsCount),
           description: formData.description,
-          hoursPerWeek: parseInt(formData.hoursPerWeek),
-          category: formData.category as Subject['category'],
           status: 'active'
         };
-        setSubjects([...subjects, newSubject]);
+        setRegions([...regions, newRegion]);
         toast({
           title: "Muvaffaqiyat",
-          description: "Yangi fan muvaffaqiyatli qo'shildi",
+          description: "Yangi viloyat muvaffaqiyatli qo'shildi",
         });
       }
 
       setFormData({
         name: "",
+        code: "",
+        population: "",
+        area: "",
+        districtsCount: "",
         description: "",
-        hoursPerWeek: "",
-        category: "",
       });
-      setEditingSubject(null);
+      setEditingRegion(null);
       setIsDialogOpen(false);
     } catch (error) {
       toast({
         title: "Xatolik",
-        description: editingSubject ? "Fanni yangilashda xatolik" : "Fan qo'shishda xatolik",
+        description: editingRegion ? "Viloyatni yangilashda xatolik" : "Viloyat qo'shishda xatolik",
         variant: "destructive",
       });
     }
   };
 
-  const openEditDialog = (subject: Subject) => {
-    setEditingSubject(subject);
+  const openEditDialog = (region: Region) => {
+    setEditingRegion(region);
     setFormData({
-      name: subject.name,
-      description: subject.description,
-      hoursPerWeek: subject.hoursPerWeek.toString(),
-      category: subject.category,
+      name: region.name,
+      code: region.code,
+      population: region.population.toString(),
+      area: region.area.toString(),
+      districtsCount: region.districtsCount.toString(),
+      description: region.description,
     });
     setIsDialogOpen(true);
   };
 
   const openCreateDialog = () => {
-    setEditingSubject(null);
+    setEditingRegion(null);
     setFormData({
       name: "",
+      code: "",
+      population: "",
+      area: "",
+      districtsCount: "",
       description: "",
-      hoursPerWeek: "",
-      category: "",
     });
     setIsDialogOpen(true);
   };
 
-  const getCategoryStats = () => {
-    const stats: { [key: string]: number } = {};
-    subjects.forEach(subject => {
-      const categoryName = categories.find(c => c.value === subject.category)?.label || "Noma'lum";
-      stats[categoryName] = (stats[categoryName] || 0) + 1;
-    });
-    return stats;
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('uz-UZ').format(num);
   };
 
-  const getCategoryColor = (category: string) => {
-    const categoryConfig = categories.find(c => c.value === category);
-    return categoryConfig?.color || 'gray';
+  const getDensity = (population: number, area: number) => {
+    return Math.round(population / area);
   };
 
-  const getCategoryLabel = (category: string) => {
-    const categoryConfig = categories.find(c => c.value === category);
-    return categoryConfig?.label || 'Noma\'lum';
+  const getStatusBadgeClass = (status: string) => {
+    return status === 'active' 
+      ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-none' 
+      : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-none';
   };
 
   if (loading) {
     return (
-      <div className="subjects-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Ma'lumotlar yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
-  const categoryStats = getCategoryStats();
-  const totalHours = subjects.reduce((sum, subject) => sum + subject.hoursPerWeek, 0);
+  const activeRegions = regions.filter(r => r.status === 'active').length;
+  const inactiveRegions = regions.filter(r => r.status === 'inactive').length;
+  const totalPopulation = regions.reduce((sum, region) => sum + region.population, 0);
+  const totalArea = regions.reduce((sum, region) => sum + region.area, 0);
+  const totalDistricts = regions.reduce((sum, region) => sum + region.districtsCount, 0);
 
   return (
-    <div className="subjects-page">
-      <div className="subjects-header">
-        <div>
-          <h1 className="subjects-title">Fanlar Boshqaruvi</h1>
-          <p className="subjects-subtitle">Barcha fanlarni boshqaring va dasturni sozlang</p>
-        </div>
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="btn btn-primary">
-              <Plus className="btn-icon" />
-              Yangi fan
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="subject-dialog">
-            <DialogHeader>
-              <DialogTitle className="dialog-title">
-                {editingSubject ? "Fanni tahrirlash" : "Yangi fan qo'shish"}
-              </DialogTitle>
-              <DialogDescription className="dialog-description">
-                Fan ma'lumotlarini kiriting va saqlang.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="name" className="form-label">
-                  Fan nomi *
-                </Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="form-input"
-                  placeholder="Fan nomini kiriting"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="description" className="form-label">
-                  Tavsif *
-                </Label>
-                <Input
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="form-input"
-                  placeholder="Fan haqida qisqacha ma'lumot"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="hoursPerWeek" className="form-label">
-                  Haftalik soat *
-                </Label>
-                <Input
-                  id="hoursPerWeek"
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={formData.hoursPerWeek}
-                  onChange={(e) => setFormData(prev => ({ ...prev, hoursPerWeek: e.target.value }))}
-                  className="form-input"
-                  placeholder="Haftasiga soat soni"
-                />
-              </div>
-              
-              <div className="form-row">
-                <Label htmlFor="category" className="form-label">
-                  Kategoriya *
-                </Label>
-                <select 
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                  className="form-input"
-                >
-                  <option value="">Kategoriyani tanlang</option>
-                  {categories.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <DialogFooter className="dialog-footer">
-              <Button onClick={handleSaveSubject} className="btn btn-primary">
-                {editingSubject ? "Yangilash" : "Qo'shish"}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Viloyatlar Boshqaruvi
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Barcha viloyatlarni boshqaring va ma'lumotlarni sozlang
+            </p>
+          </div>
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Yangi viloyat
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {editingRegion ? "Viloyatni tahrirlash" : "Yangi viloyat qo'shish"}
+                </DialogTitle>
+                <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
+                  Viloyat ma'lumotlarini kiriting va saqlang.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 my-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Viloyat nomi *
+                  </Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Viloyat nomini kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="code" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Viloyat kodi *
+                  </Label>
+                  <Input
+                    id="code"
+                    value={formData.code}
+                    onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Masalan: TOS"
+                    maxLength={3}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="population" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Aholi soni *
+                    </Label>
+                    <Input
+                      id="population"
+                      type="number"
+                      min="1"
+                      value={formData.population}
+                      onChange={(e) => setFormData(prev => ({ ...prev, population: e.target.value }))}
+                      className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                      placeholder="Aholi soni"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="area" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Maydoni (km²) *
+                    </Label>
+                    <Input
+                      id="area"
+                      type="number"
+                      min="1"
+                      value={formData.area}
+                      onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))}
+                      className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                      placeholder="Maydoni"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="districtsCount" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Tumanlar soni *
+                  </Label>
+                  <Input
+                    id="districtsCount"
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={formData.districtsCount}
+                    onChange={(e) => setFormData(prev => ({ ...prev, districtsCount: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Tumanlar soni"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="description" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Tavsif
+                  </Label>
+                  <Input
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Viloyat haqida qisqacha ma'lumot"
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  onClick={handleSaveRegion}
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+                >
+                  {editingRegion ? "Yangilash" : "Qo'shish"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="subjects-stats">
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Jami Fanlar</CardTitle>
-            <BookOpen className="stat-card-icon" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami Viloyatlar
+            </CardTitle>
+            <MapPin className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">{subjects.length}</div>
-            <p className="stat-card-description">
-              Barcha ro'yxatga olingan fanlar
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Haftalik Soat</CardTitle>
-            <Clock className="stat-card-icon" />
-          </CardHeader>
-          <CardContent>
-            <div className="stat-card-value stat-value-hours">{totalHours}</div>
-            <p className="stat-card-description">
-              Jami dars soatlari
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Kategoriyalar</CardTitle>
-            <Target className="stat-card-icon" />
-          </CardHeader>
-          <CardContent>
-            <div className="stat-card-value stat-value-categories">
-              {new Set(subjects.map(s => s.category)).size}
+            <div className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              {regions.length}
             </div>
-            <p className="stat-card-description">
-              Fan kategoriyalari
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Barcha ro'yxatga olingan viloyatlar
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">O'rtacha Soat</CardTitle>
-            <Users className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Faol Viloyatlar
+            </CardTitle>
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-average">
-              {subjects.length > 0 ? Math.round(totalHours / subjects.length * 10) / 10 : 0}
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+              {activeRegions}
             </div>
-            <p className="stat-card-description">
-              Har fanda o'rtacha
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Faol ishlayotgan viloyatlar
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Nofaol Viloyatlar
+            </CardTitle>
+            <Building className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-red-600 dark:text-red-400">
+              {inactiveRegions}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Faoliyati to'xtatilgan
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami Aholi
+            </CardTitle>
+            <Target className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
+              {formatNumber(totalPopulation)}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Barcha viloyatlarda jami
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Categories Distribution */}
-      <Card className="categories-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Kategoriyalar Bo'yicha Taqsimot</CardTitle>
-          <CardDescription className="table-card-description">
-            Har bir kategoriyadagi fanlar soni
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="categories-content">
-          <div className="categories-grid">
-            {Object.entries(categoryStats).map(([category, count]) => (
-              <div key={category} className="category-item">
-                <div className="category-info">
-                  <BookOpen className="category-icon" />
-                  <span className="category-name">{category}</span>
-                </div>
-                <Badge className="category-count">
-                  {count} ta fan
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Additional Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Umumiy Maydon
+            </CardTitle>
+            <Target className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {formatNumber(totalArea)} km²
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Barcha viloyatlar maydoni
+            </p>
+          </CardContent>
+        </Card>
 
-      <Card className="subjects-table-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Fanlar Ro'yxati</CardTitle>
-          <CardDescription className="table-card-description">
-            Jami {subjects.length} ta fan mavjud
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Tumanlar Soni
+            </CardTitle>
+            <Building className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+              {totalDistricts}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Jami tumanlar soni
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'rtacha Zichlik
+            </CardTitle>
+            <Clock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400">
+              {Math.round(totalPopulation / totalArea)}/km²
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              O'rtacha aholi zichligi
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Regions Table */}
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Viloyatlar Ro'yxati
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
+            Jami {regions.length} ta viloyat mavjud
           </CardDescription>
         </CardHeader>
-        <CardContent className="table-card-content">
-          <Table className="subjects-table">
-            <TableHeader className="table-header">
-              <TableRow className="table-header-row">
-                <TableHead className="table-header-cell">#</TableHead>
-                <TableHead className="table-header-cell">Fan Nomi</TableHead>
-                <TableHead className="table-header-cell">Tavsif</TableHead>
-                <TableHead className="table-header-cell">Haftalik Soat</TableHead>
-                <TableHead className="table-header-cell">Kategoriya</TableHead>
-                <TableHead className="table-header-cell">Holat</TableHead>
-                <TableHead className="table-header-cell text-right">Amallar</TableHead>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+              <TableRow className="border-b border-gray-200 dark:border-gray-600">
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">#</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Viloyat Nomi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Kodi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Aholi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Maydon</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Tumanlar</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Zichlik</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Holat</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="table-body">
-              {subjects.map((subject, index) => (
-                <TableRow key={subject.id} className="table-row">
-                  <TableCell className="table-cell font-medium">{index + 1}</TableCell>
-                  <TableCell className="table-cell">
-                    <div className="subject-info">
-                      <BookOpen className="subject-icon" />
-                      <span className="subject-name">{subject.name}</span>
+            <TableBody>
+              {regions.map((region, index) => (
+                <TableRow 
+                  key={region.id} 
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <TableCell className="py-4 font-medium text-gray-700 dark:text-gray-300">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200 block">{region.name}</span>
+                        <span className="text-gray-500 dark:text-gray-400 text-sm">{region.description}</span>
+                      </div>
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <span className="subject-description">{subject.description}</span>
-                  </TableCell>
-                  <TableCell className="table-cell">
-                    <Badge variant="outline" className="hours-badge">
-                      <Clock className="hours-icon" />
-                      {subject.hoursPerWeek} soat
+                  <TableCell className="py-4">
+                    <Badge variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold">
+                      {region.code}
                     </Badge>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <Badge className={`category-badge category-${getCategoryColor(subject.category)}`}>
-                      {getCategoryLabel(subject.category)}
+                  <TableCell className="py-4">
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{formatNumber(region.population)}</span>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <span className="text-gray-600 dark:text-gray-400">{formatNumber(region.area)} km²</span>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <Badge variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold">
+                      {region.districtsCount} ta
                     </Badge>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <Badge className={`status-badge status-${subject.status}`}>
-                      {subject.status === 'active' ? 'Faol' : 'Nofaol'}
+                  <TableCell className="py-4">
+                    <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-none font-semibold">
+                      {getDensity(region.population, region.area)}/km²
                     </Badge>
                   </TableCell>
-                  <TableCell className="table-cell text-right">
-                    <div className="actions-container">
+                  <TableCell className="py-4">
+                    <Badge className={`font-semibold px-3 py-1 rounded-full ${getStatusBadgeClass(region.status)}`}>
+                      {region.status === 'active' ? 'Faol' : 'Nofaol'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="py-4 text-right">
+                    <div className="flex justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openEditDialog(subject)}
-                        className="action-button action-button-sm action-edit"
+                        onClick={() => openEditDialog(region)}
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Edit className="action-icon" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDeleteSubject(subject.id)}
-                        className="action-button action-button-sm action-delete"
+                        onClick={() => handleDeleteRegion(region.id)}
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Trash2 className="action-icon" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
@@ -503,4 +628,4 @@ const SubjectsPage = () => {
   );
 };
 
-export default SubjectsPage;
+export default RegionsPage;

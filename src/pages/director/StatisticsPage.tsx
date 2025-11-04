@@ -11,7 +11,10 @@ import {
   TrendingDown,
   Calendar,
   Award,
-  AlertTriangle
+  AlertTriangle,
+  Target,
+  Star,
+  BarChart3
 } from "lucide-react";
 import { 
   BarChart, 
@@ -28,7 +31,6 @@ import {
   Line
 } from "recharts";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
 
 interface ClassStatistics {
   id: number;
@@ -74,9 +76,6 @@ const StatisticsPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("current_month");
   const { toast } = useToast();
 
-  // TODO: Replace with actual API URL
-  // API_BASE_URL import qilingan: urlni almashtirish uchun `src/config/api.ts` faylini oching
-
   useEffect(() => {
     fetchStatistics();
   }, [selectedPeriod]);
@@ -84,14 +83,8 @@ const StatisticsPage = () => {
   const fetchStatistics = async () => {
     try {
       setLoading(true);
-      // TODO: Implement actual API calls
-      // const [classResponse, teacherResponse, attendanceResponse] = await Promise.all([
-      //   fetch(`${API_BASE_URL}/api/director/statistics/classes?period=${selectedPeriod}`),
-      //   fetch(`${API_BASE_URL}/api/director/statistics/teachers?period=${selectedPeriod}`),
-      //   fetch(`${API_BASE_URL}/api/director/statistics/attendance?period=${selectedPeriod}`)
-      // ]);
       
-      // Mock data for now
+      // Mock data
       const classStatsData = [
         {
           id: 1,
@@ -200,17 +193,31 @@ const StatisticsPage = () => {
   };
 
   const getGradeColor = (grade: number) => {
-    if (grade >= 4.5) return "text-green-600";
-    if (grade >= 4.0) return "text-blue-600";
-    if (grade >= 3.5) return "text-yellow-600";
-    return "text-red-600";
+    if (grade >= 4.5) return "text-green-600 dark:text-green-400";
+    if (grade >= 4.0) return "text-blue-600 dark:text-blue-400";
+    if (grade >= 3.5) return "text-yellow-600 dark:text-yellow-400";
+    return "text-red-600 dark:text-red-400";
   };
 
   const getAttendanceColor = (rate: number) => {
-    if (rate >= 95) return "text-green-600";
-    if (rate >= 90) return "text-blue-600";
-    if (rate >= 85) return "text-yellow-600";
-    return "text-red-600";
+    if (rate >= 95) return "text-green-600 dark:text-green-400";
+    if (rate >= 90) return "text-blue-600 dark:text-blue-400";
+    if (rate >= 85) return "text-yellow-600 dark:text-yellow-400";
+    return "text-red-600 dark:text-red-400";
+  };
+
+  const getGradeBadgeClass = (grade: number) => {
+    if (grade >= 4.5) return "bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-none";
+    if (grade >= 4.0) return "bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-none";
+    if (grade >= 3.5) return "bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-none";
+    return "bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-none";
+  };
+
+  const getAttendanceBadgeClass = (rate: number) => {
+    if (rate >= 95) return "bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-none";
+    if (rate >= 90) return "bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-none";
+    if (rate >= 85) return "bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-none";
+    return "bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-none";
   };
 
   const totalStudents = classStats.reduce((sum, cls) => sum + cls.studentCount, 0);
@@ -223,90 +230,116 @@ const StatisticsPage = () => {
   const totalExcellentStudents = classStats.reduce((sum, cls) => sum + cls.excellentStudents, 0);
   const totalFailingStudents = classStats.reduce((sum, cls) => sum + cls.failingStudents, 0);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Yuklanmoqda...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Statistika</h1>
-          <p className="text-muted-foreground">Maktab faoliyati statistikasi va tahlili</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Statistika
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Maktab faoliyati statistikasi va tahlili
+            </p>
+          </div>
+          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+            <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors w-48">
+              <SelectValue placeholder="Davrni tanlang" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="current_month">Joriy oy</SelectItem>
+              <SelectItem value="current_quarter">Joriy chorak</SelectItem>
+              <SelectItem value="current_year">Joriy yil</SelectItem>
+              <SelectItem value="last_month">O'tgan oy</SelectItem>
+              <SelectItem value="last_quarter">O'tgan chorak</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Davrni tanlang" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="current_month">Joriy oy</SelectItem>
-            <SelectItem value="current_quarter">Joriy chorak</SelectItem>
-            <SelectItem value="current_year">Joriy yil</SelectItem>
-            <SelectItem value="last_month">O'tgan oy</SelectItem>
-            <SelectItem value="last_quarter">O'tgan chorak</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Overview Statistics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Jami o'quvchilar</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami o'quvchilar
+            </CardTitle>
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalStudents}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {totalStudents}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {classStats.length} ta sinfda
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">O'rtacha baho</CardTitle>
-            <GraduationCap className="h-4 w-4 text-muted-foreground" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'rtacha baho
+            </CardTitle>
+            <GraduationCap className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${getGradeColor(overallAverageGrade)}`}>
+            <div className={`text-3xl md:text-4xl font-bold ${getGradeColor(overallAverageGrade)}`}>
               {overallAverageGrade.toFixed(1)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               5 baholik tizimda
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Davomatiyatlik</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Davomatiyatlik
+            </CardTitle>
+            <Calendar className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${getAttendanceColor(overallAttendanceRate)}`}>
+            <div className={`text-3xl md:text-4xl font-bold ${getAttendanceColor(overallAttendanceRate)}`}>
               {overallAttendanceRate.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               O'rtacha davomatiyatlik
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">A'lo o'quvchilar</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              A'lo o'quvchilar
+            </CardTitle>
+            <Award className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{totalExcellentStudents}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+              {totalExcellentStudents}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {((totalExcellentStudents / totalStudents) * 100).toFixed(1)}% jami o'quvchilardan
             </p>
           </CardContent>
@@ -314,40 +347,69 @@ const StatisticsPage = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 mb-8">
         {/* Class Performance Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Sinflar bo'yicha o'rtacha baho</CardTitle>
-            <CardDescription>Har bir sinf uchun o'rtacha baholar</CardDescription>
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+            <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Sinflar bo'yicha o'rtacha baho
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              Har bir sinf uchun o'rtacha baholar
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={classStats}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis domain={[0, 5]} />
-                <Tooltip />
-                <Bar dataKey="averageGrade" fill="#8884d8" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="name" stroke="#6b7280" />
+                <YAxis domain={[0, 5]} stroke="#6b7280" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+                <Bar dataKey="averageGrade" fill="#8884d8" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Attendance Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Oylik davomatiyatlik</CardTitle>
-            <CardDescription>So'nggi 6 oy davomatiyatlik statistikasi</CardDescription>
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+            <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Oylik davomatiyatlik
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              So'nggi 6 oy davomatiyatlik statistikasi
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={attendanceStats}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis domain={[80, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="attendanceRate" stroke="#82ca9d" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" stroke="#6b7280" />
+                <YAxis domain={[80, 100]} stroke="#6b7280" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="attendanceRate" 
+                  stroke="#82ca9d" 
+                  strokeWidth={3}
+                  dot={{ fill: '#82ca9d', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, fill: '#82ca9d' }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -355,46 +417,62 @@ const StatisticsPage = () => {
       </div>
 
       {/* Subject Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Fanlar bo'yicha natijalar</CardTitle>
-          <CardDescription>Har bir fan bo'yicha o'quvchilar ko'rsatkichlari</CardDescription>
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Fanlar bo'yicha natijalar
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
+            Har bir fan bo'yicha o'quvchilar ko'rsatkichlari
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
             {subjectPerformance.map((subject, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{subject.subjectName}</h4>
-                    <div className="flex gap-4 text-sm text-muted-foreground">
-                      <span>Jami: {subject.studentCount}</span>
-                      <span className="text-green-600">A'lo: {subject.excellentCount}</span>
-                      <span className="text-red-600">Qoniqarsiz: {subject.failingCount}</span>
-                    </div>
+              <div 
+                key={index} 
+                className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 p-4 hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-bold text-gray-800 dark:text-gray-200 text-lg">
+                    {subject.subjectName}
+                  </h4>
+                  <div className="flex gap-4 text-sm">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">
+                      Jami: {subject.studentCount}
+                    </span>
+                    <span className="text-green-600 dark:text-green-400 font-semibold">
+                      A'lo: {subject.excellentCount}
+                    </span>
+                    <span className="text-red-600 dark:text-red-400 font-semibold">
+                      Qoniqarsiz: {subject.failingCount}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-muted-foreground">O'rtacha baho</span>
-                        <span className={`text-sm font-medium ${getGradeColor(subject.averageGrade)}`}>
-                          {subject.averageGrade.toFixed(1)}
-                        </span>
-                      </div>
-                      <Progress value={(subject.averageGrade / 5) * 100} className="h-2" />
+                </div>
+                <div className="flex items-center gap-6">
+                  <div className="flex-1">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">O'rtacha baho</span>
+                      <span className={`text-sm font-bold ${getGradeColor(subject.averageGrade)}`}>
+                        {subject.averageGrade.toFixed(1)}
+                      </span>
                     </div>
-                    <div className="w-24">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-muted-foreground">Muvaffaqiyat</span>
-                        <span className="text-sm font-medium">
-                          {(((subject.studentCount - subject.failingCount) / subject.studentCount) * 100).toFixed(0)}%
-                        </span>
-                      </div>
-                      <Progress 
-                        value={((subject.studentCount - subject.failingCount) / subject.studentCount) * 100} 
-                        className="h-2" 
-                      />
+                    <Progress 
+                      value={(subject.averageGrade / 5) * 100} 
+                      className="h-2 bg-gray-200 dark:bg-gray-700"
+                    />
+                  </div>
+                  <div className="w-32">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Muvaffaqiyat</span>
+                      <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        {(((subject.studentCount - subject.failingCount) / subject.studentCount) * 100).toFixed(0)}%
+                      </span>
                     </div>
+                    <Progress 
+                      value={((subject.studentCount - subject.failingCount) / subject.studentCount) * 100} 
+                      className="h-2 bg-gray-200 dark:bg-gray-700"
+                    />
                   </div>
                 </div>
               </div>
@@ -406,38 +484,47 @@ const StatisticsPage = () => {
       {/* Detailed Tables */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Class Statistics Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Sinflar statistikasi</CardTitle>
-            <CardDescription>Har bir sinf bo'yicha batafsil ma'lumot</CardDescription>
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+            <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Sinflar statistikasi
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              Har bir sinf bo'yicha batafsil ma'lumot
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <div className="space-y-3">
               {classStats.map((cls) => (
-                <div key={cls.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  key={cls.id} 
+                  className="flex items-center justify-between p-4 bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                >
                   <div>
-                    <div className="font-medium">{cls.name}</div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="font-bold text-gray-800 dark:text-gray-200">{cls.name}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       {cls.studentCount} o'quvchi
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`font-medium ${getGradeColor(cls.averageGrade)}`}>
+                    <Badge className={`font-semibold px-3 py-1 rounded-full mb-1 ${getGradeBadgeClass(cls.averageGrade)}`}>
                       {cls.averageGrade.toFixed(1)} baho
-                    </div>
-                    <div className={`text-sm ${getAttendanceColor(cls.attendanceRate)}`}>
+                    </Badge>
+                    <Badge className={`font-semibold px-3 py-1 rounded-full ${getAttendanceBadgeClass(cls.attendanceRate)}`}>
                       {cls.attendanceRate}% davomat
-                    </div>
+                    </Badge>
                   </div>
                   <div className="text-right">
-                    <Badge variant="outline" className="text-green-600">
-                      A'lo: {cls.excellentStudents}
-                    </Badge>
-                    {cls.failingStudents > 0 && (
-                      <Badge variant="outline" className="text-red-600 ml-1">
-                        Qoniqarsiz: {cls.failingStudents}
+                    <div className="flex gap-2">
+                      <Badge className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-none font-semibold">
+                        A'lo: {cls.excellentStudents}
                       </Badge>
-                    )}
+                      {cls.failingStudents > 0 && (
+                        <Badge className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-none font-semibold">
+                          Qoniqarsiz: {cls.failingStudents}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -446,27 +533,36 @@ const StatisticsPage = () => {
         </Card>
 
         {/* Teacher Statistics Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>O'qituvchilar statistikasi</CardTitle>
-            <CardDescription>O'qituvchilar faoliyati ko'rsatkichlari</CardDescription>
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+            <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              O'qituvchilar statistikasi
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              O'qituvchilar faoliyati ko'rsatkichlari
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <div className="space-y-3">
               {teacherStats.map((teacher) => (
-                <div key={teacher.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  key={teacher.id} 
+                  className="flex items-center justify-between p-4 bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                >
                   <div>
-                    <div className="font-medium">{teacher.name}</div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="font-bold text-gray-800 dark:text-gray-200">{teacher.name}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       {teacher.subjectName} • {teacher.classCount} sinf
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`font-medium ${getGradeColor(teacher.averageGrade)}`}>
-                      {teacher.averageGrade.toFixed(1)} baho
-                    </div>
-                    <div className={`text-sm ${getAttendanceColor(teacher.attendanceRate)}`}>
-                      {teacher.attendanceRate}% davomat
+                    <div className="flex flex-col gap-1">
+                      <Badge className={`font-semibold px-3 py-1 rounded-full ${getGradeBadgeClass(teacher.averageGrade)}`}>
+                        {teacher.averageGrade.toFixed(1)} baho
+                      </Badge>
+                      <Badge className={`font-semibold px-3 py-1 rounded-full ${getAttendanceBadgeClass(teacher.attendanceRate)}`}>
+                        {teacher.attendanceRate}% davomat
+                      </Badge>
                     </div>
                   </div>
                 </div>

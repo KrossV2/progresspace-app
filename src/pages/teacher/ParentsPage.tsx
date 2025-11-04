@@ -7,9 +7,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Phone, User, Mail, Edit, Trash2, X, Save } from "lucide-react";
+import { Search, Plus, Phone, User, Mail, Edit, Trash2, X, Save, Users, GraduationCap, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import "@/styles/teacher/ParentPage.css"
 
 interface ParentRow {
   id: number;
@@ -45,7 +44,6 @@ const TeacherParentsPage = () => {
 
   const { toast } = useToast();
 
-  // Mock data for classes and relationships
   const classes = [
     { id: "1", name: "9-A" },
     { id: "2", name: "9-B" },
@@ -72,7 +70,6 @@ const TeacherParentsPage = () => {
   const fetchParents = async () => {
     try {
       setLoading(true);
-      // Mock data - API call replacement
       setTimeout(() => {
         const mockData: ParentRow[] = [
           { 
@@ -145,7 +142,6 @@ const TeacherParentsPage = () => {
     setFilteredRows(filtered);
   };
 
-  // CREATE - Yangi ota-ona qo'shish
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -177,7 +173,6 @@ const TeacherParentsPage = () => {
     }
   };
 
-  // UPDATE - Ota-onani tahrirlash
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingParent) return;
@@ -206,7 +201,6 @@ const TeacherParentsPage = () => {
     }
   };
 
-  // DELETE - Ota-onani o'chirish
   const handleDelete = async () => {
     if (!parentToDelete) return;
 
@@ -280,21 +274,21 @@ const TeacherParentsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-colors duration-300 p-4 md:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-start">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
               Ota-onalar
             </h1>
-            <p className="text-slate-600 mt-2 text-lg">
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
               O'quvchilar ota-onalari bilan aloqa uchun ma'lumotlar
             </p>
           </div>
           <Button 
             onClick={() => setIsCreateDialogOpen(true)}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <Plus className="h-5 w-5 mr-2" />
             Yangi Ota-ona
@@ -303,82 +297,102 @@ const TeacherParentsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-lg mr-4">
-                <User className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">Jami Ota-onalar</p>
-                <p className="text-2xl font-bold text-slate-900">{rows.length}</p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami Ota-onalar
+            </CardTitle>
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {rows.length}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Ro'yxatdagi ota-onalar
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg mr-4">
-                <User className="h-6 w-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">Onalar</p>
-                <p className="text-2xl font-bold text-slate-900">
-                  {rows.filter(p => p.relationship === 'mother').length}
-                </p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Onalar
+            </CardTitle>
+            <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+              {rows.filter(p => p.relationship === 'mother').length}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Farzand onalari
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-orange-100 rounded-lg mr-4">
-                <User className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">Otalar</p>
-                <p className="text-2xl font-bold text-slate-900">
-                  {rows.filter(p => p.relationship === 'father').length}
-                </p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Otalar
+            </CardTitle>
+            <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400">
+              {rows.filter(p => p.relationship === 'father').length}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Farzand otalari
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg mr-4">
-                <Phone className="h-6 w-6 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">Aloqa</p>
-                <p className="text-2xl font-bold text-slate-900">100%</p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Aloqa
+            </CardTitle>
+            <Phone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
+              100%
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Bog'lanish imkoniyati
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Search and Filters */}
-      <Card className="mb-6 bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Qidiruv va Filtrlash
+          </CardTitle>
+          <p className="text-gray-500 dark:text-gray-400 text-lg mt-2">
+            Ota-onalarni qidirish va filtrlash
+          </p>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
                 placeholder="Ota-ona, o'quvchi yoki telefon bo'yicha qidirish..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-12 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors h-12 text-lg"
               />
             </div>
-            <div className="text-sm text-slate-600">
+            <div className="text-lg font-semibold text-gray-600 dark:text-gray-400">
               {filteredRows.length} ta natija
             </div>
           </div>
@@ -386,221 +400,264 @@ const TeacherParentsPage = () => {
       </Card>
 
       {/* Parents Table */}
-      <Card className="bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm">
-        <CardHeader>
-          <CardTitle>Ota-onalar Ro'yxati</CardTitle>
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Ota-onalar Ro'yxati
+          </CardTitle>
+          <p className="text-gray-500 dark:text-gray-400 text-lg mt-2">
+            Barcha ro'yxatga olingan ota-onalar
+          </p>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+              <TableRow className="border-b border-gray-200 dark:border-gray-600">
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Ota-ona</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Aloqa</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Farzandi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Sinfi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Qarindoshlik</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Harakatlar</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
                 <TableRow>
-                  <TableHead>Ota-ona</TableHead>
-                  <TableHead>Aloqa</TableHead>
-                  <TableHead>Farzandi</TableHead>
-                  <TableHead>Sinfi</TableHead>
-                  <TableHead>Qarindoshlik</TableHead>
-                  <TableHead className="text-right">Harakatlar</TableHead>
+                  <TableCell colSpan={6} className="text-center py-12">
+                    <div className="flex justify-center">
+                      <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin"></div>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400 mt-4">Ma'lumotlar yuklanmoqda...</p>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                      </div>
-                      <p className="text-slate-600 mt-2">Ma'lumotlar yuklanmoqda...</p>
-                    </TableCell>
-                  </TableRow>
-                ) : filteredRows.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      <User className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                      <p className="text-slate-600">Hech qanday natija topilmadi</p>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredRows.map((parent) => (
-                    <TableRow key={parent.id} className="hover:bg-slate-50/50">
-                      <TableCell>
+              ) : filteredRows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-12">
+                    <Users className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                      Hech qanday natija topilmadi
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-500">
+                      Qidiruv so'rovingiz bo'yicha hech narsa topilmadi
+                    </p>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredRows.map((parent) => (
+                  <TableRow key={parent.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full">
+                          <User className="h-5 w-5 text-white" />
+                        </div>
                         <div>
-                          <p className="font-medium text-slate-900">
+                          <p className="font-semibold text-gray-800 dark:text-gray-200">
                             {parent.firstName} {parent.lastName}
                           </p>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-slate-400" />
-                            <span className="text-sm">{parent.phoneNumber}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-4 w-4 text-slate-400" />
-                            <span className="text-sm">{parent.email}</span>
-                          </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-600 dark:text-gray-400 text-sm">{parent.phoneNumber}</span>
                         </div>
-                      </TableCell>
-                      <TableCell className="font-medium">{parent.studentName}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{parent.studentClass}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        {getRelationshipBadge(parent.relationship)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleCall(parent.phoneNumber)}
-                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                          >
-                            <Phone className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEmail(parent.email)}
-                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          >
-                            <Mail className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openEditDialog(parent)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={() => openDeleteDialog(parent)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-600 dark:text-gray-400 text-sm">{parent.email}</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4 text-blue-500" />
+                        <span className="font-medium text-gray-800 dark:text-gray-200">{parent.studentName}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-blue-200 font-semibold">
+                        {parent.studentClass}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      {getRelationshipBadge(parent.relationship)}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCall(parent.phoneNumber)}
+                          className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200 h-10 w-10 p-0"
+                        >
+                          <Phone className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEmail(parent.email)}
+                          className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
+                        >
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(parent)}
+                          className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
+                          onClick={() => openDeleteDialog(parent)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
       {/* CREATE Parent Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle>Yangi Ota-ona</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Yangi Ota-ona
+            </DialogTitle>
+            <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
               Yangi ota-ona ma'lumotlarini kiriting
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleCreate}>
-            <div className="grid gap-4 py-4">
+            <div className="space-y-6 my-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="firstName">Ism</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Ism *
+                  </Label>
                   <Input
                     id="firstName"
                     value={formData.firstName}
                     onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     placeholder="Ism"
                     required
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lastName">Familiya</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Familiya *
+                  </Label>
                   <Input
                     id="lastName"
                     value={formData.lastName}
                     onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     placeholder="Familiya"
                     required
                   />
                 </div>
               </div>
               
-              <div className="grid gap-2">
-                <Label htmlFor="phoneNumber">Telefon</Label>
+              <div className="space-y-2">
+                <Label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Telefon *
+                </Label>
                 <Input
                   id="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="+998901234567"
                   required
                 />
               </div>
               
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Email *
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="email@example.com"
                   required
                 />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="studentName">Farzand Ismi</Label>
+              <div className="space-y-2">
+                <Label htmlFor="studentName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Farzand Ismi *
+                </Label>
                 <Input
                   id="studentName"
                   value={formData.studentName}
                   onChange={(e) => setFormData({...formData, studentName: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="Farzandning ismi"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="studentClass">Farzand Sinfi</Label>
-                  <Select value={formData.studentClass} onValueChange={(value) => setFormData({...formData, studentClass: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sinf tanlang" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {classes.map((cls) => (
-                        <SelectItem key={cls.id} value={cls.name}>
-                          {cls.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="studentClass" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Farzand Sinfi
+                  </Label>
+                  <select 
+                    id="studentClass"
+                    value={formData.studentClass}
+                    onChange={(e) => setFormData(prev => ({ ...prev, studentClass: e.target.value }))}
+                    className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
+                  >
+                    <option value="">Sinf tanlang</option>
+                    {classes.map((cls) => (
+                      <option key={cls.id} value={cls.name}>
+                        {cls.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="relationship">Qarindoshlik</Label>
-                  <Select value={formData.relationship} onValueChange={(value) => setFormData({...formData, relationship: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tanlang" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {relationships.map((rel) => (
-                        <SelectItem key={rel.id} value={rel.id}>
-                          {rel.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="relationship" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Qarindoshlik
+                  </Label>
+                  <select 
+                    id="relationship"
+                    value={formData.relationship}
+                    onChange={(e) => setFormData(prev => ({ ...prev, relationship: e.target.value }))}
+                    className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
+                  >
+                    <option value="">Tanlang</option>
+                    {relationships.map((rel) => (
+                      <option key={rel.id} value={rel.id}>
+                        {rel.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                <X className="h-4 w-4 mr-2" />
-                Bekor qilish
-              </Button>
-              <Button type="submit">
-                <Save className="h-4 w-4 mr-2" />
+              <Button 
+                onClick={handleCreate}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+              >
+                <Save className="h-5 w-5 mr-2" />
                 Saqlash
               </Button>
             </DialogFooter>
@@ -610,107 +667,129 @@ const TeacherParentsPage = () => {
 
       {/* EDIT Parent Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle>Ota-ona Ma'lumotlarini Tahrirlash</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Ota-ona Ma'lumotlarini Tahrirlash
+            </DialogTitle>
+            <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
               Ota-ona ma'lumotlarini o'zgartiring
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEdit}>
-            <div className="grid gap-4 py-4">
+            <div className="space-y-6 my-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-firstName">Ism</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-firstName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Ism *
+                  </Label>
                   <Input
                     id="edit-firstName"
                     value={formData.firstName}
                     onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     required
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-lastName">Familiya</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-lastName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Familiya *
+                  </Label>
                   <Input
                     id="edit-lastName"
                     value={formData.lastName}
                     onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     required
                   />
                 </div>
               </div>
               
-              <div className="grid gap-2">
-                <Label htmlFor="edit-phoneNumber">Telefon</Label>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phoneNumber" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Telefon *
+                </Label>
                 <Input
                   id="edit-phoneNumber"
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   required
                 />
               </div>
               
-              <div className="grid gap-2">
-                <Label htmlFor="edit-email">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Email *
+                </Label>
                 <Input
                   id="edit-email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   required
                 />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="edit-studentName">Farzand Ismi</Label>
+              <div className="space-y-2">
+                <Label htmlFor="edit-studentName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Farzand Ismi *
+                </Label>
                 <Input
                   id="edit-studentName"
                   value={formData.studentName}
                   onChange={(e) => setFormData({...formData, studentName: e.target.value})}
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-studentClass">Farzand Sinfi</Label>
-                  <Select value={formData.studentClass} onValueChange={(value) => setFormData({...formData, studentClass: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sinf tanlang" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {classes.map((cls) => (
-                        <SelectItem key={cls.id} value={cls.name}>
-                          {cls.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-studentClass" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Farzand Sinfi
+                  </Label>
+                  <select 
+                    id="edit-studentClass"
+                    value={formData.studentClass}
+                    onChange={(e) => setFormData(prev => ({ ...prev, studentClass: e.target.value }))}
+                    className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
+                  >
+                    <option value="">Sinf tanlang</option>
+                    {classes.map((cls) => (
+                      <option key={cls.id} value={cls.name}>
+                        {cls.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-relationship">Qarindoshlik</Label>
-                  <Select value={formData.relationship} onValueChange={(value) => setFormData({...formData, relationship: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tanlang" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {relationships.map((rel) => (
-                        <SelectItem key={rel.id} value={rel.id}>
-                          {rel.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-relationship" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Qarindoshlik
+                  </Label>
+                  <select 
+                    id="edit-relationship"
+                    value={formData.relationship}
+                    onChange={(e) => setFormData(prev => ({ ...prev, relationship: e.target.value }))}
+                    className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
+                  >
+                    <option value="">Tanlang</option>
+                    {relationships.map((rel) => (
+                      <option key={rel.id} value={rel.id}>
+                        {rel.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                <X className="h-4 w-4 mr-2" />
-                Bekor qilish
-              </Button>
-              <Button type="submit">
-                <Save className="h-4 w-4 mr-2" />
+              <Button 
+                onClick={handleEdit}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+              >
+                <Save className="h-5 w-5 mr-2" />
                 Saqlash
               </Button>
             </DialogFooter>
@@ -720,25 +799,41 @@ const TeacherParentsPage = () => {
 
       {/* DELETE Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle>Ota-onani O'chirish</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Ota-onani O'chirish
+            </DialogTitle>
+            <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
               Bu ota-onani ro'yxatdan o'chirishni istaysizmi?
             </DialogDescription>
           </DialogHeader>
           {parentToDelete && (
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <p className="font-semibold">{parentToDelete.firstName} {parentToDelete.lastName}</p>
-              <p className="text-sm text-slate-600">{parentToDelete.studentName} • {parentToDelete.studentClass}</p>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
+              <p className="font-semibold text-gray-800 dark:text-gray-200">
+                {parentToDelete.firstName} {parentToDelete.lastName}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {parentToDelete.studentName} • {parentToDelete.studentClass}
+              </p>
             </div>
           )}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setIsDeleteDialogOpen(false)}
+              className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+            >
               Bekor qilish
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDelete}>
-              <Trash2 className="h-4 w-4 mr-2" />
+            <Button 
+              type="button" 
+              variant="destructive" 
+              onClick={handleDelete}
+              className="rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <Trash2 className="h-5 w-5 mr-2" />
               O'chirish
             </Button>
           </DialogFooter>

@@ -80,27 +80,27 @@ const StudentBehaviorsPage = () => {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 transition-colors duration-300 p-4 md:p-8">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="text-center space-y-4 mb-8">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
           Xulq-atvor Jurnali
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Rag'batlar, ogohlantirishlar va ballar tizimi
         </p>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-blue-200 dark:border-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                <TrendingUp className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Umumiy Ballar</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Umumiy Ballar</p>
                 <p className={`text-2xl font-bold ${getPointsColor(totalPoints)}`}>
                   {totalPoints} ball
                 </p>
@@ -109,29 +109,29 @@ const StudentBehaviorsPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-green-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-green-200 dark:border-green-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-100 rounded-full">
-                <Award className="h-6 w-6 text-green-600" />
+              <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                <Award className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Rag'batlar</p>
-                <p className="text-2xl font-bold text-green-600">{rewardsCount} ta</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Rag'batlar</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{rewardsCount} ta</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-orange-200 shadow-lg">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-orange-200 dark:border-orange-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-orange-100 rounded-full">
-                <AlertTriangle className="h-6 w-6 text-orange-600" />
+              <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-full">
+                <AlertTriangle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Ogohlantirishlar</p>
-                <p className="text-2xl font-bold text-orange-600">{penaltiesCount} ta</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Ogohlantirishlar</p>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{penaltiesCount} ta</p>
               </div>
             </div>
           </CardContent>
@@ -139,61 +139,71 @@ const StudentBehaviorsPage = () => {
       </div>
 
       {/* Behaviors Table */}
-      <Card className="bg-white/90 backdrop-blur-sm border-gray-200 shadow-xl">
-        <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-lg">
-          <CardTitle className="flex items-center space-x-2">
-            <Trophy className="h-5 w-5" />
-            <span>Xulq-atvor Yozuvlari</span>
+      <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-xl mb-8">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-xl">
+          <CardTitle className="flex items-center space-x-3">
+            <Trophy className="h-6 w-6" />
+            <span className="text-xl">Xulq-atvor Yozuvlari</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-blue-50 hover:bg-blue-50">
-                  <TableHead className="font-semibold text-blue-900 py-4">Sana</TableHead>
-                  <TableHead className="font-semibold text-blue-900 py-4">Turi</TableHead>
-                  <TableHead className="font-semibold text-blue-900 py-4">Izoh</TableHead>
-                  <TableHead className="font-semibold text-blue-900 py-4">Ballar</TableHead>
-                  <TableHead className="font-semibold text-blue-900 py-4">O'qituvchi</TableHead>
+                <TableRow className="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-50 dark:hover:bg-blue-900/30">
+                  <TableHead className="font-semibold text-blue-900 dark:text-blue-100 py-4 text-center">Sana</TableHead>
+                  <TableHead className="font-semibold text-blue-900 dark:text-blue-100 py-4 text-center">Turi</TableHead>
+                  <TableHead className="font-semibold text-blue-900 dark:text-blue-100 py-4 text-center">Izoh</TableHead>
+                  <TableHead className="font-semibold text-blue-900 dark:text-blue-100 py-4 text-center">Ballar</TableHead>
+                  <TableHead className="font-semibold text-blue-900 dark:text-blue-100 py-4 text-center">O'qituvchi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {rows.map((r) => (
                   <TableRow 
                     key={r.id} 
-                    className="hover:bg-blue-50/50 transition-colors duration-200 border-b border-blue-100"
+                    className="hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors duration-200 border-b border-blue-100 dark:border-blue-800"
                   >
                     <TableCell className="font-medium py-4">
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-4 w-4 text-blue-500" />
-                        <span>{r.date}</span>
+                      <div className="flex items-center space-x-2 justify-center">
+                        <Clock className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+                        <span className="text-gray-700 dark:text-gray-300">{r.date}</span>
                       </div>
                     </TableCell>
                     <TableCell className="py-4">
-                      <Badge 
-                        variant={getTypeVariant(r.type)}
-                        className={`
-                          ${r.type === "reward" ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-red-100 text-red-800 hover:bg-red-200"}
-                          font-semibold px-3 py-1 rounded-full flex items-center space-x-1 w-fit
-                        `}
-                      >
-                        {getTypeIcon(r.type)}
-                        <span>{r.type === "reward" ? "Rag'bat" : "Ogohlantirish"}</span>
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div>
-                        <p className="font-medium text-gray-900">{r.description}</p>
+                      <div className="flex justify-center">
+                        <Badge 
+                          variant={getTypeVariant(r.type)}
+                          className={`
+                            ${
+                              r.type === "reward" 
+                                ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800" 
+                                : "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800"
+                            }
+                            font-semibold px-3 py-1 rounded-full flex items-center space-x-2 w-fit transition-colors
+                          `}
+                        >
+                          {getTypeIcon(r.type)}
+                          <span>{r.type === "reward" ? "Rag'bat" : "Ogohlantirish"}</span>
+                        </Badge>
                       </div>
                     </TableCell>
                     <TableCell className="py-4">
-                      <span className={`font-bold ${getPointsColor(r.points)}`}>
-                        {r.points > 0 ? '+' : ''}{r.points}
-                      </span>
+                      <div className="text-center">
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{r.description}</p>
+                      </div>
                     </TableCell>
-                    <TableCell className="py-4 text-gray-600">
-                      {r.teacher}
+                    <TableCell className="py-4">
+                      <div className="flex justify-center">
+                        <span className={`font-bold text-lg ${getPointsColor(r.points)}`}>
+                          {r.points > 0 ? '+' : ''}{r.points}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="text-center text-gray-600 dark:text-gray-400">
+                        {r.teacher}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -203,62 +213,101 @@ const StudentBehaviorsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Legend */}
-      <Card className="bg-white/80 backdrop-blur-sm border-gray-200">
-        <CardContent className="p-4">
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>Rag'bat - Ijobiy xatti-harakatlar uchun</span>
+      {/* Legend and Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Legend */}
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-lg text-gray-800 dark:text-gray-200">
+              Tushuntirish
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0"></div>
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <strong>Rag'bat</strong> - Ijobiy xatti-harakatlar uchun
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-red-500 rounded-full flex-shrink-0"></div>
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <strong>Ogohlantirish</strong> - Salbiy xatti-harakatlar uchun
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-blue-500 rounded-full flex-shrink-0"></div>
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <strong>Ballar</strong> - Harakatlarning qiymati
+                </span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span>Ogohlantirish - Salbiy xatti-harakatlar uchun</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span>Ballar - Harakatlarning qiymati</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Summary */}
-      <Card className="bg-white/80 backdrop-blur-sm border-purple-200">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-purple-900">
-            <TrendingUp className="h-5 w-5" />
-            <span>Statistika Xulosasi</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Ijobiy ballar:</span>
-                <span className="font-semibold text-green-600">
-                  +{rows.filter(r => r.points > 0).reduce((sum, r) => sum + r.points, 0)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Salbiy ballar:</span>
-                <span className="font-semibold text-red-600">
-                  {rows.filter(r => r.points < 0).reduce((sum, r) => sum + r.points, 0)}
-                </span>
+        {/* Summary */}
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-purple-200 dark:border-purple-700">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-3 text-purple-900 dark:text-purple-100">
+              <TrendingUp className="h-5 w-5" />
+              <span>Statistika Xulosasi</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Ijobiy ballar:</span>
+                  <span className="font-semibold text-green-600 dark:text-green-400">
+                    +{rows.filter(r => r.points > 0).reduce((sum, r) => sum + r.points, 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Salbiy ballar:</span>
+                  <span className="font-semibold text-red-600 dark:text-red-400">
+                    {rows.filter(r => r.points < 0).reduce((sum, r) => sum + r.points, 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">O'rtacha ball/kun:</span>
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    {(totalPoints / Math.max(rows.length, 1)).toFixed(1)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Faollik darajasi:</span>
+                  <span className="font-semibold text-purple-600 dark:text-purple-400">
+                    {Math.round((rewardsCount / Math.max(rows.length, 1)) * 100)}%
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>O'rtacha ball/kun:</span>
-                <span className="font-semibold text-blue-600">
-                  {(totalPoints / rows.length).toFixed(1)}
-                </span>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Overall Performance */}
+      <Card className="mt-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+        <CardContent className="p-6">
+          <div className="text-center">
+            <h3 className="text-xl font-bold mb-2">Umumiy Natija</h3>
+            <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold">{totalPoints}</div>
+                <div className="text-blue-100">Jami Ballar</div>
               </div>
-              <div className="flex justify-between">
-                <span>Faollik darajasi:</span>
-                <span className="font-semibold text-purple-600">
-                  {Math.round((rewardsCount / rows.length) * 100)}%
-                </span>
+              <div className="text-center">
+                <div className="text-3xl font-bold">{rewardsCount}</div>
+                <div className="text-blue-100">Rag'batlar</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">{penaltiesCount}</div>
+                <div className="text-blue-100">Ogohlantirishlar</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">{rows.length}</div>
+                <div className="text-blue-100">Jami Yozuvlar</div>
               </div>
             </div>
           </div>

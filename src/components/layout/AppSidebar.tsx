@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { 
   User, 
   BookOpen, 
@@ -15,7 +15,7 @@ import {
   Baby,
   MapPin,
   Building,
-  FolderOpen // Добавили иконку для файлов
+  FolderOpen
 } from "lucide-react";
 import { useUser, UserRole } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -46,7 +46,7 @@ const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
       { title: t('nav.attendance'), url: "/teacher/attendance", icon: ClipboardCheck, group: "management" },
       { title: t('nav.students'), url: "/teacher/students", icon: Users, group: "management" },
       { title: t('nav.parents'), url: "/teacher/parents", icon: Baby, group: "management" },
-      { title: t('nav.files'), url: "/teacher/files", icon: FolderOpen, group: "resources" }, // ДОБАВИЛИ ЭТУ СТРОКУ
+      { title: t('nav.files'), url: "/teacher/files", icon: FolderOpen, group: "resources" },
     ],
     parent: [
       { title: t('nav.children'), url: "/parent/children", icon: Baby, group: "academic" },
@@ -77,12 +77,18 @@ const getRoleBasedItems = (role: UserRole, t: (key: string) => string) => {
 
 export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const { user } = useUser();
   const { t } = useLanguage();
 
   const isActive = (path: string) => currentPath === path || (path === "/" && currentPath === "/");
   
+  // Функция для перехода на главную страницу (dashboard)
+  const goToDashboard = (): void => {
+    navigate('/');
+  };
+
   if (!user) return null;
   
   const sidebarItems = getRoleBasedItems(user.role, t);
@@ -102,13 +108,17 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
       {/* Sidebar Header */}
       <div className={`border-b border-border ${collapsed ? "p-3" : "p-6"}`}>
         <div className={`flex items-center ${collapsed ? "justify-center" : "justify-between"}`}>
-          <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
+          <div 
+            className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""} cursor-pointer hover:opacity-80 transition-opacity`}
+            onClick={goToDashboard}
+            title={t('app.name')}
+          >
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground">
               <School className="h-5 w-5" />
             </div>
             {!collapsed && (
               <div className="flex flex-col">
-                <h1 className="font-bold text-lg text-gradient-primary">{t('app.name')}</h1>
+                <h1 className="font-bold text-lg text-gradient-primary">Sinfdosh AI</h1>
                 <p className="text-xs text-muted-foreground">{t('app.subtitle')}</p>
               </div>
             )}
@@ -117,6 +127,7 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
             <button
               onClick={onToggle}
               className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Yon panelni yopish"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -127,14 +138,41 @@ export function AppSidebar({ collapsed = false, onToggle }: AppSidebarProps) {
       {/* Sidebar Content */}
       <div className="flex-1 overflow-y-auto">
         <div className={collapsed ? "p-2" : "p-4"}>
+          {/* Dashboard Link */}
+          <div className="mb-4">
+            {!collapsed && (
+              <div className="text-sm font-medium text-muted-foreground mb-2 px-2">
+                {t('menu.main')}
+              </div>
+            )}
+            <div className="space-y-1">
+              <NavLink
+                to="/"
+                className={({ isActive: active }) =>
+                  `flex items-center rounded-xl transition-all duration-200
+                  ${active 
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "hover:bg-secondary hover:shadow-sm"
+                  }
+                  ${collapsed ? "justify-center p-2" : "gap-3 px-3 py-2"}`
+                }
+              >
+                <BarChart3 className={`${collapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                {!collapsed && (
+                  <span className="font-medium truncate text-sm">Dashboard</span>
+                )}
+              </NavLink>
+            </div>
+          </div>
+
+          {/* Other Navigation Items */}
           {Object.entries(groupedItems).map(([groupName, items]) => (
             <div key={groupName} className="mb-4">
-              {!collapsed && (
+              {!collapsed && groupName !== 'main' && (
                 <div className="text-sm font-medium text-muted-foreground mb-2 px-2">
-                  {groupName === 'main' ? t('menu.main') : 
-                   groupName === 'management' ? t('menu.management') : 
+                  {groupName === 'management' ? t('menu.management') : 
                    groupName === 'academic' ? t('menu.academic') : 
-                   groupName === 'resources' ? t('menu.resources') : groupName} {/* ДОБАВИЛИ РЕСУРСЫ */}
+                   groupName === 'resources' ? t('menu.resources') : groupName}
                 </div>
               )}
               <div className="space-y-1">

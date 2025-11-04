@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Bell, Megaphone, AlertTriangle, Info, Calendar, BookOpen, Users, Clock, CheckCircle2, Filter } from "lucide-react";
+import { Bell, Megaphone, AlertTriangle, Info, Calendar, BookOpen, Users, Clock, CheckCircle2, Filter, Eye, EyeOff } from "lucide-react";
 
 interface NotificationItem {
   id: number;
@@ -142,87 +142,120 @@ const StudentNotificationsPage = () => {
   const totalCount = list.length;
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-colors duration-300 p-4 md:p-8">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Bildirishnomalar
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Maktabdan kelgan barcha xabarlar va e'lonlar
-        </p>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Bildirishnomalar
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Maktabdan kelgan barcha xabarlar va e'lonlar
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl font-semibold">
+              {unreadCount} ta yangi
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Bell className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Jami Xabarlar</p>
-                <p className="text-2xl font-bold text-blue-600">{totalCount}</p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami Xabarlar
+            </CardTitle>
+            <Bell className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {totalCount}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Barcha bildirishnomalar
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-orange-200 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-orange-100 rounded-full">
-                <AlertTriangle className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">O'qilmagan</p>
-                <p className="text-2xl font-bold text-orange-600">{unreadCount}</p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'qilmagan
+            </CardTitle>
+            <AlertTriangle className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400">
+              {unreadCount}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Yangi xabarlar soni
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-green-200 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-100 rounded-full">
-                <CheckCircle2 className="h-6 w-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">O'qilgan</p>
-                <p className="text-2xl font-bold text-green-600">{totalCount - unreadCount}</p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'qilgan
+            </CardTitle>
+            <CheckCircle2 className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
+              {totalCount - unreadCount}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Ko'rilgan xabarlar
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-purple-200 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-100 rounded-full">
-                <Users className="h-6 w-6 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Faol bo'limlar</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {new Set(list.map(item => item.sender)).size}
-                </p>
-              </div>
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Faol Bo'limlar
+            </CardTitle>
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
+              {new Set(list.map(item => item.sender)).size}
             </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
+              Xabar yuboruvchilar
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters and Actions */}
-      <Card className="bg-white/80 backdrop-blur-sm border-gray-200">
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Filtrlash va Boshqaruv
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
+            Xabarlarni turi bo'yicha filtrlash va boshqarish
+          </CardDescription>
+        </CardHeader>
         <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div className="flex flex-wrap gap-3">
               <Button 
                 variant={filter === "all" ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter("all")}
+                className="rounded-xl transition-all duration-200"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Barchasi
@@ -231,14 +264,16 @@ const StudentNotificationsPage = () => {
                 variant={filter === "unread" ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter("unread")}
+                className="rounded-xl transition-all duration-200"
               >
-                <AlertTriangle className="h-4 w-4 mr-2" />
+                <EyeOff className="h-4 w-4 mr-2" />
                 O'qilmagan ({unreadCount})
               </Button>
               <Button 
                 variant={filter === "announcement" ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter("announcement")}
+                className="rounded-xl transition-all duration-200"
               >
                 <Megaphone className="h-4 w-4 mr-2" />
                 E'lonlar
@@ -247,6 +282,7 @@ const StudentNotificationsPage = () => {
                 variant={filter === "homework" ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter("homework")}
+                className="rounded-xl transition-all duration-200"
               >
                 <BookOpen className="h-4 w-4 mr-2" />
                 Vazifalar
@@ -255,6 +291,7 @@ const StudentNotificationsPage = () => {
                 variant={filter === "event" ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter("event")}
+                className="rounded-xl transition-all duration-200"
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Tadbirlar
@@ -265,6 +302,7 @@ const StudentNotificationsPage = () => {
               size="sm" 
               onClick={markAllAsRead}
               disabled={unreadCount === 0}
+              className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200"
             >
               <CheckCircle2 className="h-4 w-4 mr-2" />
               Barchasini o'qilgan deb belgilash
@@ -278,46 +316,54 @@ const StudentNotificationsPage = () => {
         {filteredList.map((notification) => (
           <Card 
             key={notification.id} 
-            className={`bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 ${
-              !notification.read ? 'ring-2 ring-blue-500' : ''
+            className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden ${
+              !notification.read ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
             }`}
           >
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center space-x-2">
-                  {getTypeIcon(notification.type)}
-                  <CardTitle className="text-lg">{notification.title}</CardTitle>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+            
+            <CardHeader className="pb-4">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-xl ${getTypeColor(notification.type).split(' ')[0]} ${getTypeColor(notification.type).split(' ')[1]}`}>
+                    {getTypeIcon(notification.type)}
+                  </div>
+                  <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                    {notification.title}
+                  </CardTitle>
                 </div>
                 <div className="flex items-center space-x-2">
                   {!notification.read && (
-                    <div className={`w-3 h-3 rounded-full ${getPriorityColor(notification.priority)}`} />
+                    <div className={`w-3 h-3 rounded-full ${getPriorityColor(notification.priority)} animate-pulse`} />
                   )}
                 </div>
               </div>
-              <CardDescription className="flex flex-wrap gap-2">
-                <Badge variant="outline" className={getTypeColor(notification.type)}>
+              
+              <div className="flex flex-wrap gap-2">
+                <Badge className={`font-semibold px-3 py-1 rounded-full border ${getTypeColor(notification.type)}`}>
                   {notification.type === "announcement" ? "E'lon" : 
                    notification.type === "warning" ? "Ogohlantirish" : 
                    notification.type === "info" ? "Ma'lumot" : 
                    notification.type === "homework" ? "Vazifa" : "Tadbir"}
                 </Badge>
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs font-medium">
                   {notification.category}
                 </Badge>
-              </CardDescription>
+              </div>
             </CardHeader>
+            
             <CardContent className="space-y-4">
-              <div className="text-gray-700 leading-relaxed">
+              <div className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">
                 {notification.message}
               </div>
               
-              <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+              <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
                 <div className="space-y-1">
-                  <div className="flex items-center space-x-1 text-xs text-gray-500">
+                  <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
                     <Clock className="h-3 w-3" />
                     <span>{notification.date}</span>
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-gray-600 dark:text-gray-500 font-medium">
                     {notification.sender}
                   </div>
                 </div>
@@ -327,8 +373,9 @@ const StudentNotificationsPage = () => {
                     size="sm" 
                     variant="outline"
                     onClick={() => markAsRead(notification.id)}
+                    className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200"
                   >
-                    <CheckCircle2 className="h-4 w-4 mr-1" />
+                    <Eye className="h-4 w-4 mr-1" />
                     O'qildi
                   </Button>
                 )}
@@ -340,16 +387,20 @@ const StudentNotificationsPage = () => {
 
       {/* Empty State */}
       {filteredList.length === 0 && (
-        <Card className="bg-white/80 backdrop-blur-sm border-gray-200 text-center">
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 text-center">
           <CardContent className="p-12">
-            <Bell className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
+            <Bell className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
               Hech qanday xabar topilmadi
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-500">
               {filter === "all" 
                 ? "Hozircha hech qanday xabar yo'q" 
-                : `"${filter}" turidagi xabarlar topilmadi`}
+                : `"${
+                    filter === "unread" ? "O'qilmagan" :
+                    filter === "announcement" ? "E'lon" :
+                    filter === "homework" ? "Vazifa" : "Tadbir"
+                  }" turidagi xabarlar topilmadi`}
             </p>
           </CardContent>
         </Card>

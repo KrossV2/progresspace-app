@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 2rem;
-  background: white;
+background-color: hsl(var(--card));
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -37,7 +37,7 @@
   justify-content: center;
   min-height: 400px;
   text-align: center;
-  background: white;
+background-color: hsl(var(--card));
   border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -141,7 +141,7 @@
 }
 
 .classes-table-card {
-  background: white;
+background-color: hsl(var(--card));
   border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
@@ -530,7 +530,7 @@
 }
 
 .select-content {
-  background: white;
+background-color: hsl(var(--card));
   border-radius: 12px;
   border: 2px solid #e2e8f0;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);

@@ -9,8 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Plus, BookOpen, UserPlus, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
-import "@/styles/TeachersPage.css";
 
 interface Subject {
   id: number;
@@ -258,249 +256,301 @@ const TeachersPage = () => {
 
   if (loading) {
     return (
-      <div className="teachers-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="teachers-page">
-      <div className="teachers-header">
-        <div>
-          <h1 className="teachers-title">O'qituvchilar</h1>
-          <p className="teachers-subtitle">Maktabdagi barcha o'qituvchilarni boshqaring</p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="btn btn-primary">
-              <UserPlus className="btn-icon" />
-              Yangi o'qituvchi
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="teacher-dialog">
-            <DialogHeader>
-              <DialogTitle className="dialog-title">
-                {editingTeacher ? "O'qituvchini tahrirlash" : "Yangi o'qituvchi qo'shish"}
-              </DialogTitle>
-              <DialogDescription className="dialog-description">
-                O'qituvchi ma'lumotlarini kiriting va saqlang.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="firstName" className="form-label">
-                  Ism
-                </Label>
-                <Input
-                  id="firstName"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  className="form-input"
-                  placeholder="Ismni kiriting"
-                />
-              </div>
-              <div className="form-row">
-                <Label htmlFor="lastName" className="form-label">
-                  Familiya
-                </Label>
-                <Input
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="form-input"
-                  placeholder="Familiyani kiriting"
-                />
-              </div>
-              <div className="form-row">
-                <Label htmlFor="email" className="form-label">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="form-input"
-                  placeholder="email@example.com"
-                />
-              </div>
-              <div className="form-row">
-                <Label htmlFor="phoneNumber" className="form-label">
-                  Telefon
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                  className="form-input"
-                  placeholder="+998901234567"
-                />
-              </div>
-            </div>
-            <DialogFooter className="dialog-footer">
-              <Button onClick={handleSaveTeacher} className="btn btn-primary">
-                {editingTeacher ? "Yangilash" : "Qo'shish"}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              O'qituvchilar
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Maktabdagi barcha o'qituvchilarni boshqaring
+            </p>
+          </div>
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <UserPlus className="h-5 w-5 mr-2" />
+                Yangi o'qituvchi
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {editingTeacher ? "O'qituvchini tahrirlash" : "Yangi o'qituvchi qo'shish"}
+                </DialogTitle>
+                <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
+                  O'qituvchi ma'lumotlarini kiriting va saqlang.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 my-6">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Ism
+                  </Label>
+                  <Input
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Ismni kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Familiya
+                  </Label>
+                  <Input
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Familiyani kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="email@example.com"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Telefon
+                  </Label>
+                  <Input
+                    id="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="+998901234567"
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  onClick={handleSaveTeacher}
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+                >
+                  {editingTeacher ? "Yangilash" : "Qo'shish"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="teachers-stats">
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Jami o'qituvchilar</CardTitle>
-            <UserPlus className="stat-card-icon" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami o'qituvchilar
+            </CardTitle>
+            <UserPlus className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">{teachers.length}</div>
-            <p className="stat-card-description">
+            <div className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              {teachers.length}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {teachers.filter(t => t.isActive).length} faol, {teachers.filter(t => !t.isActive).length} nofaol
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Sinf rahbarlari</CardTitle>
-            <UserPlus className="stat-card-icon" />
+
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Sinf rahbarlari
+            </CardTitle>
+            <UserPlus className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-class-teacher">
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
               {teachers.filter(t => t.isClassTeacher).length}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Sinf rahbarligi qiluvchi o'qituvchilar
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Fan o'qituvchilari</CardTitle>
-            <BookOpen className="stat-card-icon" />
+
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Fan o'qituvchilari
+            </CardTitle>
+            <BookOpen className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-subject-teacher">
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
               {teachers.filter(t => !t.isClassTeacher).length}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Faqat fan o'qituvchilari
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">O'rtacha fanlar</CardTitle>
-            <BookOpen className="stat-card-icon" />
+
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'rtacha fanlar
+            </CardTitle>
+            <BookOpen className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-average">
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
               {teachers.length > 0 ? Math.round(teachers.reduce((sum, t) => sum + t.subjects.length, 0) / teachers.length * 10) / 10 : 0}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Har bir o'qituvchi o'rtacha
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="teachers-table-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">O'qituvchilar ro'yxati</CardTitle>
-          <CardDescription className="table-card-description">
+      {/* Teachers Table */}
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            O'qituvchilar Ro'yxati
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
             Jami {teachers.length} ta o'qituvchi mavjud
           </CardDescription>
         </CardHeader>
-        <CardContent className="table-card-content">
-          <Table className="teachers-table">
-            <TableHeader className="table-header">
-              <TableRow className="table-header-row">
-                <TableHead className="table-header-cell">#</TableHead>
-                <TableHead className="table-header-cell">Ism Familiya</TableHead>
-                <TableHead className="table-header-cell">Email</TableHead>
-                <TableHead className="table-header-cell">Telefon</TableHead>
-                <TableHead className="table-header-cell">Fanlar</TableHead>
-                <TableHead className="table-header-cell">Sinf rahbarligi</TableHead>
-                <TableHead className="table-header-cell">Holat</TableHead>
-                <TableHead className="table-header-cell text-right">Amallar</TableHead>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+              <TableRow className="border-b border-gray-200 dark:border-gray-600">
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">#</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Ism Familiya</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Email</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Telefon</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Fanlar</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Sinf rahbarligi</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Holat</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="table-body">
+            <TableBody>
               {teachers.map((teacher, index) => (
-                <TableRow key={teacher.id} className="table-row">
-                  <TableCell className="table-cell font-medium">{index + 1}</TableCell>
-                  <TableCell className="table-cell font-medium">
-                    <div className="teacher-name">
+                <TableRow 
+                  key={teacher.id} 
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <TableCell className="py-4 font-medium text-gray-700 dark:text-gray-300">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="font-semibold text-gray-800 dark:text-gray-100">
                       {teacher.firstName} {teacher.lastName}
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="contact-info">
-                      <Mail className="contact-icon" />
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                      <Mail className="h-4 w-4 text-gray-500" />
                       {teacher.email}
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="contact-info">
-                      <Phone className="contact-icon" />
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                      <Phone className="h-4 w-4 text-gray-500" />
                       {teacher.phoneNumber || "-"}
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="subjects-container">
+                  <TableCell className="py-4">
+                    <div className="flex flex-wrap gap-1">
                       {teacher.subjects.map((subject) => (
-                        <Badge key={subject.id} variant="outline" className="subject-badge">
+                        <Badge 
+                          key={subject.id} 
+                          variant="outline"
+                          className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700 font-medium px-2 py-1 rounded-lg text-xs"
+                        >
                           {subject.name}
                         </Badge>
                       ))}
                       {teacher.subjects.length === 0 && (
-                        <span className="no-subjects">Fan tayinlanmagan</span>
+                        <span className="text-gray-500 dark:text-gray-400 text-sm">Fan tayinlanmagan</span>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="table-cell">
+                  <TableCell className="py-4">
                     {teacher.isClassTeacher ? (
-                      <Badge className="class-teacher-badge">
+                      <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-none font-semibold px-3 py-1 rounded-full">
                         {teacher.className}
                       </Badge>
                     ) : (
-                      <span className="no-class">-</span>
+                      <span className="text-gray-500 dark:text-gray-400">-</span>
                     )}
                   </TableCell>
-                  <TableCell className="table-cell">
-                    <Badge className={`status-badge ${teacher.isActive ? 'status-active' : 'status-inactive'}`}>
+                  <TableCell className="py-4">
+                    <Badge className={`font-semibold px-3 py-1 rounded-full border-none ${
+                      teacher.isActive 
+                        ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800' 
+                        : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800'
+                    }`}>
                       {teacher.isActive ? "Faol" : "Nofaol"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="table-cell text-right">
-                    <div className="actions-container">
+                  <TableCell className="py-4 text-right">
+                    <div className="flex justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openSubjectDialog(teacher)}
-                        className="action-button action-button-sm action-subject"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-purple-500 hover:text-white hover:border-purple-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <BookOpen className="action-icon" />
+                        <BookOpen className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditDialog(teacher)}
-                        className="action-button action-button-sm action-edit"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Edit className="action-icon" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteTeacher(teacher.id)}
-                        className="action-button action-button-sm action-delete"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Trash2 className="action-icon" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
@@ -513,27 +563,34 @@ const TeachersPage = () => {
 
       {/* Add Subject Dialog */}
       <Dialog open={isSubjectDialogOpen} onOpenChange={setIsSubjectDialogOpen}>
-        <DialogContent className="subject-dialog">
+        <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="dialog-title">Fan qo'shish</DialogTitle>
-            <DialogDescription className="dialog-description">
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Fan qo'shish
+            </DialogTitle>
+            <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
               {selectedTeacher?.firstName} {selectedTeacher?.lastName} uchun yangi fan qo'shing.
             </DialogDescription>
           </DialogHeader>
-          <div className="dialog-form">
-            <div className="form-row">
-              <Label htmlFor="subject" className="form-label">
+          
+          <div className="space-y-6 my-6">
+            <div className="space-y-2">
+              <Label htmlFor="subject" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Fan
               </Label>
               <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                <SelectTrigger className="form-select">
+                <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800">
                   <SelectValue placeholder="Fanni tanlang" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-lg">
                   {subjects
                     .filter(subject => !selectedTeacher?.subjects.some(s => s.id === subject.id))
                     .map((subject) => (
-                    <SelectItem key={subject.id} value={subject.id.toString()}>
+                    <SelectItem 
+                      key={subject.id} 
+                      value={subject.id.toString()}
+                      className="text-gray-900 dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    >
                       {subject.name}
                     </SelectItem>
                   ))}
@@ -541,8 +598,14 @@ const TeachersPage = () => {
               </Select>
             </div>
           </div>
-          <DialogFooter className="dialog-footer">
-            <Button onClick={handleAddSubject} className="btn btn-primary">Qo'shish</Button>
+          
+          <DialogFooter>
+            <Button 
+              onClick={handleAddSubject}
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+            >
+              Qo'shish
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

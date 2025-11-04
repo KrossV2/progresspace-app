@@ -173,17 +173,17 @@ const GradesPage = () => {
   };
 
   const getGradeColor = (grade: number) => {
-    if (grade >= 4.5) return "text-green-600 bg-green-100";
-    if (grade >= 3.5) return "text-blue-600 bg-blue-100";
-    if (grade >= 3) return "text-orange-600 bg-orange-100";
-    return "text-red-600 bg-red-100";
+    if (grade >= 4.5) return "text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300";
+    if (grade >= 3.5) return "text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300";
+    if (grade >= 3) return "text-orange-600 bg-orange-100 dark:bg-orange-900 dark:text-orange-300";
+    return "text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300";
   };
 
   const getBadgeColor = (grade: number) => {
-    if (grade === 5) return "bg-green-100 text-green-800 border-green-200";
-    if (grade === 4) return "bg-blue-100 text-blue-800 border-blue-200";
-    if (grade === 3) return "bg-orange-100 text-orange-800 border-orange-200";
-    return "bg-red-100 text-red-800 border-red-200";
+    if (grade === 5) return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-700";
+    if (grade === 4) return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700";
+    if (grade === 3) return "bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:border-orange-700";
+    return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-700";
   };
 
   const getTotalGrades = (): number => {
@@ -199,15 +199,15 @@ const GradesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 transition-colors duration-300 p-4 md:p-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               Baholash Tizimi
             </h1>
-            <p className="text-slate-600 mt-2 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg">
               O'quvchilar baholarini boshqaring va kuzatib boring
             </p>
           </div>
@@ -215,16 +215,16 @@ const GradesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-lg mr-4">
-                <Users className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg mr-4">
+                <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm text-slate-600">Jami O'quvchilar</p>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Jami O'quvchilar</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                   {selectedClass && selectedSubject ? students.length : 0}
                 </p>
               </div>
@@ -232,15 +232,15 @@ const GradesPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg mr-4">
-                <Award className="h-6 w-6 text-green-600" />
+              <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg mr-4">
+                <Award className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <p className="text-sm text-slate-600">O'rtacha Baho</p>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-sm text-gray-600 dark:text-gray-400">O'rtacha Baho</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                   {selectedClass && selectedSubject ? getOverallAverage() : "0.0"}
                 </p>
               </div>
@@ -248,15 +248,15 @@ const GradesPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg mr-4">
-                <BookOpen className="h-6 w-6 text-purple-600" />
+              <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg mr-4">
+                <BookOpen className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm text-slate-600">Jami Baholar</p>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Jami Baholar</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                   {selectedClass && selectedSubject ? getTotalGrades() : 0}
                 </p>
               </div>
@@ -264,15 +264,15 @@ const GradesPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm">
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <CardContent className="p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-orange-100 rounded-lg mr-4">
-                <Star className="h-6 w-6 text-orange-600" />
+              <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg mr-4">
+                <Star className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-sm text-slate-600">Eng Yaxshi</p>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Eng Yaxshi</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                   {getBestAverageGrade()}
                 </p>
               </div>
@@ -282,24 +282,28 @@ const GradesPage = () => {
       </div>
 
       {/* Filters Card */}
-      <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm mb-8">
+      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg mb-8">
         <CardHeader>
-          <CardTitle>Filtrlash</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-gray-800 dark:text-gray-200">Filtrlash</CardTitle>
+          <CardDescription className="text-gray-600 dark:text-gray-400">
             Sinf va fan bo'yicha baholarni ko'rish uchun filtrlarni tanlang
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <label className="text-sm font-medium mb-2 block">Sinfni tanlang</label>
+              <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">Sinfni tanlang</label>
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800">
                   <SelectValue placeholder="Sinfni tanlang" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-lg">
                   {classes.map((cls) => (
-                    <SelectItem key={cls.id} value={cls.id}>
+                    <SelectItem 
+                      key={cls.id} 
+                      value={cls.id}
+                      className="text-gray-900 dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    >
                       {cls.name}
                     </SelectItem>
                   ))}
@@ -307,14 +311,18 @@ const GradesPage = () => {
               </Select>
             </div>
             <div className="flex-1">
-              <label className="text-sm font-medium mb-2 block">Fanni tanlang</label>
+              <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">Fanni tanlang</label>
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800">
                   <SelectValue placeholder="Fanni tanlang" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-lg">
                   {subjects.map((subject) => (
-                    <SelectItem key={subject.id} value={subject.id}>
+                    <SelectItem 
+                      key={subject.id} 
+                      value={subject.id}
+                      className="text-gray-900 dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    >
                       {subject.name}
                     </SelectItem>
                   ))}
@@ -333,20 +341,20 @@ const GradesPage = () => {
             return (
               <Card 
                 key={student.id} 
-                className="bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-white/90 dark:bg-gray-700/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle className="text-lg font-semibold text-slate-900">
+                      <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                         {student.firstName} {student.lastName}
                       </CardTitle>
-                      <CardDescription className="mt-1">
+                      <CardDescription className="mt-1 text-gray-600 dark:text-gray-400">
                         {student.className} • {student.grades.length} ta baho
                       </CardDescription>
                     </div>
                     {averageGrade > 0 && (
-                      <Badge className={`${getGradeColor(averageGrade)} font-semibold`}>
+                      <Badge className={`${getGradeColor(averageGrade)} font-semibold px-3 py-1 rounded-full`}>
                         <Star className="h-3 w-3 mr-1" />
                         {averageGrade}
                       </Badge>
@@ -358,8 +366,8 @@ const GradesPage = () => {
                   {/* Recent Grades */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-slate-700">So'nggi baholar:</span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">So'nggi baholar:</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {student.grades.length > 0 
                           ? new Date(student.grades[student.grades.length - 1].date).toLocaleDateString('uz-UZ')
                           : 'Baho yo\'q'
@@ -371,21 +379,21 @@ const GradesPage = () => {
                         <Badge 
                           key={grade.id} 
                           variant="outline"
-                          className={getBadgeColor(grade.value)}
+                          className={`${getBadgeColor(grade.value)} font-semibold px-2.5 py-1 rounded-lg`}
                         >
                           {grade.value}
                         </Badge>
                       ))}
                       {student.grades.length === 0 && (
-                        <span className="text-sm text-slate-500">Hali baho qo'shilmagan</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Hali baho qo'shilmagan</span>
                       )}
                     </div>
                   </div>
 
                   {/* Add Grade Section */}
-                  <div className="space-y-3 pt-2 border-t border-slate-100">
+                  <div className="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-slate-700">Yangi baho:</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Yangi baho:</span>
                     </div>
                     <div className="flex gap-2">
                       {editingGrade?.studentId === student.id ? (
@@ -396,14 +404,14 @@ const GradesPage = () => {
                             max="5"
                             value={editingGrade.value}
                             onChange={(e) => setEditingGrade({...editingGrade, value: e.target.value})}
-                            className="w-20"
+                            className="w-20 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500"
                             placeholder="1-5"
                             autoFocus
                           />
                           <Button 
                             size="sm" 
                             onClick={() => handleGradeUpdate(student.id, parseInt(editingGrade.value))}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-green-600 hover:bg-green-700 rounded-lg"
                           >
                             <Save className="h-4 w-4" />
                           </Button>
@@ -411,6 +419,7 @@ const GradesPage = () => {
                             size="sm" 
                             variant="outline" 
                             onClick={() => setEditingGrade(null)}
+                            className="rounded-lg border-gray-300 dark:border-gray-600"
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -422,13 +431,14 @@ const GradesPage = () => {
                             min="1"
                             max="5"
                             placeholder="1-5"
-                            className="w-20"
+                            className="w-20 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500"
                             onFocus={() => setEditingGrade({studentId: student.id, value: ""})}
                           />
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setEditingGrade({studentId: student.id, value: ""})}
+                            className="rounded-lg border-gray-300 dark:border-gray-600"
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -439,20 +449,20 @@ const GradesPage = () => {
 
                   {/* Grade Summary */}
                   {student.grades.length > 0 && (
-                    <div className="bg-slate-50 rounded-lg p-3">
+                    <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-600">O'rtacha baho:</span>
+                        <span className="text-gray-600 dark:text-gray-400">O'rtacha baho:</span>
                         <span className={`font-semibold ${getGradeColor(averageGrade).split(' ')[0]}`}>
                           {averageGrade}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm mt-1">
-                        <span className="text-slate-600">Baho turlari:</span>
+                        <span className="text-gray-600 dark:text-gray-400">Baho turlari:</span>
                         <div className="flex gap-1">
                           {['daily', 'test', 'quarter', 'annual'].map(type => {
                             const count = student.grades.filter(g => g.type === type).length;
                             return count > 0 ? (
-                              <Badge key={type} variant="secondary" className="text-xs">
+                              <Badge key={type} variant="secondary" className="text-xs bg-gray-200 dark:bg-gray-500 text-gray-700 dark:text-gray-300">
                                 {type === 'daily' ? 'D' : type === 'test' ? 'T' : type === 'quarter' ? 'Ch' : 'Y'}: {count}
                               </Badge>
                             ) : null;
@@ -470,17 +480,25 @@ const GradesPage = () => {
 
       {/* Empty State */}
       {(!selectedClass || !selectedSubject) && (
-        <Card className="text-center py-12 border-dashed border-2 border-slate-200 bg-transparent">
+        <Card className="text-center py-12 border-dashed border-2 border-gray-300 dark:border-gray-600 bg-transparent">
           <CardContent>
-            <Award className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">
+            <Award className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Baholarni ko'rish uchun filtrlarni tanlang
             </h3>
-            <p className="text-slate-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Sinf va fan ni tanlang, shundan so'ng o'quvchilar baholari ko'rinadi
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {/* Loading State */}
+      {loading && selectedClass && selectedSubject && (
+        <div className="text-center py-12">
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Baholar yuklanmoqda...</p>
+        </div>
       )}
     </div>
   );

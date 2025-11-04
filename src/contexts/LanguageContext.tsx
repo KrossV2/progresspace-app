@@ -1,158 +1,245 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type Language = 'uz' | 'ru' | 'en';
 
+// Интерфейсы для типизации переводов
+interface LanguageTranslations {
+  language: {
+    select: string;
+  };
+  app: {
+    name: string;
+    subtitle: string;
+  };
+  nav: {
+    profile: string;
+    attendance: string;
+    grades: string;
+    homeworks: string;
+    timetables: string;
+    behaviors: string;
+    notifications: string;
+    students: string;
+    parents: string;
+    classes: string;
+    teachers: string;
+    regions: string;
+    cities: string;
+    schools: string;
+    subjects: string;
+    users: string;
+    directors: string;
+    grade_requests: string;
+    statistics: string;
+    files: string;
+  };
+  role: {
+    student: string;
+    teacher: string;
+    parent: string;
+    admin: string;
+    director: string;
+  };
+  menu: {
+    main: string;
+    management: string;
+    academic: string;
+    resources: string;
+  };
+}
+
+type Translations = {
+  [key in Language]: LanguageTranslations;
+};
+
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (language: Language) => void;
   t: (key: string) => string;
 }
 
-const translations = {
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+// Переводы для всех языков с правильной типизацией
+const translations: Translations = {
   uz: {
-    // Navigation
-    'nav.dashboard': 'Bosh sahifa',
-    'nav.profile': 'Profil',
-    'nav.subjects': 'Fanlar',
-    'nav.schedule': 'Jadval',
-    'nav.homework': 'Uy vazifalari',
-    'nav.grades': 'Baholar',
-    'nav.students': 'O\'quvchilar',
-    'nav.teachers': 'O\'qituvchilar',
-    'nav.classes': 'Sinflar',
-    'nav.reports': 'Hisobotlar',
-    'nav.settings': 'Sozlamalar',
-    'nav.announcements': 'E\'lonlar',
-    'nav.attendance': 'Davomat',
-    'nav.children': 'Farzandlarim',
-    'nav.regions': 'Viloyatlar',
-    'nav.cities': 'Shaharlar',
-    'nav.schools': 'Maktablar',
-    'nav.users': 'Foydalanuvchilar',
-    'nav.directors': 'Direktorlar',
-    'nav.timetables': 'Dars jadvali',
-    'nav.grade_requests': 'Baho so\'rovlari',
-    'nav.statistics': 'Statistika',
-    'nav.homeworks': 'Uy vazifalari',
-    'nav.parents': 'Ota-onalar',
-    'nav.behaviors': 'Xulq-atvor',
-    'nav.notifications': 'Xabarlar',
-    
-    // User roles
-    'role.student': 'O\'quvchi',
-    'role.teacher': 'O\'qituvchi',
-    'role.parent': 'Ota-ona',
-    'role.admin': 'Administrator',
-    'role.director': 'Direktor',
-    
-    // Common
-    'app.name': 'EduSpace',
-    'app.subtitle': 'Ta\'lim tizimi',
-    'menu.main': 'Asosiy menyu',
-    'menu.management': 'Boshqaruv',
-    'menu.academic': 'Ta\'lim',
+    language: {
+      select: "Tilni tanlang",
+    },
+    app: {
+      name: "Maktab Tizimi",
+      subtitle: "Ta'lim platformasi"
+    },
+    nav: {
+      profile: "Profil",
+      attendance: "Davomat",
+      grades: "Baholar",
+      homeworks: "Uy vazifalari",
+      timetables: "Dars jadvali",
+      behaviors: "Xulq-atvor",
+      notifications: "Bildirishnomalar",
+      students: "O'quvchilar",
+      parents: "Ota-onalar",
+      classes: "Sinflar",
+      teachers: "O'qituvchilar",
+      regions: "Viloyatlar",
+      cities: "Shaharlar",
+      schools: "Maktablar",
+      subjects: "Fanlar",
+      users: "Foydalanuvchilar",
+      directors: "Direktorlar",
+      grade_requests: "Baho so'rovlari",
+      statistics: "Statistika",
+      files: "Fayllar"
+    },
+    role: {
+      student: "O'quvchi",
+      teacher: "O'qituvchi",
+      parent: "Ota-ona",
+      admin: "Administrator",
+      director: "Direktor"
+    },
+    menu: {
+      main: "Asosiy",
+      management: "Boshqaruv",
+      academic: "O'quv",
+      resources: "Resurslar"
+    }
   },
-  
   ru: {
-    // Navigation
-    'nav.dashboard': 'Главная',
-    'nav.profile': 'Профиль',
-    'nav.subjects': 'Предметы',
-    'nav.schedule': 'Расписание',
-    'nav.homework': 'Домашние задания',
-    'nav.grades': 'Оценки',
-    'nav.students': 'Ученики',
-    'nav.teachers': 'Учителя',
-    'nav.classes': 'Классы',
-    'nav.reports': 'Отчеты',
-    'nav.settings': 'Настройки',
-    'nav.announcements': 'Объявления',
-    'nav.attendance': 'Посещаемость',
-    'nav.children': 'Мои дети',
-    'nav.regions': 'Регионы',
-    'nav.cities': 'Города',
-    'nav.schools': 'Школы',
-    'nav.users': 'Пользователи',
-    'nav.directors': 'Директора',
-    'nav.timetables': 'Расписание',
-    'nav.grade_requests': 'Запросы оценок',
-    'nav.statistics': 'Статистика',
-    'nav.homeworks': 'Домашние задания',
-    'nav.parents': 'Родители',
-    'nav.behaviors': 'Поведение',
-    'nav.notifications': 'Уведомления',
-    
-    // User roles
-    'role.student': 'Ученик',
-    'role.teacher': 'Учитель',
-    'role.parent': 'Родитель',
-    'role.admin': 'Администратор',
-    'role.director': 'Директор',
-    
-    // Common
-    'app.name': 'EduSpace',
-    'app.subtitle': 'Система образования',
-    'menu.main': 'Главное меню',
-    'menu.management': 'Управление',
-    'menu.academic': 'Образование',
+    language: {
+      select: "Выберите язык",
+    },
+    app: {
+      name: "Школьная Система",
+      subtitle: "Образовательная платформа"
+    },
+    nav: {
+      profile: "Профиль",
+      attendance: "Посещаемость",
+      grades: "Оценки",
+      homeworks: "Домашние задания",
+      timetables: "Расписание",
+      behaviors: "Поведение",
+      notifications: "Уведомления",
+      students: "Ученики",
+      parents: "Родители",
+      classes: "Классы",
+      teachers: "Учителя",
+      regions: "Регионы",
+      cities: "Города",
+      schools: "Школы",
+      subjects: "Предметы",
+      users: "Пользователи",
+      directors: "Директора",
+      grade_requests: "Запросы оценок",
+      statistics: "Статистика",
+      files: "Файлы"
+    },
+    role: {
+      student: "Ученик",
+      teacher: "Учитель",
+      parent: "Родитель",
+      admin: "Администратор",
+      director: "Директор"
+    },
+    menu: {
+      main: "Основное",
+      management: "Управление",
+      academic: "Учебное",
+      resources: "Ресурсы"
+    }
   },
-  
   en: {
-    // Navigation
-    'nav.dashboard': 'Dashboard',
-    'nav.profile': 'Profile',
-    'nav.subjects': 'Subjects',
-    'nav.schedule': 'Schedule',
-    'nav.homework': 'Homework',
-    'nav.grades': 'Grades',
-    'nav.students': 'Students',
-    'nav.teachers': 'Teachers',
-    'nav.classes': 'Classes',
-    'nav.reports': 'Reports',
-    'nav.settings': 'Settings',
-    'nav.announcements': 'Announcements',
-    'nav.attendance': 'Attendance',
-    'nav.children': 'My Children',
-    'nav.regions': 'Regions',
-    'nav.cities': 'Cities',
-    'nav.schools': 'Schools',
-    'nav.users': 'Users',
-    'nav.directors': 'Directors',
-    'nav.timetables': 'Timetables',
-    'nav.grade_requests': 'Grade Requests',
-    'nav.statistics': 'Statistics',
-    'nav.homeworks': 'Homeworks',
-    'nav.parents': 'Parents',
-    'nav.behaviors': 'Behaviors',
-    'nav.notifications': 'Notifications',
-    
-    // User roles
-    'role.student': 'Student',
-    'role.teacher': 'Teacher',
-    'role.parent': 'Parent',
-    'role.admin': 'Administrator',
-    'role.director': 'Director',
-    
-    // Common
-    'app.name': 'EduSpace',
-    'app.subtitle': 'Education System',
-    'menu.main': 'Main Menu',
-    'menu.management': 'Management',
-    'menu.academic': 'Academic',
+    language: {
+      select: "Select language",
+    },
+    app: {
+      name: "Sinfdosh AI",
+      subtitle: "Education Platform"
+    },
+    nav: {
+      profile: "Profile",
+      attendance: "Attendance",
+      grades: "Grades",
+      homeworks: "Homeworks",
+      timetables: "Timetables",
+      behaviors: "Behaviors",
+      notifications: "Notifications",
+      students: "Students",
+      parents: "Parents",
+      classes: "Classes",
+      teachers: "Teachers",
+      regions: "Regions",
+      cities: "Cities",
+      schools: "Schools",
+      subjects: "Subjects",
+      users: "Users",
+      directors: "Directors",
+      grade_requests: "Grade Requests",
+      statistics: "Statistics",
+      files: "Files"
+    },
+    role: {
+      student: "Student",
+      teacher: "Teacher",
+      parent: "Parent",
+      admin: "Admin",
+      director: "Director"
+    },
+    menu: {
+      main: "Main",
+      management: "Management",
+      academic: "Academic",
+      resources: "Resources"
+    }
   }
 };
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('uz');
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = localStorage.getItem('language') as Language;
+    return saved || 'uz';
+  });
 
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  // Функция для получения перевода с правильной типизацией
   const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
+    const keys = key.split('.');
+    
+    // Начинаем с корневого объекта переводов для текущего языка
+    let current: unknown = translations[language];
+    
+    // Рекурсивно идем по ключам
+    for (const k of keys) {
+      if (current && typeof current === 'object' && k in current) {
+        current = (current as Record<string, unknown>)[k];
+      } else {
+        console.warn(`Translation key not found: ${key}`);
+        return key;
+      }
+    }
+    
+    // Проверяем, что конечное значение - строка
+    if (typeof current === 'string') {
+      return current;
+    }
+    
+    console.warn(`Translation value is not a string for key: ${key}`);
+    return key;
+  };
+
+  const value: LanguageContextType = {
+    language,
+    setLanguage,
+    t
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

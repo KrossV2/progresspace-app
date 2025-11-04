@@ -1,18 +1,13 @@
+import { useState, useEffect } from "react";
 import { Bell, Search, Moon, Sun, MessageCircle, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useChat } from "@/contexts/ChatContext";
-import { useState, useEffect } from "react";
 
 interface TopHeaderProps {
   onToggleSidebar?: () => void;
@@ -20,42 +15,44 @@ interface TopHeaderProps {
 
 export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
   const { t } = useLanguage();
-  const [isDark, setIsDark] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const { isChatOpen, setIsChatOpen, unreadCount } = useChat();
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    // начальная проверка темы
+    const saved = localStorage.getItem("theme");
+    if (saved) return saved === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Theme toggle functionality
+  // Применяем тему при изменении состояния
   useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    setIsDark(isDarkMode);
-  }, []);
-
-  const toggleTheme = (): void => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+      localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+      localStorage.setItem("theme", "light");
     }
-  };
+  }, [isDark]);
 
-  const getCurrentTime = (): string => {
-    return new Date().toLocaleTimeString('uz-UZ', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: false 
-    });
-  };
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
-  const getCurrentDate = (): string => {
-    return new Date().toLocaleDateString('uz-UZ', { 
-      weekday: 'long',
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+  const getCurrentTime = (): string =>
+    new Date().toLocaleTimeString("uz-UZ", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     });
-  };
+
+  const getCurrentDate = (): string =>
+    new Date().toLocaleDateString("uz-UZ", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
   const toggleChat = (): void => {
     setIsChatOpen(!isChatOpen);
@@ -66,7 +63,6 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
       <div className="flex h-full items-center justify-between px-6 w-full">
         {/* Left side */}
         <div className="flex items-center gap-4">
-          {/* Sidebar Trigger */}
           <Button
             variant="ghost"
             size="icon"
@@ -75,14 +71,13 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
           >
             <PanelLeft className="h-5 w-5" />
           </Button>
-          
-          {/* Search */}
+
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Fan, vazifa, o'qituvchi bo'yicha qidirish..."
               value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-80 pl-10"
             />
           </div>
@@ -90,7 +85,6 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
-          {/* Current Time & Date */}
           <div className="hidden lg:flex flex-col items-end text-sm mr-4">
             <div className="font-mono text-primary font-semibold">
               {getCurrentTime()}
@@ -102,15 +96,8 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
 
           <RoleSwitcher />
           <LanguageSwitcher />
-          
-          {/* Chat Button */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleChat}
-            className="relative h-9 w-9"
-            title="Yordam markazi"
-          >
+
+          <Button variant="ghost" size="icon" onClick={toggleChat} className="relative h-9 w-9">
             <MessageCircle className="h-5 w-5" />
             {unreadCount > 0 && (
               <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500 border-2 border-background flex items-center justify-center">
@@ -118,8 +105,7 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
               </Badge>
             )}
           </Button>
-          
-          {/* Notifications */}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative h-9 w-9">
@@ -160,7 +146,7 @@ export function TopHeader({ onToggleSidebar }: TopHeaderProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Theme Toggle */}
+          {/* ✅ Theme toggle — всегда срабатывает */}
           <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>

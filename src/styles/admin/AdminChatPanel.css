@@ -300,3 +300,44 @@
     max-height: 200px;
   }
 }
+:root {
+  --chat-bg: #ffffff;
+  --chat-text: #111111;
+  --chat-header: #f2f2f2;
+  --chat-bubble-user: #e6f3ff;
+  --chat-bubble-support: #f5f5f5;
+}
+
+.dark {
+  --chat-bg: #121212;
+  --chat-text: #e5e5e5;
+  --chat-header: #1f1f1f;
+  --chat-bubble-user: #2b5278;
+  --chat-bubble-support: #333333;
+}
+
+/* Применяем переменные */
+.chat-widget-container {
+  background-color: var(--chat-bg);
+  color: var(--chat-text);
+}
+
+.chat-widget-header {
+  background-color: var(--chat-header);
+}
+
+.message-bubble {
+  background-color: var(--chat-bubble-support);
+}
+
+.message-user .message-bubble {
+  background-color: var(--chat-bubble-user);
+}
+
+.message-support .message-bubble {
+  background-color: var(--chat-bubble-support);
+}
+
+.message-admin .message-bubble {
+  background-color: var(--chat-bubble-user);
+}

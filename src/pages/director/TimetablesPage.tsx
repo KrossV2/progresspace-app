@@ -6,10 +6,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Plus, Clock, Calendar, BookOpen } from "lucide-react";
+import { Trash2, Edit, Plus, Clock, Calendar, BookOpen, Users, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
-import "@/styles/TimetablesPage.css";
 
 interface ClassData {
   id: number;
@@ -309,170 +307,192 @@ const TimetablesPage = () => {
 
   if (loading) {
     return (
-      <div className="timetables-loading">
-        <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Yuklanmoqda...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="timetables-page">
-      <div className="timetables-header">
-        <div>
-          <h1 className="timetables-title">Dars jadvali</h1>
-          <p className="timetables-subtitle">Barcha sinflar uchun dars jadvalini boshqaring</p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="btn btn-primary">
-              <Plus className="action-icon mr-2" />
-              Yangi dars
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="dialog-content">
-            <DialogHeader>
-              <DialogTitle className="dialog-title">
-                {editingEntry ? "Darsni tahrirlash" : "Yangi dars qo'shish"}
-              </DialogTitle>
-              <DialogDescription className="dialog-description">
-                Dars jadvaliga yangi dars qo'shing yoki mavjudini tahrirlang.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="class" className="form-label">
-                  Sinf
-                </Label>
-                <Select 
-                  value={formData.classId} 
-                  onValueChange={(value) => setFormData({ ...formData, classId: value })}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Sinfni tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {classes.map((cls) => (
-                      <SelectItem key={cls.id} value={cls.id.toString()}>
-                        {cls.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="form-row">
-                <Label htmlFor="subject" className="form-label">
-                  Fan
-                </Label>
-                <Select 
-                  value={formData.subjectId} 
-                  onValueChange={(value) => setFormData({ ...formData, subjectId: value, teacherId: "" })}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Fanni tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id.toString()}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="form-row">
-                <Label htmlFor="teacher" className="form-label">
-                  O'qituvchi
-                </Label>
-                <Select 
-                  value={formData.teacherId} 
-                  onValueChange={(value) => setFormData({ ...formData, teacherId: value })}
-                  disabled={!formData.subjectId}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder={formData.subjectId ? "O'qituvchini tanlang" : "Avval fanni tanlang"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getAvailableTeachers().map((teacher) => (
-                      <SelectItem key={teacher.id} value={teacher.id.toString()}>
-                        {teacher.firstName} {teacher.lastName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="form-row">
-                <Label htmlFor="day" className="form-label">
-                  Kun
-                </Label>
-                <Select 
-                  value={formData.dayOfWeek} 
-                  onValueChange={(value) => setFormData({ ...formData, dayOfWeek: value })}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Kunni tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {days.map((day) => (
-                      <SelectItem key={day.id} value={day.id.toString()}>
-                        {day.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="form-row">
-                <Label htmlFor="lesson" className="form-label">
-                  Dars raqami
-                </Label>
-                <Select 
-                  value={formData.lessonNumber} 
-                  onValueChange={(value) => setFormData({ ...formData, lessonNumber: value })}
-                >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Dars raqamini tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {lessons.map((lesson) => (
-                      <SelectItem key={lesson.id} value={lesson.id.toString()}>
-                        {lesson.name} ({lesson.time})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="form-row">
-                <Label htmlFor="room" className="form-label">
-                  Xona
-                </Label>
-                <input
-                  id="room"
-                  type="text"
-                  value={formData.room}
-                  onChange={(e) => setFormData({ ...formData, room: e.target.value })}
-                  className="form-input"
-                  placeholder="Xona raqami (ixtiyoriy)"
-                />
-              </div>
-            </div>
-            <DialogFooter className="dialog-footer">
-              <Button onClick={handleSaveEntry} className="btn btn-primary">
-                {editingEntry ? "Yangilash" : "Qo'shish"}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Dars Jadvali
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Barcha sinflar uchun dars jadvalini boshqaring
+            </p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Yangi dars
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  {editingEntry ? "Darsni tahrirlash" : "Yangi dars qo'shish"}
+                </DialogTitle>
+                <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
+                  Dars jadvaliga yangi dars qo'shing yoki mavjudini tahrirlang.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 my-6">
+                <div className="space-y-2">
+                  <Label htmlFor="class" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Sinf
+                  </Label>
+                  <Select 
+                    value={formData.classId} 
+                    onValueChange={(value) => setFormData({ ...formData, classId: value })}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder="Sinfni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map((cls) => (
+                        <SelectItem key={cls.id} value={cls.id.toString()}>
+                          {cls.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subject" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Fan
+                  </Label>
+                  <Select 
+                    value={formData.subjectId} 
+                    onValueChange={(value) => setFormData({ ...formData, subjectId: value, teacherId: "" })}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder="Fanni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjects.map((subject) => (
+                        <SelectItem key={subject.id} value={subject.id.toString()}>
+                          {subject.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="teacher" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    O'qituvchi
+                  </Label>
+                  <Select 
+                    value={formData.teacherId} 
+                    onValueChange={(value) => setFormData({ ...formData, teacherId: value })}
+                    disabled={!formData.subjectId}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder={formData.subjectId ? "O'qituvchini tanlang" : "Avval fanni tanlang"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAvailableTeachers().map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id.toString()}>
+                          {teacher.firstName} {teacher.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="day" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Kun
+                  </Label>
+                  <Select 
+                    value={formData.dayOfWeek} 
+                    onValueChange={(value) => setFormData({ ...formData, dayOfWeek: value })}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder="Kunni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {days.map((day) => (
+                        <SelectItem key={day.id} value={day.id.toString()}>
+                          {day.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lesson" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Dars raqami
+                  </Label>
+                  <Select 
+                    value={formData.lessonNumber} 
+                    onValueChange={(value) => setFormData({ ...formData, lessonNumber: value })}
+                  >
+                    <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
+                      <SelectValue placeholder="Dars raqamini tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {lessons.map((lesson) => (
+                        <SelectItem key={lesson.id} value={lesson.id.toString()}>
+                          {lesson.name} ({lesson.time})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="room" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Xona
+                  </Label>
+                  <input
+                    id="room"
+                    type="text"
+                    value={formData.room}
+                    onChange={(e) => setFormData({ ...formData, room: e.target.value })}
+                    className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
+                    placeholder="Xona raqami (ixtiyoriy)"
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  onClick={handleSaveEntry}
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
+                >
+                  {editingEntry ? "Yangilash" : "Qo'shish"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Filter by class */}
-      <Card className="timetables-filter">
-        <CardContent className="filter-content">
-          <div className="filter-content">
-            <Label htmlFor="classFilter" className="filter-label">Sinf bo'yicha filtr:</Label>
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+            <Label htmlFor="classFilter" className="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+              Sinf bo'yicha filtr:
+            </Label>
             <Select value={selectedClass} onValueChange={setSelectedClass}>
-              <SelectTrigger className="form-select w-48">
+              <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors w-48">
                 <SelectValue placeholder="Barcha sinflar" />
               </SelectTrigger>
               <SelectContent>
@@ -489,144 +509,176 @@ const TimetablesPage = () => {
       </Card>
 
       {/* Statistics */}
-      <div className="timetables-stats">
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Jami darslar</CardTitle>
-            <Calendar className="stat-card-icon" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Jami darslar
+            </CardTitle>
+            <Calendar className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">{getFilteredTimetables().length}</div>
-            <p className="stat-card-description">
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {getFilteredTimetables().length}
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {selectedClass && selectedClass !== "all" 
                 ? `${classes.find(c => c.id === parseInt(selectedClass))?.name} sinfi uchun` 
                 : "Barcha sinflar uchun"}
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Haftada darslar</CardTitle>
-            <Clock className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Haftada darslar
+            </CardTitle>
+            <Clock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
               {selectedClass && selectedClass !== "all" 
                 ? getFilteredTimetables().length 
                 : Math.round(timetables.length / Math.max(classes.length, 1))}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {selectedClass && selectedClass !== "all" ? "Jami haftalik darslar" : "O'rtacha har bir sinf uchun"}
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Faol kunlar</CardTitle>
-            <Calendar className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Faol kunlar
+            </CardTitle>
+            <Target className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">
+            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400">
               {new Set(getFilteredTimetables().map(t => t.dayOfWeek)).size}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Darslar boradigan kunlar soni
             </p>
           </CardContent>
         </Card>
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Turli fanlar</CardTitle>
-            <BookOpen className="stat-card-icon" />
+
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Turli fanlar
+            </CardTitle>
+            <BookOpen className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value">
+            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400">
               {new Set(getFilteredTimetables().map(t => t.subjectId)).size}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               Jadvalda mavjud fanlar soni
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="timetables-table-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Dars jadvali</CardTitle>
-          <CardDescription className="table-card-description">
+      {/* Timetable Table */}
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Dars Jadvali
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
             {selectedClass && selectedClass !== "all"
               ? `${classes.find(c => c.id === parseInt(selectedClass))?.name} sinfi uchun ${getFilteredTimetables().length} ta dars`
               : `Jami ${getFilteredTimetables().length} ta dars mavjud`
             }
           </CardDescription>
         </CardHeader>
-        <CardContent className="table-card-content">
-          <Table className="timetables-table">
-            <TableHeader className="table-header">
-              <TableRow className="table-header-row">
-                <TableHead className="table-header-cell">#</TableHead>
-                <TableHead className="table-header-cell">Sinf</TableHead>
-                <TableHead className="table-header-cell">Fan</TableHead>
-                <TableHead className="table-header-cell">O'qituvchi</TableHead>
-                <TableHead className="table-header-cell">Kun</TableHead>
-                <TableHead className="table-header-cell">Dars vaqti</TableHead>
-                <TableHead className="table-header-cell">Xona</TableHead>
-                <TableHead className="table-header-cell text-right">Amallar</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="table-body">
-              {getFilteredTimetables()
-                .sort((a, b) => {
-                  if (a.dayOfWeek !== b.dayOfWeek) return a.dayOfWeek - b.dayOfWeek;
-                  if (a.lessonNumber !== b.lessonNumber) return a.lessonNumber - b.lessonNumber;
-                  return a.className.localeCompare(b.className);
-                })
-                .map((entry, index) => (
-                <TableRow key={entry.id} className="table-row">
-                  <TableCell className="table-cell font-medium">{index + 1}</TableCell>
-                  <TableCell className="table-cell font-medium">{entry.className}</TableCell>
-                  <TableCell className="table-cell">
-                    <Badge variant="outline" className="badge">{entry.subjectName}</Badge>
-                  </TableCell>
-                  <TableCell className="table-cell">{entry.teacherName}</TableCell>
-                  <TableCell className="table-cell">
-                    <Badge variant="secondary" className="badge badge-secondary">
-                      {days.find(d => d.id === entry.dayOfWeek)?.name}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="table-cell">
-                    <div className="text-sm">
-                      <div className="font-medium">{entry.lessonNumber}-dars</div>
-                      <div className="text-muted-foreground">
-                        {lessons.find(l => l.id === entry.lessonNumber)?.time}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="table-cell">{entry.room || "-"}</TableCell>
-                  <TableCell className="table-cell text-right">
-                    <div className="actions-container">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openEditDialog(entry)}
-                        className="action-button action-button-sm"
-                      >
-                        <Edit className="action-icon" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteEntry(entry.id)}
-                        className="action-button action-button-sm"
-                      >
-                        <Trash2 className="action-icon" />
-                      </Button>
-                    </div>
-                  </TableCell>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
+                <TableRow className="border-b border-gray-200 dark:border-gray-600">
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">#</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Sinf</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Fan</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">O'qituvchi</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Kun</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Dars vaqti</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Xona</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {getFilteredTimetables()
+                  .sort((a, b) => {
+                    if (a.dayOfWeek !== b.dayOfWeek) return a.dayOfWeek - b.dayOfWeek;
+                    if (a.lessonNumber !== b.lessonNumber) return a.lessonNumber - b.lessonNumber;
+                    return a.className.localeCompare(b.className);
+                  })
+                  .map((entry, index) => (
+                  <TableRow key={entry.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <TableCell className="py-4 font-medium text-gray-700 dark:text-gray-300">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="py-4 font-bold text-gray-800 dark:text-gray-200">
+                      {entry.className}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-none font-semibold px-3 py-1 rounded-lg">
+                        {entry.subjectName}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-4 text-gray-700 dark:text-gray-300">
+                      {entry.teacherName}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <Badge className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 border-none font-semibold px-3 py-1 rounded-lg">
+                        {days.find(d => d.id === entry.dayOfWeek)?.name}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="text-sm">
+                        <div className="font-bold text-gray-800 dark:text-gray-200">{entry.lessonNumber}-dars</div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          {lessons.find(l => l.id === entry.lessonNumber)?.time}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 text-gray-600 dark:text-gray-400">
+                      {entry.room || "-"}
+                    </TableCell>
+                    <TableCell className="py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(entry)}
+                          className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteEntry(entry.id)}
+                          className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -6,9 +6,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, TrendingUp, BookOpen, Star, Plus, Edit, Trash2, Target, Award, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, TrendingUp, BookOpen, Star, Plus, Edit, Trash2, Target, Award, ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import "@/styles/parent/GradesPage.css";
 
 interface GradeRecord {
   id: number;
@@ -191,7 +190,6 @@ const GradesPage = () => {
     const good = filteredData.filter(record => record.grade === 4).length;
     const satisfactory = filteredData.filter(record => record.grade === 3).length;
 
-    // Calculate subject averages
     const subjectAverages = subjects.map(subject => {
       const subjectGrades = filteredData.filter(record => record.subject === subject);
       const subjectAverage = subjectGrades.length > 0 ?
@@ -262,7 +260,6 @@ const GradesPage = () => {
 
     try {
       if (editingRecord) {
-        // UPDATE
         const updatedGrades = grades.map(record =>
           record.id === editingRecord.id
             ? {
@@ -283,7 +280,6 @@ const GradesPage = () => {
           description: "Baholar yozuvi yangilandi",
         });
       } else {
-        // CREATE
         const newRecord: GradeRecord = {
           id: Date.now(),
           date: formData.date,
@@ -332,17 +328,19 @@ const GradesPage = () => {
     }
   };
 
-  const getGradeColor = (grade: number) => {
-    if (grade === 5) return "grade-excellent";
-    if (grade === 4) return "grade-good";
-    if (grade === 3) return "grade-satisfactory";
-    return "grade-poor";
-  };
-
   const getGradeBadge = (grade: number) => {
+    const gradeConfig = {
+      5: 'bg-gradient-to-r from-green-100 to-green-200 text-green-800',
+      4: 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800',
+      3: 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800',
+      2: 'bg-gradient-to-r from-red-100 to-red-200 text-red-800'
+    };
+
+    const bgClass = gradeConfig[grade as keyof typeof gradeConfig] || 'bg-gray-100 text-gray-800';
+
     return (
-      <Badge className={`grade-badge ${getGradeColor(grade)}`}>
-        <Star className="grade-icon" />
+      <Badge className={`font-bold text-lg px-4 py-2 rounded-xl border-none ${bgClass}`}>
+        <Star className="h-4 w-4 mr-1" />
         {grade}
       </Badge>
     );
@@ -350,17 +348,29 @@ const GradesPage = () => {
 
   const getTypeBadge = (type: string) => {
     const typeConfig = {
-      test: { bg: "type-test", text: "Test" },
-      homework: { bg: "type-homework", text: "Uy vazifasi" },
-      classwork: { bg: "type-classwork", text: "Dars ishi" },
-      exam: { bg: "type-exam", text: "Imtihon" }
+      test: { 
+        bg: 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800',
+        text: "Test" 
+      },
+      homework: { 
+        bg: 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800',
+        text: "Uy vazifasi" 
+      },
+      classwork: { 
+        bg: 'bg-gradient-to-r from-cyan-100 to-cyan-200 text-cyan-800',
+        text: "Dars ishi" 
+      },
+      exam: { 
+        bg: 'bg-gradient-to-r from-red-100 to-red-200 text-red-800',
+        text: "Imtihon" 
+      }
     };
 
     const config = typeConfig[type as keyof typeof typeConfig];
     if (!config) return null;
 
     return (
-      <Badge variant="outline" className={`type-badge ${config.bg}`}>
+      <Badge className={`font-semibold px-3 py-1 rounded-full border-none ${config.bg}`}>
         {config.text}
       </Badge>
     );
@@ -388,111 +398,132 @@ const GradesPage = () => {
 
   if (loading) {
     return (
-      <div className="grades-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Ma'lumotlar yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="grades-page">
-      <div className="grades-header">
-        <div>
-          <h1 className="grades-title">O'quvchi Baholari</h1>
-          <p className="grades-subtitle">
-            Farid Karimov - 5-A sinf
-          </p>
-        </div>
-        
-        <div className="date-navigation">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigateDate('prev')}
-            className="nav-btn"
-          >
-            <ChevronLeft className="nav-icon" />
-          </Button>
-          
-          <div className="date-display">
-            <Calendar className="date-icon" />
-            <span className={`date-text ${isToday(selectedDate) ? 'today' : ''}`}>
-              {formatDate(selectedDate)}
-              {isToday(selectedDate) && <span className="today-badge">Bugun</span>}
-            </span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              O'quvchi Baholari
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Farid Karimov - 5-A sinf
+            </p>
           </div>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigateDate('next')}
-            className="nav-btn"
-          >
-            <ChevronRight className="nav-icon" />
-          </Button>
+          <div className="flex items-center gap-4 bg-gray-50 dark:bg-gray-700 rounded-xl p-3 border border-gray-200 dark:border-gray-600">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigateDate('prev')}
+              className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 transition-all duration-200 h-10 w-10 p-0"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-600 rounded-lg border border-gray-200 dark:border-gray-500">
+              <Calendar className="h-4 w-4 text-blue-500" />
+              <span className={`font-semibold text-gray-700 dark:text-gray-200 ${isToday(selectedDate) ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                {formatDate(selectedDate)}
+              </span>
+              {isToday(selectedDate) && (
+                <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-none font-semibold px-2 py-1 text-xs">
+                  Bugun
+                </Badge>
+              )}
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigateDate('next')}
+              className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 transition-all duration-200 h-10 w-10 p-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grades-stats">
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">O'rtacha Baho</CardTitle>
-            <TrendingUp className="stat-card-icon" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              O'rtacha Baho
+            </CardTitle>
+            <TrendingUp className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-average">
+            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
               {stats.average}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               {stats.total} ta baho
             </p>
           </CardContent>
         </Card>
 
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">A'lo Baholar</CardTitle>
-            <Award className="stat-card-icon" />
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              A'lo Baholar
+            </CardTitle>
+            <Award className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-excellent">
+            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
               {stats.excellent}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               5 baholar
             </p>
           </CardContent>
         </Card>
 
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Yaxshi Baholar</CardTitle>
-            <Star className="stat-card-icon" />
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Yaxshi Baholar
+            </CardTitle>
+            <Star className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-good">
+            <div className="text-3xl md:text-4xl font-bold text-yellow-600 dark:text-yellow-400">
               {stats.good}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               4 baholar
             </p>
           </CardContent>
         </Card>
 
-        <Card className="stat-card">
-          <CardHeader className="stat-card-header">
-            <CardTitle className="stat-card-title">Qoniqarli</CardTitle>
-            <Target className="stat-card-icon" />
+        <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Qoniqarli
+            </CardTitle>
+            <Target className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="stat-card-value stat-value-satisfactory">
+            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400">
               {stats.satisfactory}
             </div>
-            <p className="stat-card-description">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
               3 baholar
             </p>
           </CardContent>
@@ -501,22 +532,27 @@ const GradesPage = () => {
 
       {/* Subject Averages */}
       {stats.subjectAverages.length > 0 && (
-        <Card className="subject-averages-card">
-          <CardHeader>
-            <CardTitle className="subject-averages-title">
-              <BookOpen className="title-icon" />
+        <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+            <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-blue-500" />
               Fanlar bo'yicha o'rtacha baholar
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="subject-averages-list">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {stats.subjectAverages.map((item, index) => (
-                <div key={index} className="subject-average-item">
-                  <span className="subject-name">{item.subject}</span>
-                  <div className="average-value">
-                    <Star className="average-icon" />
-                    {item.average}
+                <div 
+                  key={index} 
+                  className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <BookOpen className="h-5 w-5 text-blue-500" />
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{item.subject}</span>
                   </div>
+                  <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-none font-bold px-3 py-1 rounded-lg text-lg">
+                    {item.average}
+                  </Badge>
                 </div>
               ))}
             </div>
@@ -524,28 +560,31 @@ const GradesPage = () => {
         </Card>
       )}
 
-      {/* Grades Actions */}
-      <div className="grades-actions">
+      {/* Actions */}
+      <div className="flex justify-end mb-8">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="add-btn">
-              <Plus className="btn-icon" />
+            <Button 
+              onClick={openCreateDialog}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <Plus className="h-5 w-5 mr-2" />
               Baho qo'shish
             </Button>
           </DialogTrigger>
-          <DialogContent className="grades-dialog">
+          <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
             <DialogHeader>
-              <DialogTitle className="dialog-title">
+              <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                 {editingRecord ? "Bahoni tahrirlash" : "Yangi baho qo'shish"}
               </DialogTitle>
-              <DialogDescription className="dialog-description">
+              <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
                 Baho ma'lumotlarini kiriting va saqlang.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="date" className="form-label">
+            <div className="space-y-6 my-6">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Sana
                 </Label>
                 <Input
@@ -553,19 +592,19 @@ const GradesPage = () => {
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="form-input"
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 />
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="subject" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="subject" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Fan *
                 </Label>
                 <Select 
                   value={formData.subject} 
                   onValueChange={(value) => setFormData({ ...formData, subject: value })}
                 >
-                  <SelectTrigger className="form-select">
+                  <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
                     <SelectValue placeholder="Fanni tanlang" />
                   </SelectTrigger>
                   <SelectContent>
@@ -578,15 +617,15 @@ const GradesPage = () => {
                 </Select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="teacher" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="teacher" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   O'qituvchi *
                 </Label>
                 <Select 
                   value={formData.teacher} 
                   onValueChange={(value) => setFormData({ ...formData, teacher: value })}
                 >
-                  <SelectTrigger className="form-select">
+                  <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
                     <SelectValue placeholder="O'qituvchini tanlang" />
                   </SelectTrigger>
                   <SelectContent>
@@ -599,15 +638,15 @@ const GradesPage = () => {
                 </Select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="grade" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="grade" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Baho
                 </Label>
                 <Select 
                   value={formData.grade.toString()} 
                   onValueChange={(value) => setFormData({ ...formData, grade: parseInt(value) })}
                 >
-                  <SelectTrigger className="form-select">
+                  <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
                     <SelectValue placeholder="Bahoni tanlang" />
                   </SelectTrigger>
                   <SelectContent>
@@ -619,8 +658,8 @@ const GradesPage = () => {
                 </Select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="type" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="type" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Baho turi
                 </Label>
                 <Select 
@@ -629,7 +668,7 @@ const GradesPage = () => {
                     setFormData({ ...formData, type: value })
                   }
                 >
-                  <SelectTrigger className="form-select">
+                  <SelectTrigger className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors">
                     <SelectValue placeholder="Baho turini tanlang" />
                   </SelectTrigger>
                   <SelectContent>
@@ -642,44 +681,44 @@ const GradesPage = () => {
                 </Select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="topic" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="topic" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Mavzu *
                 </Label>
                 <Input
                   id="topic"
                   value={formData.topic}
                   onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                  className="form-input"
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="Baholangan mavzu"
                 />
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="notes" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="notes" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Izoh (ixtiyoriy)
                 </Label>
                 <Input
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="form-input"
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="Qo'shimcha izoh"
                 />
               </div>
             </div>
             
-            <DialogFooter className="dialog-footer">
+            <DialogFooter className="flex gap-3">
               <Button 
                 onClick={() => setIsDialogOpen(false)} 
                 variant="outline"
-                className="btn btn-secondary"
+                className="flex-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
               >
                 Bekor qilish
               </Button>
               <Button 
                 onClick={handleSaveRecord} 
-                className="btn btn-primary"
+                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 {editingRecord ? "Yangilash" : "Qo'shish"}
               </Button>
@@ -688,70 +727,99 @@ const GradesPage = () => {
         </Dialog>
       </div>
 
-      {/* Grades Details */}
-      <Card className="grades-table-card">
-        <CardHeader className="table-card-header">
-          <CardTitle className="table-card-title">Kunlik Baholar</CardTitle>
-          <CardDescription className="table-card-description">
+      {/* Grades List */}
+      <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+          <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Kunlik Baholar
+          </CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400 text-lg">
             {formatDate(selectedDate)} sanasidagi barcha baholar
           </CardDescription>
         </CardHeader>
-        <CardContent className="table-card-content">
+        <CardContent className="p-6">
           {filteredGrades.length === 0 ? (
-            <div className="empty-state">
-              <BookOpen className="empty-icon" />
-              <h3>Baholar yo'q</h3>
-              <p>Ushbu sana uchun baholar kiritilmagan</p>
-              <Button onClick={openCreateDialog} className="add-btn">
-                <Plus className="btn-icon" />
+            <div className="text-center py-12">
+              <BookOpen className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                Baholar yo'q
+              </h3>
+              <p className="text-gray-500 dark:text-gray-500 mb-6">
+                Ushbu sana uchun baholar kiritilmagan
+              </p>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Plus className="h-5 w-5 mr-2" />
                 Birinchi bahoni qo'shish
               </Button>
             </div>
           ) : (
-            <div className="grades-list">
+            <div className="space-y-4">
               {filteredGrades.map((record) => (
-                <div key={record.id} className="grade-item">
-                  <div className="grade-main">
-                    <div className="grade-info">
-                      <div className="subject-grade">
-                        {getGradeBadge(record.grade)}
-                      </div>
-                      
-                      <div className="grade-details">
-                        <div className="subject-name">{record.subject}</div>
-                        <div className="topic">{record.topic}</div>
-                        <div className="meta-info">
-                          <span className="teacher">{record.teacher}</span>
-                          <span className="type">• {getTypeBadge(record.type)}</span>
+                <div 
+                  key={record.id} 
+                  className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 p-6 hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0">
+                          {getGradeBadge(record.grade)}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-center gap-3 mb-2">
+                            <h4 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                              {record.subject}
+                            </h4>
+                            {getTypeBadge(record.type)}
+                          </div>
+                          
+                          <p className="text-gray-700 dark:text-gray-300 font-medium mb-3">
+                            {record.topic}
+                          </p>
+                          
+                          <div className="flex flex-wrap items-center gap-3 text-sm">
+                            <div className="flex items-center gap-1">
+                              <Users className="h-4 w-4 text-gray-400" />
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                                {record.teacher}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {record.notes && (
+                            <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                              <p className="text-blue-700 dark:text-blue-300 text-sm">
+                                {record.notes}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="grade-actions">
+                    <div className="flex gap-2 flex-shrink-0">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditDialog(record)}
-                        className="action-btn edit-btn"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Edit className="action-icon" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteRecord(record.id)}
-                        className="action-btn delete-btn"
+                        className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-10 w-10 p-0"
                       >
-                        <Trash2 className="action-icon" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
-                  
-                  {record.notes && (
-                    <div className="grade-notes">
-                      <span>{record.notes}</span>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>

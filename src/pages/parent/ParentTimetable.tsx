@@ -6,9 +6,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Clock, MapPin, Plus, Edit, Trash2, BookOpen, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Clock, MapPin, Plus, Edit, Trash2, BookOpen, Users, ChevronLeft, ChevronRight, School, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import "@/styles/parent/ParentTimetable.css";
 
 interface TimetableRecord {
   id: number;
@@ -71,10 +70,10 @@ const TimetablePage = () => {
   ];
 
   const classTypes = [
-    { value: "lecture", label: "Ma'ruza" },
-    { value: "practice", label: "Amaliyot" },
-    { value: "lab", label: "Laboratoriya" },
-    { value: "seminar", label: "Seminar" }
+    { value: "lecture", label: "Ma'ruza", color: "blue" },
+    { value: "practice", label: "Amaliyot", color: "green" },
+    { value: "lab", label: "Laboratoriya", color: "purple" },
+    { value: "seminar", label: "Seminar", color: "orange" }
   ];
 
   const dayNames = {
@@ -291,7 +290,6 @@ const TimetablePage = () => {
       return;
     }
 
-    // Check for time conflicts
     const hasConflict = timetable.some(record => 
       record.dayOfWeek === formData.dayOfWeek &&
       record.id !== editingRecord?.id &&
@@ -311,7 +309,6 @@ const TimetablePage = () => {
 
     try {
       if (editingRecord) {
-        // UPDATE
         const updatedTimetable = timetable.map(record =>
           record.id === editingRecord.id
             ? {
@@ -332,7 +329,6 @@ const TimetablePage = () => {
           description: "Dars jadvali yangilandi",
         });
       } else {
-        // CREATE
         const newRecord: TimetableRecord = {
           id: Date.now(),
           dayOfWeek: formData.dayOfWeek,
@@ -383,17 +379,29 @@ const TimetablePage = () => {
 
   const getTypeBadge = (type: string) => {
     const typeConfig = {
-      lecture: { bg: "type-lecture", text: "Ma'ruza" },
-      practice: { bg: "type-practice", text: "Amaliyot" },
-      lab: { bg: "type-lab", text: "Laboratoriya" },
-      seminar: { bg: "type-seminar", text: "Seminar" }
+      lecture: { 
+        bg: "bg-blue-100 text-blue-800 border-blue-200", 
+        text: "Ma'ruza" 
+      },
+      practice: { 
+        bg: "bg-green-100 text-green-800 border-green-200", 
+        text: "Amaliyot" 
+      },
+      lab: { 
+        bg: "bg-purple-100 text-purple-800 border-purple-200", 
+        text: "Laboratoriya" 
+      },
+      seminar: { 
+        bg: "bg-orange-100 text-orange-800 border-orange-200", 
+        text: "Seminar" 
+      }
     };
 
     const config = typeConfig[type as keyof typeof typeConfig];
     if (!config) return null;
 
     return (
-      <Badge variant="outline" className={`type-badge ${config.bg}`}>
+      <Badge className={`font-semibold px-3 py-1 rounded-full border ${config.bg}`}>
         {config.text}
       </Badge>
     );
@@ -405,10 +413,10 @@ const TimetablePage = () => {
 
   if (loading) {
     return (
-      <div className="timetable-loading">
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
-          <div className="loading-spinner"></div>
-          <p>Ma'lumotlar yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
         </div>
       </div>
     );
@@ -417,90 +425,93 @@ const TimetablePage = () => {
   const weekRange = getWeekRange(currentWeek);
 
   return (
-    <div className="timetable-page">
-      <div className="timetable-header">
-        <div>
-          <h1 className="timetable-title">Dars Jadvali</h1>
-          <p className="timetable-subtitle">
-            Farid Karimov - 5-A sinf
-          </p>
-        </div>
-        
-        <div className="week-navigation">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigateWeek('prev')}
-            className="nav-btn"
-          >
-            <ChevronLeft className="nav-icon" />
-          </Button>
-          
-          <div className="week-display">
-            <Calendar className="week-icon" />
-            <span className="week-text">
-              {weekRange.start} - {weekRange.end}
-            </span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-gray-100">
+              Dars Jadvali
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
+              Farid Karimov - 5-A sinf
+            </p>
           </div>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigateWeek('next')}
-            className="nav-btn"
-          >
-            <ChevronRight className="nav-icon" />
-          </Button>
+          <div className="flex items-center gap-3 bg-white dark:bg-gray-700 rounded-2xl border border-gray-200 dark:border-gray-600 p-2 shadow-lg">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigateWeek('prev')}
+              className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200 h-10 w-10 p-0"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-600 rounded-xl border border-gray-200 dark:border-gray-500 min-w-[200px] justify-center">
+              <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <span className="font-medium text-gray-700 dark:text-gray-200 text-sm">
+                {weekRange.start} - {weekRange.end}
+              </span>
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigateWeek('next')}
+              className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200 h-10 w-10 p-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Timetable Actions */}
-      <div className="timetable-actions">
+      {/* Actions */}
+      <div className="flex justify-end mb-8">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="add-btn">
-              <Plus className="btn-icon" />
+            <Button 
+              onClick={openCreateDialog}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <Plus className="h-5 w-5 mr-2" />
               Dars qo'shish
             </Button>
           </DialogTrigger>
-          <DialogContent className="timetable-dialog">
+          <DialogContent className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md">
             <DialogHeader>
-              <DialogTitle className="dialog-title">
+              <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                 {editingRecord ? "Darsni tahrirlash" : "Yangi dars qo'shish"}
               </DialogTitle>
-              <DialogDescription className="dialog-description">
+              <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
                 Dars ma'lumotlarini kiriting va saqlang.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="dialog-form">
-              <div className="form-row">
-                <Label htmlFor="dayOfWeek" className="form-label">
+            <div className="space-y-6 my-6">
+              <div className="space-y-2">
+                <Label htmlFor="dayOfWeek" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Hafta kuni
                 </Label>
-                <Select 
-                  value={formData.dayOfWeek} 
-                  onValueChange={(value: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday') => 
-                    setFormData({ ...formData, dayOfWeek: value })
-                  }
+                <select 
+                  id="dayOfWeek"
+                  value={formData.dayOfWeek}
+                  onChange={(e) => setFormData(prev => ({ ...prev, dayOfWeek: e.target.value as 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' }))}
+                  className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
                 >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Hafta kunini tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monday">Dushanba</SelectItem>
-                    <SelectItem value="tuesday">Seshanba</SelectItem>
-                    <SelectItem value="wednesday">Chorshanba</SelectItem>
-                    <SelectItem value="thursday">Payshanba</SelectItem>
-                    <SelectItem value="friday">Juma</SelectItem>
-                    <SelectItem value="saturday">Shanba</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <option value="monday">Dushanba</option>
+                  <option value="tuesday">Seshanba</option>
+                  <option value="wednesday">Chorshanba</option>
+                  <option value="thursday">Payshanba</option>
+                  <option value="friday">Juma</option>
+                  <option value="saturday">Shanba</option>
+                </select>
               </div>
               
-              <div className="time-row">
-                <div className="time-input">
-                  <Label htmlFor="startTime" className="form-label">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="startTime" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Boshlanish vaqti
                   </Label>
                   <Input
@@ -508,12 +519,12 @@ const TimetablePage = () => {
                     type="time"
                     value={formData.startTime}
                     onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                    className="form-input"
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   />
                 </div>
                 
-                <div className="time-input">
-                  <Label htmlFor="endTime" className="form-label">
+                <div className="space-y-2">
+                  <Label htmlFor="endTime" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Tugash vaqti
                   </Label>
                   <Input
@@ -521,101 +532,85 @@ const TimetablePage = () => {
                     type="time"
                     value={formData.endTime}
                     onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                    className="form-input"
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   />
                 </div>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="subject" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="subject" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Fan *
                 </Label>
-                <Select 
-                  value={formData.subject} 
-                  onValueChange={(value) => setFormData({ ...formData, subject: value })}
+                <select 
+                  id="subject"
+                  value={formData.subject}
+                  onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
                 >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Fanni tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.map((subject) => (
-                      <SelectItem key={subject} value={subject}>
-                        {subject}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <option value="">Fanni tanlang</option>
+                  {subjects.map((subject) => (
+                    <option key={subject} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+                </select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="teacher" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="teacher" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   O'qituvchi *
                 </Label>
-                <Select 
-                  value={formData.teacher} 
-                  onValueChange={(value) => setFormData({ ...formData, teacher: value })}
+                <select 
+                  id="teacher"
+                  value={formData.teacher}
+                  onChange={(e) => setFormData(prev => ({ ...prev, teacher: e.target.value }))}
+                  className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
                 >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="O'qituvchini tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {teachers.map((teacher) => (
-                      <SelectItem key={teacher} value={teacher}>
-                        {teacher}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <option value="">O'qituvchini tanlang</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher} value={teacher}>
+                      {teacher}
+                    </option>
+                  ))}
+                </select>
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="room" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="room" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Xona *
                 </Label>
                 <Input
                   id="room"
                   value={formData.room}
                   onChange={(e) => setFormData({ ...formData, room: e.target.value })}
-                  className="form-input"
+                  className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                   placeholder="Xona raqami"
                 />
               </div>
               
-              <div className="form-row">
-                <Label htmlFor="type" className="form-label">
+              <div className="space-y-2">
+                <Label htmlFor="type" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Dars turi
                 </Label>
-                <Select 
-                  value={formData.type} 
-                  onValueChange={(value: 'lecture' | 'practice' | 'lab' | 'seminar') => 
-                    setFormData({ ...formData, type: value })
-                  }
+                <select 
+                  id="type"
+                  value={formData.type}
+                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as 'lecture' | 'practice' | 'lab' | 'seminar' }))}
+                  className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
                 >
-                  <SelectTrigger className="form-select">
-                    <SelectValue placeholder="Dars turini tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {classTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {classTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             
-            <DialogFooter className="dialog-footer">
+            <DialogFooter>
               <Button 
-                onClick={() => setIsDialogOpen(false)} 
-                variant="outline"
-                className="btn btn-secondary"
-              >
-                Bekor qilish
-              </Button>
-              <Button 
-                onClick={handleSaveRecord} 
-                className="btn btn-primary"
+                onClick={handleSaveRecord}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 py-3 text-lg font-semibold"
               >
                 {editingRecord ? "Yangilash" : "Qo'shish"}
               </Button>
@@ -625,67 +620,84 @@ const TimetablePage = () => {
       </div>
 
       {/* Timetable Grid */}
-      <div className="timetable-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {days.map((day, index) => (
-          <Card key={index} className="day-card">
-            <CardHeader className="day-card-header">
-              <CardTitle className="day-card-title">{day.day}</CardTitle>
-              <CardDescription className="day-card-description">
+          <Card key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+              <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                {day.day}
+              </CardTitle>
+              <CardDescription className="text-gray-500 dark:text-gray-400">
                 {day.records.length} ta dars
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="day-card-content">
+            <CardContent className="p-6">
               {day.records.length === 0 ? (
-                <div className="empty-day">
-                  <BookOpen className="empty-icon" />
-                  <p>Darslar yo'q</p>
+                <div className="text-center py-8">
+                  <BookOpen className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Darslar yo'q</p>
                 </div>
               ) : (
-                <div className="lessons-list">
+                <div className="space-y-4">
                   {day.records.map((record) => (
-                    <div key={record.id} className="lesson-item">
-                      <div className="lesson-time">
-                        <Clock className="time-icon" />
-                        <span className="time-range">
-                          {formatTime(record.startTime)} - {formatTime(record.endTime)}
-                        </span>
-                      </div>
-                      
-                      <div className="lesson-info">
-                        <div className="subject-teacher">
-                          <span className="subject">{record.subject}</span>
-                          <span className="teacher">{record.teacher}</span>
-                        </div>
-                        
-                        <div className="lesson-meta">
-                          <div className="room-type">
-                            <MapPin className="meta-icon" />
-                            <span>{record.room}</span>
-                            <span className="type-badge-wrapper">
-                              {getTypeBadge(record.type)}
+                    <div 
+                      key={record.id} 
+                      className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl border border-gray-200 dark:border-gray-600 p-4 hover:shadow-md transition-all duration-200"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Clock className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              {formatTime(record.startTime)} - {formatTime(record.endTime)}
                             </span>
                           </div>
+                          
+                          <div className="mb-2">
+                            <div className="flex items-center gap-2 mb-1">
+                              <BookOpen className="h-4 w-4 text-green-500" />
+                              <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-base">
+                                {record.subject}
+                              </h3>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <User className="h-3 w-3 text-gray-400" />
+                              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                {record.teacher}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-gray-400" />
+                              <span className="text-gray-600 dark:text-gray-400 text-sm">
+                                {record.room}
+                              </span>
+                            </div>
+                            {getTypeBadge(record.type)}
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="lesson-actions">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openEditDialog(record)}
-                          className="action-btn edit-btn"
-                        >
-                          <Edit className="action-icon" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteRecord(record.id)}
-                          className="action-btn delete-btn"
-                        >
-                          <Trash2 className="action-icon" />
-                        </Button>
+                        
+                        <div className="flex gap-1 flex-shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(record)}
+                            className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 h-8 w-8 p-0"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteRecord(record.id)}
+                            className="rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 h-8 w-8 p-0"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -697,12 +709,19 @@ const TimetablePage = () => {
       </div>
 
       {timetable.length === 0 && !loading && (
-        <div className="empty-state">
-          <Calendar className="empty-icon" />
-          <h3>Dars jadvali mavjud emas</h3>
-          <p>Biror dars qo'shing va haftalik jadvalingizni tuzing</p>
-          <Button onClick={openCreateDialog} className="add-btn">
-            <Plus className="btn-icon" />
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <Calendar className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+            Dars jadvali mavjud emas
+          </h3>
+          <p className="text-gray-500 dark:text-gray-500 mb-6">
+            Biror dars qo'shing va haftalik jadvalingizni tuzing
+          </p>
+          <Button 
+            onClick={openCreateDialog}
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <Plus className="h-5 w-5 mr-2" />
             Birinchi darsni qo'shish
           </Button>
         </div>
