@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Plus, MapPin, Building2, Globe, Sun, Moon } from "lucide-react";
+import { Trash2, Edit, Plus, MapPin, Building2, Globe, Sun, Moon, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Region {
@@ -32,7 +32,8 @@ interface CityUpdateDto {
   regionId: number;
 }
 
-const API_BASE_URL = "https://your-api-url.com/api"; // Замените на ваш базовый URL
+// Используем ваш бэкенд URL
+const API_BASE_URL = "https://eduuz.onrender.com/api/admin";
 
 const CitiesPage = () => {
   const [cities, setCities] = useState<City[]>([]);
@@ -43,25 +44,31 @@ const CitiesPage = () => {
   const [selectedRegionId, setSelectedRegionId] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // API функции
+  // API функции с обработкой ошибок
   const api = {
-    // Получить все города
     getCities: async (): Promise<City[]> => {
       const response = await fetch(`${API_BASE_URL}/cities`);
-      if (!response.ok) throw new Error('Failed to fetch cities');
-      return response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch cities: ${response.status} ${errorText}`);
+      }
+      const data = await response.json();
+      return data;
     },
 
-    // Получить все регионы
     getRegions: async (): Promise<Region[]> => {
       const response = await fetch(`${API_BASE_URL}/regions`);
-      if (!response.ok) throw new Error('Failed to fetch regions');
-      return response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch regions: ${response.status} ${errorText}`);
+      }
+      const data = await response.json();
+      return data;
     },
 
-    // Создать город
     createCity: async (cityData: CityCreateDto): Promise<City> => {
       const response = await fetch(`${API_BASE_URL}/cities`, {
         method: 'POST',
@@ -70,11 +77,14 @@ const CitiesPage = () => {
         },
         body: JSON.stringify(cityData),
       });
-      if (!response.ok) throw new Error('Failed to create city');
-      return response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create city: ${response.status} ${errorText}`);
+      }
+      const data = await response.json();
+      return data;
     },
 
-    // Обновить город
     updateCity: async (id: number, cityData: CityUpdateDto): Promise<City> => {
       const response = await fetch(`${API_BASE_URL}/cities/${id}`, {
         method: 'PUT',
@@ -83,28 +93,32 @@ const CitiesPage = () => {
         },
         body: JSON.stringify(cityData),
       });
-      if (!response.ok) throw new Error('Failed to update city');
-      return response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update city: ${response.status} ${errorText}`);
+      }
+      const data = await response.json();
+      return data;
     },
 
-    // Удалить город
     deleteCity: async (id: number): Promise<void> => {
       const response = await fetch(`${API_BASE_URL}/cities/${id}`, {
         method: 'DELETE',
       });
-      if (!response.ok) throw new Error('Failed to delete city');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to delete city: ${response.status} ${errorText}`);
+      }
     }
   };
 
   useEffect(() => {
     fetchData();
 
+    // Тема
     const savedTheme = localStorage.getItem("theme");
     const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialDark = savedTheme
-      ? savedTheme === "dark"
-      : isSystemDark;
-
+    const initialDark = savedTheme ? savedTheme === "dark" : isSystemDark;
     setIsDarkTheme(initialDark);
     applyTheme(initialDark);
   }, []);
@@ -129,20 +143,36 @@ const CitiesPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      // Получаем данные с API
+      console.log('Fetching data from:', API_BASE_URL);
+      
       const [citiesData, regionsData] = await Promise.all([
         api.getCities(),
         api.getRegions()
       ]);
 
+      console.log('Cities data:', citiesData);
+      console.log('Regions data:', regionsData);
+
+      // Обогащаем города названиями регионов
+      const enrichedCities = citiesData.map(city => {
+        const region = regionsData.find(r => r.id === city.regionId);
+        return {
+          ...city,
+          regionName: region?.name
+        };
+      });
+
       setRegions(regionsData);
-      setCities(citiesData);
+      setCities(enrichedCities);
     } catch (error) {
       console.error('Error fetching data:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Noma\'lum xatolik';
+      setError(errorMessage);
       toast({
         title: "Xatolik",
-        description: "Ma'lumotlarni yuklashda xatolik yuz berdi",
+        description: `Ma'lumotlarni yuklashda xatolik: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
@@ -162,9 +192,10 @@ const CitiesPage = () => {
       });
     } catch (error) {
       console.error('Error deleting city:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Noma\'lum xatolik';
       toast({
         title: "Xatolik",
-        description: "Shaharni o'chirishda xatolik yuz berdi",
+        description: `Shaharni o'chirishda xatolik: ${errorMessage}`,
         variant: "destructive",
       });
     }
@@ -191,15 +222,21 @@ const CitiesPage = () => {
 
     try {
       const cityData = {
-        name: newCityName,
+        name: newCityName.trim(),
         regionId: parseInt(selectedRegionId)
       };
 
+      console.log('Saving city:', cityData);
+
       if (editingCity) {
-        // Обновление города
+        // Редактирование существующего города
         const updatedCity = await api.updateCity(editingCity.id, cityData);
+        const region = regions.find(r => r.id === updatedCity.regionId);
+        
         setCities(cities.map(city => 
-          city.id === editingCity.id ? updatedCity : city
+          city.id === editingCity.id 
+            ? { ...updatedCity, regionName: region?.name }
+            : city
         ));
         toast({
           title: "Muvaffaqiyat",
@@ -208,22 +245,26 @@ const CitiesPage = () => {
       } else {
         // Создание нового города
         const newCity = await api.createCity(cityData);
-        setCities([...cities, newCity]);
+        const region = regions.find(r => r.id === newCity.regionId);
+        
+        setCities([...cities, { ...newCity, regionName: region?.name }]);
         toast({
           title: "Muvaffaqiyat",
           description: "Yangi shahar muvaffaqiyatli qo'shildi",
         });
       }
 
+      // Сброс формы
       setNewCityName("");
       setSelectedRegionId("");
       setEditingCity(null);
       setIsDialogOpen(false);
     } catch (error) {
       console.error('Error saving city:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Noma\'lum xatolik';
       toast({
         title: "Xatolik",
-        description: editingCity ? "Shaharni yangilashda xatolik" : "Shahar qo'shishda xatolik",
+        description: `${editingCity ? "Shaharni yangilashda" : "Shahar qo'shishda"} xatolik: ${errorMessage}`,
         variant: "destructive",
       });
     }
@@ -252,12 +293,35 @@ const CitiesPage = () => {
     return stats;
   };
 
+  // Остальная часть компонента остается без изменений...
+  // [Здесь идет остальной JSX код, который у вас уже есть]
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
           <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
+        <div className="text-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-100 mb-2">
+            Xatolik yuz berdi
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+          <Button 
+            onClick={fetchData}
+            className="mt-6 bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            Qayta urinish
+          </Button>
         </div>
       </div>
     );

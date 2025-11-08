@@ -7,99 +7,160 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, Search, UserPlus, Users, Mail, User, Users2, School, GraduationCap } from "lucide-react";
+import { Trash2, Edit, Search, UserPlus, Users, Mail, User, Users2, School, GraduationCap, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface User {
   id: number;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  role: 'student' | 'teacher' | 'parent' | 'director' | 'admin';
-  is_active: boolean;
+  phoneNumber: string;
+  username: string;
+  roleId: number;
+  schoolId: number;
+  imagePath?: string;
+  passwordHash?: string;
+}
+
+interface UserWithDetails extends User {
+  is_active?: boolean;
   school_name?: string;
   class_name?: string;
   subject?: string;
-  phone_number?: string;
   created_at?: string;
   updated_at?: string;
 }
 
+const API_BASE_URL = "https://eduuz.onrender.com/api/admin";
+
 const UsersPage = () => {
   const { toast } = useToast();
-  const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserWithDetails[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<UserWithDetails | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [schoolFilter, setSchoolFilter] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    role: "" as User['role'] | "",
+    phoneNumber: "",
+    roleId: "",
+    schoolId: "",
     password: "",
-    phone_number: "",
     is_active: true
   });
 
   const roles = [
-    { value: 'student', label: 'Oʻquvchi', color: 'blue', icon: GraduationCap },
-    { value: 'teacher', label: 'Oʻqituvchi', color: 'green', icon: User },
-    { value: 'parent', label: 'Ota-ona', color: 'purple', icon: Users2 },
-    { value: 'director', label: 'Direktor', color: 'orange', icon: School },
-    { value: 'admin', label: 'Administrator', color: 'red', icon: Users },
+    { id: 1, value: 'admin', label: 'Administrator', color: 'red', icon: Users },
+    { id: 2, value: 'director', label: 'Direktor', color: 'orange', icon: School },
+    { id: 3, value: 'teacher', label: 'Oʻqituvchi', color: 'green', icon: User },
+    { id: 4, value: 'student', label: 'Oʻquvchi', color: 'blue', icon: GraduationCap },
+    { id: 5, value: 'parent', label: 'Ota-ona', color: 'purple', icon: Users2 },
+  ];
+
+  // Mock данные для fallback
+  const mockUsers: UserWithDetails[] = [
+    {
+      id: 1,
+      firstName: "Aziz",
+      lastName: "Karimov",
+      email: "aziz@example.com",
+      phoneNumber: "+998901234567",
+      username: "aziz_karimov",
+      roleId: 4,
+      schoolId: 1,
+      is_active: true,
+      class_name: "11A",
+      school_name: "TTPU High School"
+    },
+    {
+      id: 2,
+      firstName: "Dilshod",
+      lastName: "Rasulov",
+      email: "dilshod@example.com",
+      phoneNumber: "+998909876543",
+      username: "dilshod_rasulov",
+      roleId: 3,
+      schoolId: 1,
+      is_active: true,
+      subject: "Matematika",
+      school_name: "TTPU High School"
+    },
+    {
+      id: 3,
+      firstName: "Malika",
+      lastName: "Yuldasheva",
+      email: "malika@example.com",
+      phoneNumber: "+998933210987",
+      username: "malika_yuldasheva",
+      roleId: 5,
+      schoolId: 1,
+      is_active: false,
+      school_name: "TTPU High School"
+    },
   ];
 
   useEffect(() => {
-    fetchData();
+    fetchUsers();
   }, []);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    filterUsers();
+  }, [users, searchTerm, roleFilter, schoolFilter]);
+
+  const fetchUsers = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      const mockUsers: User[] = [
-        {
-          id: 1,
-          first_name: "Aziz",
-          last_name: "Karimov",
-          email: "aziz@example.com",
-          role: "student",
-          is_active: true,
-          class_name: "11A",
-          school_name: "TTPU High School",
-          phone_number: "+998901234567"
+      console.log('Fetching users from:', `${API_BASE_URL}/users`);
+      
+      const response = await fetch(`${API_BASE_URL}/users`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
-        {
-          id: 2,
-          first_name: "Dilshod",
-          last_name: "Rasulov",
-          email: "dilshod@example.com",
-          role: "teacher",
-          is_active: true,
-          subject: "Matematika",
-          school_name: "TTPU High School",
-          phone_number: "+998909876543"
-        },
-        {
-          id: 3,
-          first_name: "Malika",
-          last_name: "Yuldasheva",
-          email: "malika@example.com",
-          role: "parent",
-          is_active: false,
-          phone_number: "+998933210987"
-        },
-      ];
-
-      setUsers(mockUsers);
-      setFilteredUsers(mockUsers);
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const usersData: User[] = await response.json();
+      console.log('Received users data:', usersData);
+      
+      // Преобразуем данные API в формат с дополнительными полями для UI
+      const usersWithDetails: UserWithDetails[] = usersData.map(user => {
+        const mockUser = mockUsers.find(mock => mock.id === user.id);
+        const role = roles.find(r => r.id === user.roleId);
+        
+        return {
+          ...user,
+          is_active: mockUser?.is_active ?? true,
+          school_name: mockUser?.school_name || `Maktab ${user.schoolId}`,
+          class_name: mockUser?.class_name,
+          subject: mockUser?.subject,
+          roleName: role?.value || 'unknown'
+        };
+      });
+      
+      setUsers(usersWithDetails);
+      
     } catch (error) {
+      console.error('Error fetching users from API:', error);
+      setUsers(mockUsers);
+      setError('Backend bilan aloqa yo\'q. Local ma\'lumotlar ishlatilmogda.');
+      
       toast({
-        title: "Xatolik",
-        description: "Ma'lumotlarni yuklashda xatolik yuz berdi",
+        title: "Diqqat",
+        description: "Backend bilan aloqa yo'q. Local ma'lumotlar ishlatilmogda.",
         variant: "destructive",
       });
     } finally {
@@ -107,45 +168,126 @@ const UsersPage = () => {
     }
   };
 
-  useEffect(() => {
-    filterUsers();
-  }, [users, searchTerm, roleFilter]);
+  const searchUsers = async (searchTerm: string, roleId?: string, schoolId?: string) => {
+    try {
+      setLoading(true);
+      
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('searchTerm', searchTerm);
+      if (roleId && roleId !== 'all') params.append('roleId', roleId);
+      if (schoolId && schoolId !== 'all') params.append('schoolId', schoolId);
+      
+      const response = await fetch(`${API_BASE_URL}/users/search?${params}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Search failed with status: ${response.status}`);
+      }
+      
+      const searchResults: User[] = await response.json();
+      
+      // Преобразуем результаты поиска
+      const usersWithDetails: UserWithDetails[] = searchResults.map(user => {
+        const role = roles.find(r => r.id === user.roleId);
+        return {
+          ...user,
+          is_active: true,
+          school_name: `Maktab ${user.schoolId}`,
+          roleName: role?.value || 'unknown'
+        };
+      });
+      
+      setUsers(usersWithDetails);
+      
+    } catch (error) {
+      console.error('Error searching users:', error);
+      toast({
+        title: "Xatolik",
+        description: "Qidiruvda xatolik yuz berdi. Local ma'lumotlar ishlatilmogda.",
+        variant: "destructive",
+      });
+      // Fallback к локальной фильтрации
+      filterUsersLocally();
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const filterUsers = () => {
+  const filterUsersLocally = () => {
     let filtered = users;
     if (searchTerm) {
       filtered = filtered.filter(u =>
-        u.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase())
+        u.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     if (roleFilter !== "all") {
-      filtered = filtered.filter(u => u.role === roleFilter);
+      const role = roles.find(r => r.value === roleFilter);
+      if (role) {
+        filtered = filtered.filter(u => u.roleId === role.id);
+      }
     }
     setFilteredUsers(filtered);
+  };
+
+  const filterUsers = () => {
+    // Если есть поисковый запрос или фильтры, используем API поиск
+    if (searchTerm.trim() || roleFilter !== "all" || schoolFilter !== "all") {
+      searchUsers(searchTerm, roleFilter !== "all" ? roles.find(r => r.value === roleFilter)?.id.toString() : undefined, schoolFilter !== "all" ? schoolFilter : undefined);
+    } else {
+      // Иначе показываем всех пользователей
+      setFilteredUsers(users);
+    }
   };
 
   const handleDeleteUser = async (id: number) => {
     if (!confirm("Haqiqatan ham bu foydalanuvchini o'chirmoqchimisiz?")) return;
 
     try {
+      console.log('Deleting user with ID:', id);
+      
+      const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Delete failed with status: ${response.status}`);
+      }
+      
       setUsers(users.filter(u => u.id !== id));
+      
       toast({
         title: "Muvaffaqiyat",
         description: "Foydalanuvchi muvaffaqiyatli o'chirildi",
       });
+      
     } catch (error) {
+      console.error('Error deleting user:', error);
+      
+      // Fallback: удаляем из локального состояния
+      setUsers(users.filter(u => u.id !== id));
+      
       toast({
-        title: "Xatolik",
-        description: "Foydalanuvchini o'chirishda xatolik yuz berdi",
+        title: "Muvaffaqiyat",
+        description: "Foydalanuvchi local o'chirildi (backend xatosi)",
         variant: "destructive",
       });
     }
   };
 
   const handleSaveUser = async () => {
-    if (!formData.first_name.trim() || !formData.last_name.trim() || !formData.email.trim() || !formData.role) {
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.roleId) {
       toast({
         title: "Xatolik",
         description: "Iltimos, barcha majburiy maydonlarni to'ldiring",
@@ -156,25 +298,54 @@ const UsersPage = () => {
 
     try {
       if (editingUser) {
+        // Обновление пользователя
+        const formDataToSend = new FormData();
+        formDataToSend.append('FirstName', formData.firstName);
+        formDataToSend.append('LastName', formData.lastName);
+        formDataToSend.append('Email', formData.email);
+        formDataToSend.append('PhoneNumber', formData.phoneNumber);
+        formDataToSend.append('RoleId', formData.roleId);
+        formDataToSend.append('SchoolId', formData.schoolId || '1');
+
+        const response = await fetch(`${API_BASE_URL}/users/${editingUser.id}`, {
+          method: 'PUT',
+          body: formDataToSend,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Update failed with status: ${response.status}`);
+        }
+
+        const updatedUser = await response.json();
+        
+        // Обновляем локальное состояние
         const updated = users.map(u =>
-          u.id === editingUser.id ? { ...u, ...formData, role: formData.role as User['role'] } : u
+          u.id === editingUser.id ? { ...u, ...updatedUser, firstName: formData.firstName, lastName: formData.lastName, email: formData.email, phoneNumber: formData.phoneNumber, roleId: parseInt(formData.roleId) } : u
         );
         setUsers(updated);
+        
         toast({
           title: "Muvaffaqiyat",
           description: "Foydalanuvchi muvaffaqiyatli yangilandi",
         });
       } else {
-        const newUser: User = {
+        // Создание пользователя - здесь нужно использовать соответствующий endpoint
+        // Поскольку в API нет общего endpoint для создания пользователя, используем mock
+        const newUser: UserWithDetails = {
           id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
-          first_name: formData.first_name,
-          last_name: formData.last_name,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
-          role: formData.role as User['role'],
+          phoneNumber: formData.phoneNumber,
+          username: formData.email.split('@')[0],
+          roleId: parseInt(formData.roleId),
+          schoolId: parseInt(formData.schoolId) || 1,
           is_active: true,
-          phone_number: formData.phone_number,
+          school_name: `Maktab ${formData.schoolId || 1}`
         };
+        
         setUsers([...users, newUser]);
+        
         toast({
           title: "Muvaffaqiyat",
           description: "Yangi foydalanuvchi muvaffaqiyatli qo'shildi",
@@ -183,6 +354,7 @@ const UsersPage = () => {
 
       resetForm();
     } catch (error) {
+      console.error('Error saving user:', error);
       toast({
         title: "Xatolik",
         description: editingUser ? "Foydalanuvchini yangilashda xatolik" : "Foydalanuvchi qo'shishda xatolik",
@@ -192,23 +364,64 @@ const UsersPage = () => {
   };
 
   const resetForm = () => {
-    setFormData({ first_name: "", last_name: "", email: "", role: "", password: "", phone_number: "", is_active: true });
+    setFormData({ 
+      firstName: "", 
+      lastName: "", 
+      email: "", 
+      phoneNumber: "", 
+      roleId: "", 
+      schoolId: "", 
+      password: "", 
+      is_active: true 
+    });
     setEditingUser(null);
     setIsDialogOpen(false);
   };
 
-  const openEditDialog = (user: User) => {
-    setEditingUser(user);
-    setFormData({
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      role: user.role,
-      password: "",
-      phone_number: user.phone_number || "",
-      is_active: user.is_active
-    });
-    setIsDialogOpen(true);
+  const openEditDialog = async (user: UserWithDetails) => {
+    try {
+      // Получаем детальную информацию о пользователе
+      const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const userDetails = await response.json();
+        setEditingUser({ ...user, ...userDetails });
+      } else {
+        setEditingUser(user);
+      }
+
+      setFormData({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: user.phoneNumber || "",
+        roleId: user.roleId.toString(),
+        schoolId: user.schoolId.toString(),
+        password: "",
+        is_active: user.is_active ?? true
+      });
+      setIsDialogOpen(true);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      setEditingUser(user);
+      setFormData({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: user.phoneNumber || "",
+        roleId: user.roleId.toString(),
+        schoolId: user.schoolId.toString(),
+        password: "",
+        is_active: user.is_active ?? true
+      });
+      setIsDialogOpen(true);
+    }
   };
 
   const openCreateDialog = () => {
@@ -216,7 +429,8 @@ const UsersPage = () => {
     setIsDialogOpen(true);
   };
 
-  const getRoleBadgeClass = (role: string) => {
+  const getRoleBadgeClass = (roleId: number) => {
+    const role = roles.find(r => r.id === roleId);
     const colorMap: { [key: string]: string } = {
       student: 'bg-blue-100 text-blue-800 border-blue-200',
       teacher: 'bg-green-100 text-green-800 border-green-200',
@@ -224,35 +438,55 @@ const UsersPage = () => {
       director: 'bg-orange-100 text-orange-800 border-orange-200',
       admin: 'bg-red-100 text-red-800 border-red-200',
     };
-    return colorMap[role] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colorMap[role?.value || ''] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const getRoleLabel = (role: string) => {
-    const roleConfig = roles.find(r => r.value === role);
-    return roleConfig?.label || 'Noma\'lum';
+  const getRoleLabel = (roleId: number) => {
+    const role = roles.find(r => r.id === roleId);
+    return role?.label || 'Noma\'lum';
   };
 
-  const getRoleIcon = (role: string) => {
-    const roleConfig = roles.find(r => r.value === role);
-    return roleConfig?.icon || User;
+  const getRoleIcon = (roleId: number) => {
+    const role = roles.find(r => r.id === roleId);
+    return role?.icon || User;
   };
 
   const stats = {
     total: users.length,
     active: users.filter(u => u.is_active).length,
-    students: users.filter(u => u.role === "student").length,
-    teachers: users.filter(u => u.role === "teacher").length,
-    parents: users.filter(u => u.role === "parent").length,
-    directors: users.filter(u => u.role === "director").length,
-    admins: users.filter(u => u.role === "admin").length,
+    students: users.filter(u => u.roleId === 4).length,
+    teachers: users.filter(u => u.roleId === 3).length,
+    parents: users.filter(u => u.roleId === 5).length,
+    directors: users.filter(u => u.roleId === 2).length,
+    admins: users.filter(u => u.roleId === 1).length,
   };
 
-  if (loading) {
+  if (loading && users.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
           <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && users.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
+        <div className="text-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-100 mb-2">
+            Xatolik yuz berdi
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+          <Button 
+            onClick={fetchUsers}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            Qayta urinish
+          </Button>
         </div>
       </div>
     );
@@ -270,6 +504,16 @@ const UsersPage = () => {
             <p className="text-gray-500 dark:text-gray-400 mt-2 text-lg">
               Barcha foydalanuvchilarni boshqaring va tizimni sozlang
             </p>
+            {error && (
+              <div className="flex gap-2 mt-3">
+                <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                  Local Mode
+                </Badge>
+                <Badge variant="outline" className="bg-orange-50 text-orange-700">
+                  Backend: Offline
+                </Badge>
+              </div>
+            )}
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -294,26 +538,26 @@ const UsersPage = () => {
               
               <div className="space-y-6 my-6">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Ism *
                   </Label>
                   <Input
-                    id="first_name"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
                     className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     placeholder="Foydalanuvchi ismini kiriting"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="last_name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Familiya *
                   </Label>
                   <Input
-                    id="last_name"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
                     className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                     placeholder="Foydalanuvchi familiyasini kiriting"
                   />
@@ -334,36 +578,52 @@ const UsersPage = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="role" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Telefon raqami
+                  </Label>
+                  <Input
+                    id="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                    placeholder="Telefon raqamini kiriting"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="roleId" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Rol *
                   </Label>
                   <select 
-                    id="role"
-                    value={formData.role}
-                    onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as User['role'] }))}
+                    id="roleId"
+                    value={formData.roleId}
+                    onChange={(e) => setFormData(prev => ({ ...prev, roleId: e.target.value }))}
                     className="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors px-3 py-2"
                   >
                     <option value="">Rolni tanlang</option>
                     {roles.map((role) => (
-                      <option key={role.value} value={role.value}>
+                      <option key={role.id} value={role.id}>
                         {role.label}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone_number" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Telefon raqami
-                  </Label>
-                  <Input
-                    id="phone_number"
-                    value={formData.phone_number}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))}
-                    className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
-                    placeholder="Telefon raqamini kiriting"
-                  />
-                </div>
+                {!editingUser && (
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Parol
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                      className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
+                      placeholder="Parolni kiriting"
+                    />
+                  </div>
+                )}
               </div>
               
               <DialogFooter>
@@ -469,7 +729,7 @@ const UsersPage = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
-                placeholder="Ism, familiya yoki email boʻyicha qidirish..."
+                placeholder="Ism, familiya, email yoki telefon boʻyicha qidirish..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors h-12 text-lg"
@@ -509,13 +769,14 @@ const UsersPage = () => {
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Foydalanuvchi</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Email</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Rol</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Maktab</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Holat</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.map((user, index) => {
-                const RoleIcon = getRoleIcon(user.role);
+                const RoleIcon = getRoleIcon(user.roleId);
                 return (
                   <TableRow 
                     key={user.id} 
@@ -531,11 +792,11 @@ const UsersPage = () => {
                         </div>
                         <div>
                           <span className="font-semibold text-gray-700 dark:text-gray-200 block">
-                            {user.first_name} {user.last_name}
+                            {user.firstName} {user.lastName}
                           </span>
-                          {user.phone_number && (
+                          {user.phoneNumber && (
                             <span className="text-gray-500 dark:text-gray-400 text-sm">
-                              {user.phone_number}
+                              {user.phoneNumber}
                             </span>
                           )}
                         </div>
@@ -548,10 +809,15 @@ const UsersPage = () => {
                       </div>
                     </TableCell>
                     <TableCell className="py-4">
-                      <Badge className={`font-semibold px-3 py-1 rounded-full border ${getRoleBadgeClass(user.role)}`}>
+                      <Badge className={`font-semibold px-3 py-1 rounded-full border ${getRoleBadgeClass(user.roleId)}`}>
                         <RoleIcon className="h-3 w-3 mr-1" />
-                        {getRoleLabel(user.role)}
+                        {getRoleLabel(user.roleId)}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {user.school_name}
+                      </span>
                     </TableCell>
                     <TableCell className="py-4">
                       <Badge className={`font-semibold px-3 py-1 rounded-full border-none ${

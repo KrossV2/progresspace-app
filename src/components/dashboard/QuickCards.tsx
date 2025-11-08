@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-// Mock data for quick cards
-// TODO: Replace with API calls to backend
+
 const quickData = {
   nextClass: {
     subject: "Fizika",
@@ -148,7 +147,7 @@ export function QuickCards() {
         </CardContent>
       </Card>
 
-      {/* Reminders Card */}
+    
       <Card className="shadow-card border-border">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">

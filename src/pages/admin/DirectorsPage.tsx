@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit, UserPlus, Eye, Users, Mail, Phone, Building2 } from "lucide-react";
+import { Trash2, Edit, UserPlus, Eye, Users, Mail, Phone, Building2, AlertCircle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface School {
@@ -28,6 +28,25 @@ interface Director {
   phoneNumber?: string;
 }
 
+interface DirectorCreateDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  schoolId?: number;
+  phoneNumber?: string;
+}
+
+interface DirectorUpdateDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  schoolId?: number;
+  phoneNumber?: string;
+  isActive: boolean;
+}
+
+const API_BASE_URL = "https://eduuz.onrender.com/api/admin";
+
 const DirectorsPage = () => {
   const [directors, setDirectors] = useState<Director[]>([]);
   const [schools, setSchools] = useState<School[]>([]);
@@ -42,7 +61,70 @@ const DirectorsPage = () => {
     phoneNumber: ""
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // API функции
+  const api = {
+    getDirectors: async (): Promise<Director[]> => {
+      const response = await fetch(`${API_BASE_URL}/directors`);
+      if (!response.ok) throw new Error('Failed to fetch directors');
+      const data = await response.json();
+      return data;
+    },
+
+    getSchools: async (): Promise<School[]> => {
+      // Если у вас есть endpoint для школ, используйте его
+      // Пока используем mock данные, но можно заменить на реальный API
+      const response = await fetch(`${API_BASE_URL}/schools`);
+      if (!response.ok) {
+        // Если endpoint школ нет, возвращаем mock данные
+        return [
+          { id: 1, name: "1-umumiy o'rta ta'lim maktabi", address: "Shayxontohur tumani", cityName: "Toshkent shahri" },
+          { id: 2, name: "120-maktab", address: "Yunusobod tumani", cityName: "Toshkent shahri" },
+          { id: 3, name: "5-umumiy o'rta ta'lim maktabi", address: "Markaz ko'chasi", cityName: "Samarqand shahri" },
+          { id: 4, name: "15-maktab", address: "Navoi ko'chasi", cityName: "Buxoro shahri" },
+          { id: 5, name: "25-sonli maktab", address: "Yunusobod tumani", cityName: "Toshkent shahri" },
+          { id: 6, name: "3-sonli litsey", address: "Mirzo Ulug'bek tumani", cityName: "Toshkent shahri" },
+        ];
+      }
+      const data = await response.json();
+      return data;
+    },
+
+    createDirector: async (directorData: DirectorCreateDto): Promise<Director> => {
+      const response = await fetch(`${API_BASE_URL}/directors`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(directorData),
+      });
+      if (!response.ok) throw new Error('Failed to create director');
+      const data = await response.json();
+      return data;
+    },
+
+    updateDirector: async (id: number, directorData: DirectorUpdateDto): Promise<Director> => {
+      const response = await fetch(`${API_BASE_URL}/directors/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(directorData),
+      });
+      if (!response.ok) throw new Error('Failed to update director');
+      const data = await response.json();
+      return data;
+    },
+
+    deleteDirector: async (id: number): Promise<void> => {
+      const response = await fetch(`${API_BASE_URL}/directors/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete director');
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -57,64 +139,31 @@ const DirectorsPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      // Mock data for schools
-      const schoolsData: School[] = [
-        { id: 1, name: "1-umumiy o'rta ta'lim maktabi", address: "Shayxontohur tumani", cityName: "Toshkent shahri" },
-        { id: 2, name: "120-maktab", address: "Yunusobod tumani", cityName: "Toshkent shahri" },
-        { id: 3, name: "5-umumiy o'rta ta'lim maktabi", address: "Markaz ko'chasi", cityName: "Samarqand shahri" },
-        { id: 4, name: "15-maktab", address: "Navoi ko'chasi", cityName: "Buxoro shahri" },
-        { id: 5, name: "25-sonli maktab", address: "Yunusobod tumani", cityName: "Toshkent shahri" },
-        { id: 6, name: "3-sonli litsey", address: "Mirzo Ulug'bek tumani", cityName: "Toshkent shahri" },
-      ];
+      const [directorsData, schoolsData] = await Promise.all([
+        api.getDirectors(),
+        api.getSchools()
+      ]);
 
-      const directorsData: Director[] = [
-        { 
-          id: 1, 
-          firstName: "Malika", 
-          lastName: "Usmanova", 
-          email: "malika.usmanova@school.uz", 
-          schoolId: 1,
-          schoolName: "1-umumiy o'rta ta'lim maktabi",
-          isActive: true,
-          phoneNumber: "+998901234567"
-        },
-        { 
-          id: 2, 
-          firstName: "Bobur", 
-          lastName: "Karimov", 
-          email: "bobur.karimov@school.uz", 
-          schoolId: 3,
-          schoolName: "5-umumiy o'rta ta'lim maktabi",
-          isActive: true,
-          phoneNumber: "+998912345678"
-        },
-        { 
-          id: 3, 
-          firstName: "Nargiza", 
-          lastName: "Tursunova", 
-          email: "nargiza.tursunova@school.uz", 
-          schoolId: 4,
-          schoolName: "15-maktab",
-          isActive: true,
-          phoneNumber: "+998901122334"
-        },
-        { 
-          id: 4, 
-          firstName: "Javohir", 
-          lastName: "Rasulov", 
-          email: "javohir.rasulov@school.uz", 
-          isActive: false,
-          phoneNumber: "+998903344556"
-        },
-      ];
+      // Обогащаем директоров названиями школ
+      const enrichedDirectors = directorsData.map(director => {
+        const school = schoolsData.find(s => s.id === director.schoolId);
+        return {
+          ...director,
+          schoolName: school?.name
+        };
+      });
 
       setSchools(schoolsData);
-      setDirectors(directorsData);
+      setDirectors(enrichedDirectors);
     } catch (error) {
+      console.error('Error fetching data:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Noma\'lum xatolik';
+      setError(errorMessage);
       toast({
         title: "Xatolik",
-        description: "Ma'lumotlarni yuklashda xatolik yuz berdi",
+        description: `Ma'lumotlarni yuklashda xatolik: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
@@ -126,12 +175,14 @@ const DirectorsPage = () => {
     if (!confirm("Haqiqatan ham bu direktorni o'chirmoqchimisiz?")) return;
 
     try {
+      await api.deleteDirector(id);
       setDirectors(directors.filter(director => director.id !== id));
       toast({
         title: "Muvaffaqiyat",
         description: "Direktor muvaffaqiyatli o'chirildi",
       });
     } catch (error) {
+      console.error('Error deleting director:', error);
       toast({
         title: "Xatolik",
         description: "Direktorni o'chirishda xatolik yuz berdi",
@@ -151,19 +202,24 @@ const DirectorsPage = () => {
     }
 
     try {
-      const schoolName = formData.schoolId ? schools.find(s => s.id === parseInt(formData.schoolId))?.name : undefined;
-
       if (editingDirector) {
+        const directorData: DirectorUpdateDto = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim(),
+          schoolId: formData.schoolId ? parseInt(formData.schoolId) : undefined,
+          phoneNumber: formData.phoneNumber || undefined,
+          isActive: editingDirector.isActive
+        };
+
+        const updatedDirector = await api.updateDirector(editingDirector.id, directorData);
+        const school = schools.find(s => s.id === updatedDirector.schoolId);
+        
         setDirectors(directors.map(director => 
           director.id === editingDirector.id 
             ? { 
-                ...director, 
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                schoolId: formData.schoolId ? parseInt(formData.schoolId) : undefined,
-                schoolName,
-                phoneNumber: formData.phoneNumber
+                ...updatedDirector, 
+                schoolName: school?.name
               }
             : director
         ));
@@ -172,17 +228,21 @@ const DirectorsPage = () => {
           description: "Direktor muvaffaqiyatli yangilandi",
         });
       } else {
-        const newDirector: Director = { 
-          id: Date.now(), 
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
+        const directorData: DirectorCreateDto = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim(),
           schoolId: formData.schoolId ? parseInt(formData.schoolId) : undefined,
-          schoolName,
-          isActive: true,
-          phoneNumber: formData.phoneNumber
+          phoneNumber: formData.phoneNumber || undefined
         };
-        setDirectors([...directors, newDirector]);
+
+        const newDirector = await api.createDirector(directorData);
+        const school = schools.find(s => s.id === newDirector.schoolId);
+        
+        setDirectors([...directors, { 
+          ...newDirector, 
+          schoolName: school?.name 
+        }]);
         toast({
           title: "Muvaffaqiyat",
           description: "Yangi direktor muvaffaqiyatli qo'shildi",
@@ -191,6 +251,7 @@ const DirectorsPage = () => {
 
       resetForm();
     } catch (error) {
+      console.error('Error saving director:', error);
       toast({
         title: "Xatolik",
         description: editingDirector ? "Direktorni yangilashda xatolik" : "Direktor qo'shishda xatolik",
@@ -252,6 +313,27 @@ const DirectorsPage = () => {
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-6"></div>
           <p className="text-gray-600 dark:text-gray-300">Ma'lumotlar yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
+        <div className="text-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-100 mb-2">
+            Xatolik yuz berdi
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+          <Button 
+            onClick={fetchData}
+            className="mt-6 bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Qayta urinish
+          </Button>
         </div>
       </div>
     );

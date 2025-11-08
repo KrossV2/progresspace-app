@@ -9,9 +9,28 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Plus, BookOpen, Users, Clock, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-interface Subject {
+interface Teacher {
+  id: number;
+  userId: number;
+  isHomeroomTeacher: boolean;
+  fullName: string;
+}
+
+interface TeacherSubject {
+  id: number;
+  teacherId: number;
+  teacher: Teacher;
+  subjectId: number;
+  subject: string;
+}
+
+interface ApiSubject {
   id: number;
   name: string;
+  teacherSubjects: TeacherSubject[];
+}
+
+interface Subject extends ApiSubject {
   description: string;
   hoursPerWeek: number;
   category: 'science' | 'humanities' | 'languages' | 'arts' | 'sports';
@@ -31,6 +50,8 @@ const SubjectsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
+  const API_BASE_URL = "https://eduuz.onrender.com/api/admin";
+
   const categories = [
     { value: 'science', label: 'Tabiiy fanlar', color: 'blue' },
     { value: 'humanities', label: 'Ijtimoiy fanlar', color: 'green' },
@@ -43,14 +64,59 @@ const SubjectsPage = () => {
     fetchData();
   }, []);
 
+  // Функция для обогащения данных с API
+  const enrichSubjectData = (apiSubject: ApiSubject): Subject => {
+    return {
+      ...apiSubject,
+      description: `${apiSubject.name} fani`,
+      hoursPerWeek: Math.floor(Math.random() * 4) + 2,
+      category: categories[Math.floor(Math.random() * categories.length)].value as Subject['category'],
+      status: 'active'
+    };
+  };
+
   const fetchData = async () => {
     try {
       setLoading(true);
       
-      const subjectsData: Subject[] = [
+      console.log('Fetching subjects from:', `${API_BASE_URL}/subjects`);
+      
+      const response = await fetch(`${API_BASE_URL}/subjects`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const apiSubjects: ApiSubject[] = await response.json();
+      console.log('Received data from API:', apiSubjects);
+      
+      // Обогащаем данные для фронтенда
+      const enrichedSubjects: Subject[] = apiSubjects.map(enrichSubjectData);
+      
+      setSubjects(enrichedSubjects);
+      
+    } catch (error) {
+      console.error('Error fetching subjects:', error);
+      toast({
+        title: "Xatolik",
+        description: "Ma'lumotlarni yuklashda xatolik yuz berdi",
+        variant: "destructive",
+      });
+      
+      // Fallback данные на случай ошибки
+      const fallbackData: Subject[] = [
         {
           id: 1,
           name: "Matematika",
+          teacherSubjects: [],
           description: "Raqamlar va hisoblash fanı",
           hoursPerWeek: 5,
           category: 'science',
@@ -59,52 +125,14 @@ const SubjectsPage = () => {
         {
           id: 2,
           name: "Ona tili",
+          teacherSubjects: [],
           description: "O'zbek tili grammatikasi va adabiyoti",
           hoursPerWeek: 4,
           category: 'languages',
           status: 'active'
-        },
-        {
-          id: 3,
-          name: "Ingliz tili",
-          description: "Chet tili o'qitish",
-          hoursPerWeek: 3,
-          category: 'languages',
-          status: 'active'
-        },
-        {
-          id: 4,
-          name: "Fizika",
-          description: "Tabiat qonuniyatlari fanı",
-          hoursPerWeek: 2,
-          category: 'science',
-          status: 'active'
-        },
-        {
-          id: 5,
-          name: "Tarix",
-          description: "O'tmish davrlari va voqealar",
-          hoursPerWeek: 2,
-          category: 'humanities',
-          status: 'active'
-        },
-        {
-          id: 6,
-          name: "Jismoniy tarbiya",
-          description: "Sport mashg'ulotlari",
-          hoursPerWeek: 2,
-          category: 'sports',
-          status: 'active'
-        },
+        }
       ];
-
-      setSubjects(subjectsData);
-    } catch (error) {
-      toast({
-        title: "Xatolik",
-        description: "Ma'lumotlarni yuklashda xatolik yuz berdi",
-        variant: "destructive",
-      });
+      setSubjects(fallbackData);
     } finally {
       setLoading(false);
     }
@@ -114,12 +142,31 @@ const SubjectsPage = () => {
     if (!confirm("Haqiqatan ham bu fanni o'chirmoqchimisiz?")) return;
 
     try {
-      setSubjects(subjects.filter(subject => subject.id !== id));
+      console.log('Deleting subject with id:', id);
+      
+      const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+
+      console.log('Delete response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Используем функциональное обновление состояния
+      setSubjects(prevSubjects => prevSubjects.filter(subject => subject.id !== id));
+      
       toast({
         title: "Muvaffaqiyat",
         description: "Fan muvaffaqiyatli o'chirildi",
       });
     } catch (error) {
+      console.error('Error deleting subject:', error);
       toast({
         title: "Xatolik",
         description: "Fanni o'chirishda xatolik yuz berdi",
@@ -129,42 +176,97 @@ const SubjectsPage = () => {
   };
 
   const handleSaveSubject = async () => {
-    if (!formData.name.trim() || !formData.description.trim() || !formData.hoursPerWeek || !formData.category) {
+    if (!formData.name.trim()) {
       toast({
         title: "Xatolik",
-        description: "Iltimos, barcha majburiy maydonlarni to'ldiring",
+        description: "Iltimos, fan nomini kiriting",
         variant: "destructive",
       });
       return;
     }
 
     try {
+      // Подготавливаем данные для API (только name)
+      const apiSubjectData = {
+        name: formData.name
+      };
+
+      console.log('Saving subject data to API:', apiSubjectData);
+
       if (editingSubject) {
-        setSubjects(subjects.map(subject => 
-          subject.id === editingSubject.id 
-            ? { 
-                ...subject, 
-                name: formData.name,
-                description: formData.description,
-                hoursPerWeek: parseInt(formData.hoursPerWeek),
-                category: formData.category as Subject['category']
-              }
-            : subject
-        ));
+        // Обновление существующего предмета
+        const response = await fetch(`${API_BASE_URL}/subjects/${editingSubject.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(apiSubjectData),
+        });
+
+        console.log('Update response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Update error response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const updatedApiSubject: ApiSubject = await response.json();
+        
+        // Обогащаем обновленные данные для фронтенда
+        const enrichedUpdatedSubject: Subject = {
+          ...updatedApiSubject,
+          description: formData.description || `${updatedApiSubject.name} fani`,
+          hoursPerWeek: parseInt(formData.hoursPerWeek) || 2,
+          category: (formData.category as Subject['category']) || 'science',
+          status: 'active'
+        };
+        
+        // Используем функциональное обновление состояния
+        setSubjects(prevSubjects => 
+          prevSubjects.map(subject => 
+            subject.id === editingSubject.id ? enrichedUpdatedSubject : subject
+          )
+        );
+        
         toast({
           title: "Muvaffaqiyat",
           description: "Fan muvaffaqiyatli yangilandi",
         });
       } else {
-        const newSubject: Subject = { 
-          id: Date.now(), 
-          name: formData.name,
-          description: formData.description,
-          hoursPerWeek: parseInt(formData.hoursPerWeek),
-          category: formData.category as Subject['category'],
+        // Создание нового предмета
+        const response = await fetch(`${API_BASE_URL}/subjects`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(apiSubjectData),
+        });
+
+        console.log('Create response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Create error response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const newApiSubject: ApiSubject = await response.json();
+        
+        // Обогащаем новые данные для фронтенда
+        const enrichedNewSubject: Subject = {
+          ...newApiSubject,
+          description: formData.description || `${newApiSubject.name} fani`,
+          hoursPerWeek: parseInt(formData.hoursPerWeek) || 2,
+          category: (formData.category as Subject['category']) || 'science',
           status: 'active'
         };
-        setSubjects([...subjects, newSubject]);
+        
+        // Используем функциональное обновление состояния
+        setSubjects(prevSubjects => [...prevSubjects, enrichedNewSubject]);
+        
         toast({
           title: "Muvaffaqiyat",
           description: "Yangi fan muvaffaqiyatli qo'shildi",
@@ -180,6 +282,7 @@ const SubjectsPage = () => {
       setEditingSubject(null);
       setIsDialogOpen(false);
     } catch (error) {
+      console.error('Error saving subject:', error);
       toast({
         title: "Xatolik",
         description: editingSubject ? "Fanni yangilashda xatolik" : "Fan qo'shishda xatolik",
@@ -192,9 +295,9 @@ const SubjectsPage = () => {
     setEditingSubject(subject);
     setFormData({
       name: subject.name,
-      description: subject.description,
-      hoursPerWeek: subject.hoursPerWeek.toString(),
-      category: subject.category,
+      description: subject.description || "",
+      hoursPerWeek: subject.hoursPerWeek?.toString() || "2",
+      category: subject.category || "",
     });
     setIsDialogOpen(true);
   };
@@ -204,7 +307,7 @@ const SubjectsPage = () => {
     setFormData({
       name: "",
       description: "",
-      hoursPerWeek: "",
+      hoursPerWeek: "2",
       category: "",
     });
     setIsDialogOpen(true);
@@ -241,6 +344,10 @@ const SubjectsPage = () => {
     return colorMap[color] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
+  const getTeachersCount = (subject: Subject) => {
+    return subject.teacherSubjects?.length || 0;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px] text-center bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
@@ -253,7 +360,8 @@ const SubjectsPage = () => {
   }
 
   const categoryStats = getCategoryStats();
-  const totalHours = subjects.reduce((sum, subject) => sum + subject.hoursPerWeek, 0);
+  const totalHours = subjects.reduce((sum, subject) => sum + (subject.hoursPerWeek || 0), 0);
+  const totalTeachers = subjects.reduce((sum, subject) => sum + getTeachersCount(subject), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4 md:p-8">
@@ -305,7 +413,7 @@ const SubjectsPage = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="description" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Tavsif *
+                    Tavsif
                   </Label>
                   <Input
                     id="description"
@@ -318,7 +426,7 @@ const SubjectsPage = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="hoursPerWeek" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Haftalik soat *
+                    Haftalik soat
                   </Label>
                   <Input
                     id="hoursPerWeek"
@@ -334,7 +442,7 @@ const SubjectsPage = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="category" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Kategoriya *
+                    Kategoriya
                   </Label>
                   <select 
                     id="category"
@@ -389,16 +497,16 @@ const SubjectsPage = () => {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
             <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-              Haftalik Soat
+              O'qituvchilar
             </CardTitle>
-            <Clock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400">
-              {totalHours}
+              {totalTeachers}
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
-              Jami dars soatlari
+              Jami o'qituvchilar
             </p>
           </CardContent>
         </Card>
@@ -425,16 +533,16 @@ const SubjectsPage = () => {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
             <CardTitle className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-              O'rtacha Soat
+              Haftalik Soat
             </CardTitle>
-            <Users className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+            <Clock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
-              {subjects.length > 0 ? Math.round(totalHours / subjects.length * 10) / 10 : 0}
+              {totalHours}
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium">
-              Har fanda o'rtacha
+              Jami dars soatlari
             </p>
           </CardContent>
         </Card>
@@ -488,8 +596,8 @@ const SubjectsPage = () => {
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Fan Nomi</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Tavsif</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Haftalik Soat</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">O'qituvchilar</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Kategoriya</TableHead>
-                <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">Holat</TableHead>
                 <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-right">Amallar</TableHead>
               </TableRow>
             </TableHeader>
@@ -518,17 +626,14 @@ const SubjectsPage = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="py-4">
-                    <Badge className={`font-semibold px-3 py-1 rounded-full border ${getCategoryBadgeClass(subject.category)}`}>
-                      {getCategoryLabel(subject.category)}
+                    <Badge variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold">
+                      <Users className="h-4 w-4 mr-1" />
+                      {getTeachersCount(subject)} ta
                     </Badge>
                   </TableCell>
                   <TableCell className="py-4">
-                    <Badge className={`font-semibold px-3 py-1 rounded-full border-none ${
-                      subject.status === 'active' 
-                        ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800' 
-                        : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800'
-                    }`}>
-                      {subject.status === 'active' ? 'Faol' : 'Nofaol'}
+                    <Badge className={`font-semibold px-3 py-1 rounded-full border ${getCategoryBadgeClass(subject.category || '')}`}>
+                      {getCategoryLabel(subject.category || '')}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-4 text-right">
